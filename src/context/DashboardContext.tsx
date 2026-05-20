@@ -1,16 +1,16 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-const DashboardContext = createContext(null);
+const DashboardContext = createContext<any>(null);
 
 export const useDashboard = () => {
     return useContext(DashboardContext);
 };
 
-export const DashboardProvider = ({ children }) => {
+export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     const [role, setRole]       = useState('User');
     const [username, setUsername] = useState('');
-    const [armada, setArmada]   = useState([]);
+    const [armada, setArmada]   = useState<any[]>([]);
     const [cuaca, setCuaca]     = useState('Standar');
     const [loading, setLoading] = useState(true);
 
@@ -23,6 +23,8 @@ export const DashboardProvider = ({ children }) => {
         { id: 6, name: 'KM MAJAPAHIT',   type: 'Kapal Kargo Bulk', status: 'DALAM PERJALANAN', statusColor: '#22C55E', location: 'Selat Malaka',            destination: 'Belawan',         eta: '2026-04-09 22:15', cargo: 'Beras',             update: 'Baru saja'   },
         { id: 7, name: 'KM DEWARUCI',    type: 'Kapal Tanker',     status: 'DI PELABUHAN',     statusColor: '#3B82F6', location: 'Pelabuhan Tanjung Emas',  destination: 'Semarang',        eta: 'Tiba',             cargo: 'LNG',               update: '7 mnt lalu'  },
         { id: 8, name: 'KM CENDRAWASIH', type: 'Kapal Petikemas',  status: 'DALAM PERJALANAN', statusColor: '#22C55E', location: 'Laut Banda',              destination: 'Sorong',          eta: '2026-04-13 10:00', cargo: 'Barang Konsumsi',   update: 'Baru saja'   },
+        { id: 9, name: 'KM MERPATI',     type: 'Kapal Kargo',      status: 'DI PELABUHAN',     statusColor: '#3B82F6', location: 'Pelabuhan Tanjung Perak', destination: 'Tanjung Perak',   eta: 'Tiba',             cargo: 'Beras & Sembako',   update: '3 mnt lalu'  },
+        { id: 10, name: 'KM RAJAWALI',   type: 'Kapal Petikemas',  status: 'DALAM PERJALANAN', statusColor: '#22C55E', location: 'Selat Makassar',          destination: 'Makassar',        eta: '2026-04-14 12:00', cargo: 'Semen',             update: 'Baru saja'   },
     ];
 
     // ─── Fetch ────────────────────────────────────────────────
@@ -58,7 +60,7 @@ export const DashboardProvider = ({ children }) => {
     };
 
     // ─── Tambah Kapal ─────────────────────────────────────────
-    const tambahKapal = async (dataKapal) => {
+    const tambahKapal = async (dataKapal: any) => {
         if (typeof window === 'undefined') return { success: false };
 
         try {
@@ -89,7 +91,7 @@ export const DashboardProvider = ({ children }) => {
     };
 
     // ─── Hapus Kapal ──────────────────────────────────────────
-    const hapusKapal = async (id) => {
+    const hapusKapal = async (id: any) => {
         if (typeof window === 'undefined') return { success: false };
 
         try {
@@ -117,7 +119,7 @@ export const DashboardProvider = ({ children }) => {
     };
 
     // ─── Cuaca ────────────────────────────────────────────────
-    const updateCuaca = (status) => {
+    const updateCuaca = (status: string) => {
         setCuaca(status);
         console.log(`Mengirim POST Request -> Cuaca update: ${status}`);
     };

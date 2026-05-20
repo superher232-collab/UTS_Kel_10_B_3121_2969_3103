@@ -3,7 +3,7 @@ import React from 'react';
 import { useDashboard } from '@/context/DashboardContext';
 
 export default function AnalyticsPage() {
-  const { armada } = useDashboard();
+  const { armada = [] } = useDashboard() || {};
 
   const total       = armada.length;
   const berlayar    = armada.filter(s => s.status?.toLowerCase().includes('perjalanan')).length;
@@ -19,7 +19,7 @@ export default function AnalyticsPage() {
   }));
   const maxBar = Math.max(...barData.map(b => b.count), 1);
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: any) => {
     if (!status) return '#8B7BA8';
     const s = status.toLowerCase();
     if (s.includes('perjalanan')) return '#22C55E';
@@ -29,7 +29,7 @@ export default function AnalyticsPage() {
     return '#8B7BA8';
   };
 
-  const getKeterangan = (ship) => {
+  const getKeterangan = (ship: any) => {
     const s = ship.status?.toLowerCase() || '';
     if (s.includes('terlambat'))    return 'Terlambat — kemungkinan cuaca buruk atau kendala teknis';
     if (s.includes('pemeliharaan')) return 'Dalam perawatan di galangan — tidak beroperasi';
@@ -38,7 +38,7 @@ export default function AnalyticsPage() {
     return 'Status tidak diketahui';
   };
 
-  const formatEta = (eta) => {
+  const formatEta = (eta: any) => {
     if (!eta) return '-';
     try {
       return new Date(eta).toLocaleString('id-ID', {

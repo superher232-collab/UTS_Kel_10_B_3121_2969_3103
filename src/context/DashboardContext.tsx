@@ -15,7 +15,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     const FALLBACK_ARMADA = [
-        { id: 1, name: 'KM NUSANTARA',   type: 'Kapal Petikemas',  status: 'DALAM PERJALANAN', statusColor: '#22C55E', location: 'Laut Jawa',               destination: 'Tanjung Perak',   eta: '2026-04-12 08:30', cargo: 'Elektronik',        update: 'Baru saja'   },
+        { id: 1, name: 'KM NUSANTARA',   type: 'Kapal Petikemas',  status: 'DALAM PERJALANAN', statusColor: '#22C55E', location: 'Laut Jawa',              destination: 'Tanjung Perak',   eta: '2026-04-12 08:30', cargo: 'Elektronik',        update: 'Baru saja'   },
         { id: 2, name: 'KM BIMA SAKTI',  type: 'Kapal Kargo Bulk', status: 'DI PELABUHAN',     statusColor: '#3B82F6', location: 'Pelabuhan Tanjung Priok', destination: 'Tanjung Priok',   eta: 'Tiba',             cargo: 'Batu Bara',         update: '5 mnt lalu'  },
         { id: 3, name: 'KM SRIWIJAYA',   type: 'Kapal Tanker',     status: 'TERLAMBAT',        statusColor: '#F59E0B', location: 'Selat Sunda',             destination: 'Pelabuhan Merak', eta: '2026-04-11 14:00', cargo: 'Minyak Mentah',     update: '1 mnt lalu'  },
         { id: 4, name: 'KM GADJAH MADA', type: 'Kapal Petikemas',  status: 'PEMELIHARAAN',     statusColor: '#EF4444', location: 'Galangan Kapal Batam',    destination: 'Batam',           eta: 'Dalam Perawatan',  cargo: '-',                 update: '10 mnt lalu' },
@@ -80,12 +80,43 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
             const data = await res.json();
 
-            // Update state lokal langsung — tidak perlu refetch semua
+            // Update state lokal langsung
             setArmada(prev => [...prev, data.kapal]);
             return { success: true, kapal: data.kapal };
 
         } catch (error) {
             console.error('[tambahKapal] Error:', error);
+            return { success: false, error };
+        }
+    };
+
+    // ─── Edit Kapal ───────────────────────────────────────────
+    const editKapal = async (id: any, dataKapal: any) => {
+        if (typeof window === 'undefined') return { success: false };
+
+        try {
+            const savedUser = localStorage.getItem('username') || '';
+
+            // Asumsi API Anda menggunakan method PUT dan menerima ID di body atau query
+            // Sesuaikan endpoint ini dengan struktur route.js Anda jika berbeda
+            const res = await fetch(`/api/kapal?username=${encodeURIComponent(savedUser)}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, ...dataKapal })
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                console.error('[editKapal] Gagal:', err);
+                return { success: false, error: err };
+            }
+
+            // Update state lokal langsung (Reaktivitas UI)
+            setArmada(prev => prev.map(k => k.id === id ? { ...k, ...dataKapal, update: 'Baru saja' } : k));
+            return { success: true };
+
+        } catch (error) {
+            console.error('[editKapal] Error:', error);
             return { success: false, error };
         }
     };
@@ -141,6 +172,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             updateCuaca,
             tambahKapal,
             hapusKapal,
+            editKapal, // <--- Sudah ditambahkan di sini
             refreshData: fetchArmada
         }}>
             {children}

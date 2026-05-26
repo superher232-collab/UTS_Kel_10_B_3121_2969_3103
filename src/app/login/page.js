@@ -204,7 +204,6 @@ export default function Login() {
               <input 
                 type="password" 
                 placeholder="Masukkan kata sandi" 
-                defaultValue="primelog"
                 style={{
                   background: 'transparent',
                   border: 'none',

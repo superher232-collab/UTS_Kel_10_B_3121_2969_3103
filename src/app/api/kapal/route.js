@@ -123,6 +123,12 @@ export async function POST(request) {
       );
     }
 
+    // Sanitize empty strings to null to prevent invalid syntax casting (especially for timestamps)
+    const finalLocation = (location && location.trim() !== '') ? location : null;
+    const finalDestination = (destination && destination.trim() !== '') ? destination : null;
+    const finalEta = (eta && eta.trim() !== '') ? eta : null;
+    const finalCargo = (cargo && cargo.trim() !== '') ? cargo : null;
+
     // Auto-generate id_kapal (e.g. KPL-009) by finding maximum existing ID in tb_kapal
     const maxIdRes = await sql`
       SELECT id_kapal FROM tb_kapal 
@@ -146,10 +152,10 @@ export async function POST(request) {
         ${name},
         ${type},
         ${status},
-        ${location    ?? null},
-        ${destination ?? null},
-        ${eta         ?? null},
-        ${cargo       ?? null}
+        ${finalLocation},
+        ${finalDestination},
+        ${finalEta},
+        ${finalCargo}
       )
       RETURNING 
         id_kapal          AS id,
@@ -272,6 +278,12 @@ export async function PUT(request) {
       );
     }
 
+    // Sanitize empty strings to null to prevent invalid syntax casting (especially for timestamps)
+    const finalLocation = (location && location.trim() !== '') ? location : null;
+    const finalDestination = (destination && destination.trim() !== '') ? destination : null;
+    const finalEta = (eta && eta.trim() !== '') ? eta : null;
+    const finalCargo = (cargo && cargo.trim() !== '') ? cargo : null;
+
     const kapalCheck = await sql`
       SELECT id_kapal FROM tb_kapal WHERE id_kapal = ${finalId} LIMIT 1;
     `;
@@ -286,10 +298,10 @@ export async function PUT(request) {
         nama_kapal        = ${name},
         jenis_kapal       = ${type},
         status_pergerakan = ${status},
-        lokasi_terkini    = ${location    ?? null},
-        tujuan            = ${destination ?? null},
-        eta               = ${eta         ?? null},
-        cargo             = ${cargo       ?? null}
+        lokasi_terkini    = ${finalLocation},
+        tujuan            = ${finalDestination},
+        eta               = ${finalEta},
+        cargo             = ${finalCargo}
       WHERE id_kapal = ${finalId}
       RETURNING 
         id_kapal          AS id,

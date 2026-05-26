@@ -3,148 +3,105 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDashboard } from '@/context/DashboardContext';
 
 export default function MapPage() {
-  const { armada, cuaca } = useDashboard();
+  const { armada, cuaca, errorSignal } = useDashboard();
   
   // State untuk menyimpan posisi dinamis kapal yang dirender ke layar
   const [positions, setPositions] = useState<any[]>([]);
   // Ref untuk menyimpan data gerak tanpa memicu re-render berlebihan (biar nggak ngelag)
   const shipsRef = useRef<any[]>([]);
-  const animRef = useRef(null);
+  const animRef = useRef<any>(null);
 
   useEffect(() => {
     if (!armada || armada.length === 0) return;
 
-    // Helper untuk mendefinisikan lokasi pelabuhan dan batas rute perairan masing-masing kapal (Skala 1000x500)
-    const getShipRouteSettings = (name: string, status: string) => {
-      const isMoving = status?.toLowerCase().includes('perjalanan');
-      const shipName = name?.toUpperCase() || '';
-
-      // Default fallback
-      let x = 500;
-      let y = 250;
-      let minX = 100, maxX = 900, minY = 50, maxY = 450;
-      let vx = 0;
-      let vy = 0;
-
-      if (!isMoving) {
-        // Kapal sandar ditempatkan presisi di koordinat pelabuhan masing-masing
-        if (shipName.includes('BIMA SAKTI')) {
-          x = 300; y = 360; // Tj. Priok
-        } else if (shipName.includes('SRIWIJAYA')) {
-          x = 260; y = 365; // Pelabuhan Merak
-        } else if (shipName.includes('GADJAH MADA')) {
-          x = 250; y = 175; // Galangan Batam
-        } else if (shipName.includes('DEWARUCI')) {
-          x = 380; y = 370; // Tj. Emas
-        } else {
-          x = 450; y = 375; // Tj. Perak
-        }
-      } else {
-        // Kapal berlayar bergerak di perairan (sea lane) masing-masing
-        const speed = 0.25;
-        const angle = Math.random() * Math.PI * 2;
-        vx = Math.cos(angle) * speed;
-        vy = Math.sin(angle) * speed;
-
-        if (shipName.includes('NUSANTARA')) {
-          // Laut Jawa -> Tanjung Perak
-          minX = 280; maxX = 520; minY = 250; maxY = 340;
-          x = 300 + Math.random() * 100;
-          y = 260 + Math.random() * 60;
-        } else if (shipName.includes('KARTINI') || shipName.includes('RAJAWALI')) {
-          // Laut Sulawesi -> Makassar
-          minX = 550; maxX = 600; minY = 150; maxY = 275;
-          x = 560 + Math.random() * 30;
-          y = 170 + Math.random() * 80;
-        } else if (shipName.includes('MAJAPAHIT')) {
-          // Selat Malaka -> Belawan
-          minX = 250; maxX = 320; minY = 60; maxY = 140;
-          x = 260 + Math.random() * 40;
-          y = 80 + Math.random() * 40;
-        } else if (shipName.includes('CENDRAWASIH')) {
-          // Laut Banda -> Sorong
-          minX = 740; maxX = 820; minY = 200; maxY = 320;
-          x = 750 + Math.random() * 50;
-          y = 220 + Math.random() * 80;
-        } else {
-          // Fallback laut terbuka
-          minX = 150; maxX = 850; minY = 80; maxY = 420;
-          x = 400 + Math.random() * 200;
-          y = 200 + Math.random() * 100;
-        }
-      }
-
-      return { x, y, minX, maxX, minY, maxY, vx, vy };
-    };
-
-    // 1. Inisialisasi posisi awal dan "mesin" (kecepatan)
-    shipsRef.current = armada.map((s: any) => {
-      const settings = getShipRouteSettings(s.name, s.status);
+    // Inisialisasi/sinkronisasi shipsRef.current dengan armada dari database SWR
+    const updatedShips = armada.map((s: any) => {
+      const existing = shipsRef.current.find((x: any) => x.id === s.id);
+      
       const isMoving = s.status?.toLowerCase().includes('perjalanan');
+      const isPort = s.status?.toLowerCase().includes('pelabuhan');
+      const isDelayed = s.status?.toLowerCase().includes('terlambat');
+      const isMaintenance = s.status?.toLowerCase().includes('pemeliharaan');
+
+      let statusColor = '#22C55E'; // Hijau: Berlayar
+      if (isPort) statusColor = '#3B82F6'; // Biru: Di Pelabuhan
+      if (isDelayed) statusColor = '#F59E0B'; // Oranye: Terlambat
+      if (isMaintenance) statusColor = '#EF4444'; // Merah: Perawatan
+
+      const targetX = s.latitude || 500;
+      const targetY = s.longitude || 250;
+
       return {
         ...s,
-        x: settings.x,
-        y: settings.y,
-        minX: settings.minX,
-        maxX: settings.maxX,
-        minY: settings.minY,
-        maxY: settings.maxY,
-        vx: settings.vx,
-        vy: settings.vy,
+        x: existing ? existing.x : targetX,
+        y: existing ? existing.y : targetY,
+        tx: targetX,
+        ty: targetY,
         statusText: s.status,
-        statusColor: isMoving ? '#22C55E' : 
-                     (s.status?.toLowerCase().includes('pelabuhan') ? '#3B82F6' : '#EF4444')
+        statusColor,
+        isMoving
       };
     });
 
-    setPositions(shipsRef.current);
+    shipsRef.current = updatedShips;
+    setPositions(updatedShips);
 
-    // 2. Bikin fungsi loop animasi gerak
+    // Loop animasi untuk interpolasi gerak kapal dan simulasi ombak maritim
     const tick = () => {
       shipsRef.current = shipsRef.current.map((ship: any) => {
-        // Kalo lagi sandar atau rusak, diem di tempat
-        if (ship.vx === 0 && ship.vy === 0) return ship;
+        // Sinkronisasi koordinat target dengan database SWR terbaru
+        const currentDbShip = armada.find((x: any) => x.id === ship.id);
+        const tx = currentDbShip ? (currentDbShip.latitude || ship.tx) : ship.tx;
+        const ty = currentDbShip ? (currentDbShip.longitude || ship.ty) : ship.ty;
 
-        // Sesuaikan pergerakan kapal berdasarkan cuaca global saat ini
-        let speedMultiplier = 1.0;
+        // Interpolasi pergerakan kapal yang sangat halus (smooth transition) menuju koordinat target
+        let nx = ship.x + (tx - ship.x) * 0.04;
+        let ny = ship.y + (ty - ship.y) * 0.04;
+
+        // Simulasi terombang-ambing akibat gelombang laut/cuaca
         let driftX = 0;
         let driftY = 0;
 
         if (cuaca === 'Badai Ekstrem') {
-          speedMultiplier = 0.65; // Melambat karena ombak besar
-          driftX = Math.sin(Date.now() * 0.003 + ship.x) * 0.3; // Efek terombang-ambing
-          driftY = Math.cos(Date.now() * 0.003 + ship.y) * 0.3;
+          // Ombak besar dan acak saat badai ekstrem
+          driftX = Math.sin(Date.now() * 0.003 + ship.id) * 0.6;
+          driftY = Math.cos(Date.now() * 0.003 + ship.id + 1) * 0.6;
         } else if (cuaca === 'Terik Gersang') {
-          speedMultiplier = 1.45; // Angin kencang (Berangin), kapal bergerak lebih cepat
+          // Hembusan angin sepoi-sepoi
+          driftX = Math.sin(Date.now() * 0.004 + ship.id) * 0.3;
+          driftY = Math.cos(Date.now() * 0.004 + ship.id + 1) * 0.3;
+        } else {
+          // Ombak tenang normal
+          driftX = Math.sin(Date.now() * 0.0015 + ship.id) * 0.15;
+          driftY = Math.cos(Date.now() * 0.0015 + ship.id + 1) * 0.15;
         }
 
-        let nx = ship.x + (ship.vx * speedMultiplier) + driftX;
-        let ny = ship.y + (ship.vy * speedMultiplier) + driftY;
-        let nvx = ship.vx;
-        let nvy = ship.vy;
+        nx += driftX;
+        ny += driftY;
 
-        // Bouncing di batas koridor pelayaran masing-masing
-        if (nx < ship.minX || nx > ship.maxX) nvx = -nvx;
-        if (ny < ship.minY || ny > ship.maxY) nvy = -nvy;
-
-        // Clamp
-        nx = Math.max(ship.minX, Math.min(ship.maxX, nx));
-        ny = Math.max(ship.minY, Math.min(ship.maxY, ny));
-
-        return { ...ship, x: nx, y: ny, vx: nvx, vy: nvy };
+        return {
+          ...ship,
+          x: nx,
+          y: ny,
+          tx,
+          ty,
+          statusText: currentDbShip ? currentDbShip.status : ship.statusText,
+          statusColor: currentDbShip ? (
+            currentDbShip.status?.toLowerCase().includes('perjalanan') ? '#22C55E' :
+            currentDbShip.status?.toLowerCase().includes('pelabuhan') ? '#3B82F6' :
+            currentDbShip.status?.toLowerCase().includes('terlambat') ? '#F59E0B' : '#EF4444'
+          ) : ship.statusColor,
+          isMoving: currentDbShip ? currentDbShip.status?.toLowerCase().includes('perjalanan') : ship.isMoving
+        };
       });
 
-      // Update state buat geser posisi UI
       setPositions([...shipsRef.current]);
-      
-      // Panggil diri sendiri buat frame berikutnya
       animRef.current = requestAnimationFrame(tick);
     };
 
-    // Jalankan mesin animasi
     animRef.current = requestAnimationFrame(tick);
 
-    // Bersihkan memori (cleanup) kalau user pindah tab
+    // Cleanup animasi frame
     return () => cancelAnimationFrame(animRef.current);
   }, [armada, cuaca]);
 
@@ -156,6 +113,25 @@ export default function MapPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '1200px', margin: '0 auto', color: 'white', fontFamily: 'monospace' }}>
       
+      {/* SWR warning info */}
+      {errorSignal && (
+        <div style={{
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid #EF4444',
+          padding: '12px 18px',
+          borderRadius: '6px',
+          fontSize: '11px',
+          color: '#FCA5A5',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          marginBottom: '20px'
+        }}>
+          <span>⚠️</span>
+          <span><strong>TELEMETRI SATELIT GAGAL:</strong> Menampilkan telemetri terakhir yang tersimpan di cache. Pergerakan real-time dinonaktifkan sementara hingga sinyal kembali pulih.</span>
+        </div>
+      )}
+
       {/* Main Map Container */}
       <div style={{ background: 'var(--bg-card, #130a24)', border: '1px solid rgba(168, 85, 247, 0.2)', borderRadius: '4px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative' }}>
         

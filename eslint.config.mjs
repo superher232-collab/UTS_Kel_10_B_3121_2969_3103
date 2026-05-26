@@ -10,6 +10,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "Cchoirulsiwebsuperher232-collab-compro-i-2a35f13/**",
   ]),
 ]);
 

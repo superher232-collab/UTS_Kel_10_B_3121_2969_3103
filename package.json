@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npx vercel env pull --yes .env.local || echo 'Offline: Menggunakan env lokal lama.' && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

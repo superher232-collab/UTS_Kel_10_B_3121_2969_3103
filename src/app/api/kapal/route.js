@@ -123,9 +123,26 @@ export async function POST(request) {
       );
     }
 
+    // Auto-generate id_kapal (e.g. KPL-009) by finding maximum existing ID in tb_kapal
+    const maxIdRes = await sql`
+      SELECT id_kapal FROM tb_kapal 
+      ORDER BY id_kapal DESC 
+      LIMIT 1;
+    `;
+    let nextId = 'KPL-009';
+    if (maxIdRes.rowCount > 0) {
+      const lastId = maxIdRes.rows[0].id_kapal;
+      const match = lastId.match(/KPL-(\d+)/i);
+      if (match) {
+        const nextNum = parseInt(match[1]) + 1;
+        nextId = `KPL-${String(nextNum).padStart(3, '0')}`;
+      }
+    }
+
     const result = await sql`
-      INSERT INTO tb_kapal (nama_kapal, jenis_kapal, status_pergerakan, lokasi_terkini, tujuan, eta, cargo)
+      INSERT INTO tb_kapal (id_kapal, nama_kapal, jenis_kapal, status_pergerakan, lokasi_terkini, tujuan, eta, cargo)
       VALUES (
+        ${nextId},
         ${name},
         ${type},
         ${status},

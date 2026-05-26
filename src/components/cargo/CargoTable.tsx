@@ -19,62 +19,62 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Status badge style helper matching Indonesia PrimeLog aesthetics
-  const getStatusBadgeStyle = (status: string): React.CSSProperties => {
+  // Universal badge style helper matching Indonesia PrimeLog aesthetics
+  const getBadgeStyle = (value: string): React.CSSProperties => {
     const base: React.CSSProperties = {
-      padding: '4px 8px',
+      padding: '3px 6px',
       borderRadius: '4px',
-      fontSize: '9px',
+      fontSize: '8px',
       fontWeight: 'bold',
       fontFamily: 'monospace',
-      letterSpacing: '1px',
+      letterSpacing: '0.5px',
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '4px',
+      gap: '3px',
       borderWidth: '1px',
       borderStyle: 'solid'
     };
 
-    const text = (status || '').toLowerCase();
-    if (text === 'selesai') {
+    const text = (value || '').toLowerCase();
+    if (text === 'selesai' || text === 'aman' || text === 'lunas') {
       return {
         ...base,
-        background: 'rgba(34, 197, 94, 0.1)',
+        background: 'rgba(34, 197, 94, 0.08)',
         borderColor: '#22C55E',
         color: '#22C55E',
-        boxShadow: '0 0 10px rgba(34, 197, 94, 0.25)'
+        boxShadow: '0 0 6px rgba(34, 197, 94, 0.15)'
       };
     } else if (text === 'dalam_pengiriman') {
       return {
         ...base,
-        background: 'rgba(6, 182, 212, 0.1)',
+        background: 'rgba(6, 182, 212, 0.08)',
         borderColor: '#06B6D4',
         color: '#06B6D4',
-        boxShadow: '0 0 10px rgba(6, 182, 212, 0.25)'
+        boxShadow: '0 0 6px rgba(6, 182, 212, 0.15)'
       };
     } else if (text === 'diproses') {
       return {
         ...base,
-        background: 'rgba(168, 85, 247, 0.1)',
+        background: 'rgba(168, 85, 247, 0.08)',
         borderColor: '#A855F7',
         color: '#A855F7',
-        boxShadow: '0 0 10px rgba(168, 85, 247, 0.25)'
+        boxShadow: '0 0 6px rgba(168, 85, 247, 0.15)'
       };
-    } else if (text === 'pending') {
+    } else if (text === 'pending' || text === 'rusak' || text === 'belum_bayar') {
       return {
         ...base,
-        background: 'rgba(245, 158, 11, 0.1)',
+        background: 'rgba(245, 158, 11, 0.08)',
         borderColor: '#F59E0B',
         color: '#F59E0B',
-        boxShadow: '0 0 10px rgba(245, 158, 11, 0.25)'
+        boxShadow: '0 0 6px rgba(245, 158, 11, 0.15)'
       };
     } else {
       return {
         ...base,
-        background: 'rgba(239, 68, 68, 0.1)',
+        background: 'rgba(239, 68, 68, 0.08)',
         borderColor: '#EF4444',
         color: '#EF4444',
-        boxShadow: '0 0 10px rgba(239, 68, 68, 0.25)'
+        boxShadow: '0 0 6px rgba(239, 68, 68, 0.15)'
       };
     }
   };
@@ -249,11 +249,19 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                   </div>
                 </td>
 
-                {/* Status */}
+                {/* Status Stack */}
                 <td style={tableCellStyle}>
-                  <span style={getStatusBadgeStyle(shipment.status_pengiriman)}>
-                    {shipment.status_pengiriman?.toUpperCase().replace('_', ' ')}
-                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                    <span style={getBadgeStyle(shipment.status_pengiriman)}>
+                      📋 {shipment.status_pengiriman?.toUpperCase().replace('_', ' ')}
+                    </span>
+                    <span style={getBadgeStyle(shipment.status_barang || 'aman')}>
+                      📦 {shipment.status_barang?.toUpperCase()}
+                    </span>
+                    <span style={getBadgeStyle(shipment.status_transaksi || 'belum_bayar')}>
+                      💳 {shipment.status_transaksi?.toUpperCase().replace('_', ' ')}
+                    </span>
+                  </div>
                 </td>
 
                 {/* Aksi */}

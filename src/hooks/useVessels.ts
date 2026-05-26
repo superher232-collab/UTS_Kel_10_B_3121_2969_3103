@@ -89,6 +89,17 @@ export function useVessels() {
     }
   }, [fetchData]);
 
+  const editVessel = useCallback(async (id: number, vesselData: Partial<Vessel>) => {
+    try {
+      const updated = mockDb.updateVessel(id, vesselData);
+      await fetchData(true);
+      return { success: !!updated, vessel: updated };
+    } catch (e) {
+      console.error('[useVessels] Gagal memperbarui detail kapal:', e);
+      return { success: false, error: e };
+    }
+  }, [fetchData]);
+
   const triggerVesselMutation = useCallback(async (
     id: number,
     status: Vessel['status'],
@@ -205,6 +216,7 @@ export function useVessels() {
     updateWeather,
     addVessel,
     deleteVessel,
+    editVessel,
     triggerVesselMutation,
     refreshData: () => fetchData(false)
   };

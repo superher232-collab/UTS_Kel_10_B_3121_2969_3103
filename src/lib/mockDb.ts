@@ -222,6 +222,64 @@ export const mockDb = {
     return vessels[index];
   },
 
+  updateVessel(
+    id: number,
+    vesselData: Partial<Vessel>
+  ): Vessel | null {
+    const vessels = this.getVessels();
+    const index = vessels.findIndex(v => v.id === id);
+    if (index === -1) return null;
+
+    const vessel = vessels[index];
+    const prevStatus = vessel.status;
+
+    // Status colors mapping
+    const statusColorMap = {
+      'DALAM PERJALANAN': '#22C55E',
+      'DI PELABUHAN': '#3B82F6',
+      'TERLAMBAT': '#F59E0B',
+      'PEMELIHARAAN': '#EF4444'
+    };
+
+    const status = (vesselData.status || vessel.status) as Vessel['status'];
+
+    vessels[index] = {
+      ...vessel,
+      name: vesselData.name ? vesselData.name.toUpperCase() : vessel.name,
+      type: vesselData.type || vessel.type,
+      status: status,
+      statusColor: statusColorMap[status] || vessel.statusColor,
+      location: vesselData.location !== undefined ? vesselData.location : vessel.location,
+      destination: vesselData.destination !== undefined ? vesselData.destination : vessel.destination,
+      eta: vesselData.eta !== undefined ? vesselData.eta : vessel.eta,
+      cargo: vesselData.cargo !== undefined ? vesselData.cargo : vessel.cargo,
+      update: 'Baru saja'
+    };
+
+    setStorageItem(KEYS.VESSELS, vessels);
+
+    // If status changed, write event log
+    if (prevStatus !== status) {
+      this.addLogEntry(
+        id,
+        vessels[index].name,
+        'Transisi Status',
+        status,
+        `Status armada berubah dari ${prevStatus} menjadi ${status}.`
+      );
+    } else {
+      this.addLogEntry(
+        id,
+        vessels[index].name,
+        'Pembaruan Data',
+        status,
+        `Data detail kapal berhasil diperbarui oleh Admin.`
+      );
+    }
+
+    return vessels[index];
+  },
+
   addLogEntry(
     vesselId: number,
     vesselName: string,

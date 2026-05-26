@@ -22,6 +22,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
     jenis_kendaraan: 'darat',
     jenis_pengiriman: 'biasa',
     status_pengiriman: 'diproses',
+    status_barang: 'aman',
+    status_transaksi: 'belum_bayar',
     deskripsi: ''
   });
 
@@ -54,6 +56,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
         jenis_kendaraan: editData.jenis_kendaraan || 'darat',
         jenis_pengiriman: editData.jenis_pengiriman || 'biasa',
         status_pengiriman: editData.status_pengiriman || 'diproses',
+        status_barang: editData.status_barang || 'aman',
+        status_transaksi: editData.status_transaksi || 'belum_bayar',
         deskripsi: editData.deskripsi || ''
       });
       setErrors({});
@@ -72,6 +76,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
         jenis_kendaraan: 'darat',
         jenis_pengiriman: 'biasa',
         status_pengiriman: 'diproses',
+        status_barang: 'aman',
+        status_transaksi: 'belum_bayar',
         deskripsi: ''
       });
       setErrors({});
@@ -393,6 +399,33 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
               <option value="sampai_tujuan" style={{ background: '#0D0618' }}>🏁 SAMPAI TUJUAN</option>
               <option value="pending" style={{ background: '#0D0618' }}>⏳ PENDING</option>
               <option value="selesai" style={{ background: '#0D0618' }}>✅ SELESAI</option>
+            </select>
+          </div>
+
+          {/* Status Kondisi Barang */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KONDISI BARANG *</span>
+            <select
+              value={form.status_barang}
+              onChange={(e) => setForm(prev => ({ ...prev, status_barang: e.target.value }))}
+              style={{ ...inputStyle, cursor: 'pointer' }}
+            >
+              <option value="aman" style={{ background: '#0D0618' }}>🛡️ AMAN (SEMPURNA)</option>
+              <option value="rusak" style={{ background: '#0D0618' }}>⚠️ RUSAK (DAMAGE)</option>
+              <option value="hilang" style={{ background: '#0D0618' }}>❌ HILANG (LOST)</option>
+            </select>
+          </div>
+
+          {/* Status Transaksi Pembayaran */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>STATUS PEMBAYARAN *</span>
+            <select
+              value={form.status_transaksi}
+              onChange={(e) => setForm(prev => ({ ...prev, status_transaksi: e.target.value }))}
+              style={{ ...inputStyle, cursor: 'pointer' }}
+            >
+              <option value="belum_bayar" style={{ background: '#0D0618' }}>⏳ UNPAID (BELUM LUNAS)</option>
+              <option value="lunas" style={{ background: '#0D0618' }}>💳 PAID (LUNAS)</option>
             </select>
           </div>
 

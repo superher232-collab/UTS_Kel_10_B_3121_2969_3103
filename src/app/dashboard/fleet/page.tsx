@@ -61,7 +61,7 @@ function FleetSkeleton() {
 }
 
 function FleetContent() {
-  const { role, armada, tambahKapal, hapusKapal, loading, errorSignal } = useDashboard();
+  const { role, armada, tambahKapal, hapusKapal, editKapal, loading, errorSignal } = useDashboard();
   const ships = armada && armada.length > 0 ? armada : [];
 
   // Localized filters
@@ -69,6 +69,43 @@ function FleetContent() {
   const [statusFilter, setStatusFilter] = useState('semua');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
+
+  // State tambah/edit kapal modal
+  const [showModal, setShowModal] = useState(false);
+  const [loadingTambah, setLoadingTambah] = useState(false);
+  const [loadingHapus, setLoadingHapus] = useState<any>(null);
+  const [editShip, setEditShip] = useState<any | null>(null);
+  
+  const [form, setForm] = useState({
+    name: '', type: 'Kapal Petikemas', status: 'DALAM PERJALANAN',
+    location: '', destination: '', eta: '', cargo: ''
+  });
+
+  const handleOpenTambahModal = () => {
+    setEditShip(null);
+    setForm({ name: '', type: 'Kapal Petikemas', status: 'DALAM PERJALANAN', location: '', destination: '', eta: '', cargo: '' });
+    setShowModal(true);
+  };
+
+  const handleOpenEditModal = (ship: any) => {
+    setEditShip(ship);
+    setForm({
+      name: ship.name || '',
+      type: ship.type || 'Kapal Petikemas',
+      status: ship.status || 'DALAM PERJALANAN',
+      location: ship.location || '',
+      destination: ship.destination || '',
+      eta: ship.eta || '',
+      cargo: ship.cargo || ''
+    });
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditShip(null);
+    setForm({ name: '', type: 'Kapal Petikemas', status: 'DALAM PERJALANAN', location: '', destination: '', eta: '', cargo: '' });
+  };
 
   // React to search query params from megamenu
   useEffect(() => {
@@ -88,16 +125,6 @@ function FleetContent() {
   const pelabuhan = ships.filter((s: any) => s.status?.toLowerCase().includes('pelabuhan')).length;
   const terlambat = ships.filter((s: any) => s.status?.toLowerCase().includes('terlambat')).length;
   const perawatan = ships.filter((s: any) => s.status?.toLowerCase().includes('pemeliharaan')).length;
-
-  // State tambah kapal modal
-  const [showModal, setShowModal] = useState(false);
-  const [loadingTambah, setLoadingTambah] = useState(false);
-  const [loadingHapus, setLoadingHapus] = useState<any>(null);
-  
-  const [form, setForm] = useState({
-    name: '', type: 'Kapal Petikemas', status: 'DALAM PERJALANAN',
-    location: '', destination: '', eta: '', cargo: ''
-  });
 
   // Filter lists based on Search Query & Status Dropdowns
   const filteredShips = ships.filter((ship: any) => {
@@ -139,16 +166,22 @@ function FleetContent() {
     }
 
     setLoadingTambah(true);
-    const result = await tambahKapal(form);
+    let result;
+    if (editShip) {
+      result = await editKapal(editShip.id, form);
+    } else {
+      result = await tambahKapal(form);
+    }
     setLoadingTambah(false);
 
     if (result.success) {
       setShowModal(false);
+      setEditShip(null);
       setForm({ name: '', type: 'Kapal Petikemas', status: 'DALAM PERJALANAN', location: '', destination: '', eta: '', cargo: '' });
       setSearchTerm('');
       setCurrentPage(1);
     } else {
-      alert('Gagal menambah kapal. Silakan coba lagi.');
+      alert(editShip ? 'Gagal memperbarui kapal. Silakan coba lagi.' : 'Gagal menambah kapal. Silakan coba lagi.');
     }
   };
 
@@ -228,7 +261,9 @@ function FleetContent() {
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(7, 2, 14, 0.8)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)' }}>
           <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.5)', borderRadius: '12px', padding: '32px', width: '90%', maxWidth: '480px', display: 'flex', flexDirection: 'column', gap: '16px', boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(168, 85, 247, 0.2)' }}>
-            <div style={{ fontSize: '14px', fontWeight: 'bold', letterSpacing: '2px', color: '#C084FC', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '10px' }}>REGISTRASI KAPAL BARU</div>
+            <div style={{ fontSize: '14px', fontWeight: 'bold', letterSpacing: '2px', color: '#C084FC', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '10px' }}>
+              {editShip ? `EDIT DATA KAPAL: ${editShip.name}` : 'REGISTRASI KAPAL BARU'}
+            </div>
 
             {[
               { label: 'Nama Kapal *', key: 'name', placeholder: 'KM NUSANTARA COMMANDER' },
@@ -266,7 +301,7 @@ function FleetContent() {
 
             <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
               <button
-                onClick={() => setShowModal(false)}
+                onClick={handleCloseModal}
                 style={{ flex: 1, background: 'transparent', border: '1px solid rgba(168,85,247,0.3)', color: '#8B7BA8', padding: '10px', borderRadius: '6px', cursor: 'pointer', fontSize: '11px', fontWeight: 'bold' }}
               >
                 Batal
@@ -276,7 +311,7 @@ function FleetContent() {
                 disabled={loadingTambah}
                 style={{ flex: 1, background: '#A855F7', border: 'none', color: 'white', padding: '10px', borderRadius: '6px', cursor: loadingTambah ? 'not-allowed' : 'pointer', fontSize: '11px', fontWeight: 'bold', opacity: loadingTambah ? 0.7 : 1, boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)' }}
               >
-                {loadingTambah ? 'Menyimpan...' : 'Daftarkan Kapal'}
+                {loadingTambah ? 'Menyimpan...' : (editShip ? 'Simpan Perubahan' : 'Daftarkan Kapal')}
               </button>
             </div>
           </div>
@@ -336,7 +371,7 @@ function FleetContent() {
         {/* Admin CRUD additions */}
         {role === 'Admin' && (
           <button
-            onClick={() => setShowModal(true)}
+            onClick={handleOpenTambahModal}
             disabled={!!errorSignal}
             style={{
               background: errorSignal ? 'rgba(255, 255, 255, 0.05)' : '#A855F7',
@@ -408,26 +443,48 @@ function FleetContent() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={getBadgeStyle(ship.status)}>{ship.status}</span>
                   {role === 'Admin' && (
-                    <button
-                      onClick={() => handleHapus(ship.id)}
-                      disabled={loadingHapus === ship.id || !!errorSignal}
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: (loadingHapus === ship.id || errorSignal) ? 'not-allowed' : 'pointer',
-                        padding: '4px',
-                        opacity: (loadingHapus === ship.id || errorSignal) ? 0.3 : 0.8,
-                        transition: 'opacity 0.2s'
-                      }}
-                      onMouseEnter={e => !errorSignal && (e.currentTarget.style.opacity = '1')}
-                      onMouseLeave={e => !errorSignal && (e.currentTarget.style.opacity = '0.8')}
-                      title="Hapus Kapal Dari Sistem"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                      </svg>
-                    </button>
+                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      <button
+                        onClick={() => handleOpenEditModal(ship)}
+                        disabled={!!errorSignal}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: errorSignal ? 'not-allowed' : 'pointer',
+                          padding: '4px',
+                          opacity: errorSignal ? 0.3 : 0.8,
+                          transition: 'opacity 0.2s'
+                        }}
+                        onMouseEnter={e => !errorSignal && (e.currentTarget.style.opacity = '1')}
+                        onMouseLeave={e => !errorSignal && (e.currentTarget.style.opacity = '0.8')}
+                        title="Edit Data Kapal"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C084FC" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => handleHapus(ship.id)}
+                        disabled={loadingHapus === ship.id || !!errorSignal}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: (loadingHapus === ship.id || errorSignal) ? 'not-allowed' : 'pointer',
+                          padding: '4px',
+                          opacity: (loadingHapus === ship.id || errorSignal) ? 0.3 : 0.8,
+                          transition: 'opacity 0.2s'
+                        }}
+                        onMouseEnter={e => !errorSignal && (e.currentTarget.style.opacity = '1')}
+                        onMouseLeave={e => !errorSignal && (e.currentTarget.style.opacity = '0.8')}
+                        title="Hapus Kapal Dari Sistem"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

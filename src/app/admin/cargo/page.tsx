@@ -1,10 +1,13 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { SearchBar } from '@/components/cargo/SearchBar';
 import { CargoTable } from '@/components/cargo/CargoTable';
 import { CargoForm } from '@/components/cargo/CargoForm';
 
 export default function AdminCargoPage() {
+  const router = useRouter();
+
   // Authorization & Identity State
   const [role, setRole] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('Tamu');
@@ -140,6 +143,7 @@ export default function AdminCargoPage() {
             : `Cargo baru berhasil didaftarkan dengan Resi ${json.data.no_resi}`,
           'success'
         );
+        router.refresh(); // Sync server components cache
         fetchShipments(); // Refresh list from database
         return true;
       } else {
@@ -165,6 +169,7 @@ export default function AdminCargoPage() {
       if (response.ok && json.status === 'success') {
         showToast(json.message || 'Cargo berhasil dihapus', 'success');
         
+        router.refresh(); // Sync server components cache
         // Adjust pagination offset if last item on current page was deleted
         if (shipments.length === 1 && filters.page > 1) {
           setFilters(prev => ({ ...prev, page: prev.page - 1 }));

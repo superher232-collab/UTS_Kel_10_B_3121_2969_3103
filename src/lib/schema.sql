@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS shipments (
   jenis_kendaraan VARCHAR(20) NOT NULL, -- 'darat', 'udara', 'laut'
   jenis_pengiriman VARCHAR(20) NOT NULL, -- 'biasa', 'cepat', 'vvip'
   status_pengiriman VARCHAR(50) DEFAULT 'diproses', -- 'diproses', 'dalam_pengiriman', 'sampai_tujuan', 'pending', 'selesai'
+  status_barang VARCHAR(50) DEFAULT 'aman', -- 'aman', 'rusak', 'hilang'
+  status_transaksi VARCHAR(50) DEFAULT 'belum_bayar', -- 'belum_bayar', 'lunas'
   deskripsi TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()

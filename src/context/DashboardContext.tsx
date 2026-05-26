@@ -35,6 +35,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         updateWeather,
         addVessel,
         deleteVessel,
+        editVessel,
         triggerVesselMutation,
         refreshData
     } = useVessels();
@@ -53,6 +54,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             updateCuaca: updateWeather, // Admin trigger weather status
             tambahKapal: addVessel,      // Admin CRUD: Add vessel
             hapusKapal: deleteVessel,    // Admin CRUD: Delete vessel
+            editKapal: editVessel,       // Admin CRUD: Edit vessel
             triggerVesselMutation,       // Simulate ship status/log mutations
             refreshData
         }}>

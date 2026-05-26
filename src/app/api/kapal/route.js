@@ -1,9 +1,7 @@
 import { sql } from '@vercel/postgres';
 import { NextResponse } from 'next/server';
 
-// ============================================================
-// GET — Ambil data armada berdasarkan role
-// ============================================================
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -90,9 +88,7 @@ export async function GET(request) {
   }
 }
 
-// ============================================================
-// POST — Tambah kapal baru (Admin only)
-// ============================================================
+
 export async function POST(request) {
   try {
     const { searchParams } = new URL(request.url);

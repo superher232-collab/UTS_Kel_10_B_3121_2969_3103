@@ -1,5 +1,6 @@
 import { sql } from '@vercel/postgres';
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 
 // ============================================================
 // PUT — Update an Existing Cargo Shipment Record
@@ -24,6 +25,8 @@ export async function PUT(
       jenis_kendaraan,
       jenis_pengiriman,
       status_pengiriman,
+      status_barang,
+      status_transaksi,
       deskripsi
     } = body;
 
@@ -55,11 +58,16 @@ export async function PUT(
         jenis_kendaraan = ${jenis_kendaraan},
         jenis_pengiriman = ${jenis_pengiriman},
         status_pengiriman = ${status_pengiriman},
+        status_barang = ${status_barang || 'aman'},
+        status_transaksi = ${status_transaksi || 'belum_bayar'},
         deskripsi = ${deskripsi || null},
         updated_at = NOW()
       WHERE id = ${id}
       RETURNING *;
     `;
+
+    // Revalidate Next.js cache for the administration page
+    revalidatePath('/admin/cargo');
 
     return NextResponse.json({
       status: 'success',

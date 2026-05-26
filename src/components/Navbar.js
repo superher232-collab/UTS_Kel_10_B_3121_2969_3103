@@ -37,10 +37,10 @@ export default function Navbar() {
           <Image src="/logo.png" alt="Logo" width={40} height={40} style={{ flexShrink: 0 }} />
           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
             <span style={{ fontWeight: '800', color: 'white', fontSize: '1.1rem', letterSpacing: '1px' }}>
-              KOMANDO SIWeb
+              PRIMELOG
             </span>
             <span style={{ fontSize: '0.65rem', color: '#a855f7', textTransform: 'uppercase' }}>
-              Monitoring Armada Dunia
+              Fleet Command System
             </span>
           </div>
         </div>

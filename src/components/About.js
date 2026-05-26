@@ -3,7 +3,7 @@ export default function About() {
     <section className="card about-card" id="tentang">
       <h2 className="about-title">Tentang Sistem</h2>
       <p className="about-text">
-        Komando SIWeb adalah platform terpadu yang dirancang untuk memantau,
+        PrimeLog adalah platform terpadu yang dirancang untuk memantau,
         mengelola, dan mengoptimalkan operasional armada kapal secara real-time
         di seluruh dunia. Sistem kami menyediakan visibilitas penuh terhadap
         seluruh aspek operasional, mulai dari pelacakan lokasi, konsumsi bahan

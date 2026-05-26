@@ -44,14 +44,14 @@ export default function Login() {
           letterSpacing: '2px',
           margin: '0 0 8px 0',
           fontWeight: '600'
-        }}>KOMANDO SIWeb</h1>
+        }}>PRIMELOG</h1>
         <p style={{
           fontFamily: 'var(--font-body)',
           color: 'var(--purple-logo, #C084FC)',
           fontSize: '14px',
           margin: 0,
           letterSpacing: '1px'
-        }}>Monitoring Armada Dunia v2.0</p>
+        }}>Fleet Command System v2.0</p>
       </div>
 
       {/* Login Card */}
@@ -162,6 +162,7 @@ export default function Login() {
                 id="usernameInput"
                 type="text" 
                 placeholder="Masukkan nama pengguna" 
+                defaultValue="primelog"
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -203,6 +204,7 @@ export default function Login() {
               <input 
                 type="password" 
                 placeholder="Masukkan kata sandi" 
+                defaultValue="primelog"
                 style={{
                   background: 'transparent',
                   border: 'none',

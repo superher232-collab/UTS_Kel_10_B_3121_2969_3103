@@ -14,9 +14,9 @@ const mochiyPopOne = Mochiy_Pop_One({
 });
 
 export const metadata = {
-  title: "KOMANDO SIWeb - Monitoring Armada Dunia",
+  title: "PrimeLog - Fleet Command System",
   description:
-    "Komando SIWeb adalah platform terpadu yang dirancang untuk memantau, mengelola, dan mengoptimalkan operasional armada kapal secara real-time di seluruh dunia.",
+    "PrimeLog adalah platform terpadu yang dirancang untuk memantau, mengelola, dan mengoptimalkan operasional armada kapal secara real-time di seluruh dunia.",
 };
 
 export default function RootLayout({ children }) {

@@ -213,3 +213,88 @@ export async function DELETE(request) {
     );
   }
 }
+
+// ============================================================
+// PUT — Update kapal by ID (Admin only)
+// ============================================================
+export async function PUT(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id       = searchParams.get('id');
+    const username = searchParams.get('username');
+
+    if (!username || username.trim() === '') {
+      return NextResponse.json({ error: 'Username diperlukan' }, { status: 400 });
+    }
+
+    const userCheck = await sql`
+      SELECT role FROM tb_akun WHERE username = ${username} LIMIT 1;
+    `;
+
+    if (userCheck.rowCount === 0) {
+      return NextResponse.json({ error: 'Akun tidak ditemukan' }, { status: 404 });
+    }
+
+    if (userCheck.rows[0].role !== 'Admin') {
+      return NextResponse.json({ error: 'Hanya Admin yang bisa memperbarui kapal' }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const finalId = id || body.id;
+
+    if (!finalId) {
+      return NextResponse.json({ error: 'ID kapal diperlukan' }, { status: 400 });
+    }
+
+    const { name, type, status, location, destination, eta, cargo } = body;
+
+    if (!name || !type || !status) {
+      return NextResponse.json(
+        { error: 'Field name, type, dan status wajib diisi' },
+        { status: 400 }
+      );
+    }
+
+    const kapalCheck = await sql`
+      SELECT id_kapal FROM tb_kapal WHERE id_kapal = ${finalId} LIMIT 1;
+    `;
+
+    if (kapalCheck.rowCount === 0) {
+      return NextResponse.json({ error: 'Kapal tidak ditemukan' }, { status: 404 });
+    }
+
+    const result = await sql`
+      UPDATE tb_kapal 
+      SET 
+        nama_kapal        = ${name},
+        jenis_kapal       = ${type},
+        status_pergerakan = ${status},
+        lokasi_terkini    = ${location    ?? null},
+        tujuan            = ${destination ?? null},
+        eta               = ${eta         ?? null},
+        cargo             = ${cargo       ?? null}
+      WHERE id_kapal = ${finalId}
+      RETURNING 
+        id_kapal          AS id,
+        nama_kapal        AS name,
+        jenis_kapal       AS type,
+        status_pergerakan AS status,
+        lokasi_terkini    AS location,
+        tujuan            AS destination,
+        eta,
+        cargo;
+    `;
+
+    return NextResponse.json({
+      status: 'success',
+      kapal: result.rows[0]
+    }, { status: 200 });
+
+  } catch (error) {
+    console.error('[PUT /api/kapal]', error);
+    return NextResponse.json(
+      { error: 'Gagal memperbarui kapal', detail: error.message },
+      { status: 500 }
+    );
+  }
+}

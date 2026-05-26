@@ -30,8 +30,57 @@ export function useVessels() {
         throw new Error('Sinyal Terputus: Gagal menghubungkan ke satelit monitoring PrimeLog.');
       }
 
-      // Successful fetch
-      const currentVessels = mockDb.getVessels();
+      // Fetch from PostgreSQL database via API
+      let currentVessels: Vessel[] = [];
+      const savedUser = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
+      
+      if (savedUser && savedUser !== 'Tamu') {
+        const res = await fetch(`/api/kapal?username=${encodeURIComponent(savedUser)}`);
+        if (res.ok) {
+          const data = await res.json();
+          const dbVessels = data.armada || [];
+          
+          // Get simulated telemetry cache from localStorage to keep radar movements smooth
+          const localCacheStr = typeof window !== 'undefined' ? localStorage.getItem('primelog_vessels_coords') : null;
+          let localCoords: Record<number, { lat: number; lng: number }> = {};
+          if (localCacheStr) {
+            try {
+              localCoords = JSON.parse(localCacheStr);
+            } catch (e) {}
+          }
+          
+          currentVessels = dbVessels.map((v: any) => {
+            const cache = localCoords[v.id];
+            // Format status dynamically if color mapping changes
+            const statusColorMap = {
+              'DALAM PERJALANAN': '#22C55E',
+              'DI PELABUHAN': '#3B82F6',
+              'TERLAMBAT': '#F59E0B',
+              'PEMELIHARAAN': '#EF4444'
+            };
+            const currentStatus = (v.status || 'DALAM PERJALANAN') as Vessel['status'];
+            return {
+              id: v.id,
+              name: v.name || '',
+              type: v.type || 'Kapal Kargo',
+              status: currentStatus,
+              statusColor: statusColorMap[currentStatus] || '#22C55E',
+              location: v.location || '',
+              destination: v.destination || '',
+              eta: v.eta || '',
+              cargo: v.cargo || '',
+              latitude: cache ? cache.lat : (v.latitude || 400 + Math.round(Math.random() * 200)),
+              longitude: cache ? cache.lng : (v.longitude || 200 + Math.round(Math.random() * 100)),
+              update: 'Baru saja'
+            };
+          });
+        } else {
+          currentVessels = mockDb.getVessels();
+        }
+      } else {
+        currentVessels = mockDb.getVessels();
+      }
+
       const currentLogs = mockDb.getLogs();
       const currentWeather = mockDb.getWeather();
 
@@ -69,6 +118,27 @@ export function useVessels() {
 
   const addVessel = useCallback(async (vesselData: Partial<Vessel>) => {
     try {
+      const savedUser = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
+      if (savedUser && savedUser !== 'Tamu') {
+        const res = await fetch(`/api/kapal?username=${encodeURIComponent(savedUser)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(vesselData)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          mockDb.addLogEntry(
+            data.kapal.id,
+            data.kapal.name,
+            'Registrasi Armada',
+            data.kapal.status,
+            `Kapal baru berhasil diregistrasikan ke database Neon PostgreSQL.`
+          );
+          await fetchData(true);
+          return { success: true, vessel: data.kapal };
+        }
+      }
+      // Fallback to local
       const added = mockDb.addVessel(vesselData);
       await fetchData(true);
       return { success: true, vessel: added };
@@ -80,6 +150,25 @@ export function useVessels() {
 
   const deleteVessel = useCallback(async (id: number) => {
     try {
+      const savedUser = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
+      if (savedUser && savedUser !== 'Tamu') {
+        const res = await fetch(`/api/kapal?username=${encodeURIComponent(savedUser)}&id=${id}`, {
+          method: 'DELETE'
+        });
+        if (res.ok) {
+          const data = await res.json();
+          mockDb.addLogEntry(
+            id,
+            data.deleted?.nama_kapal || 'KAPAL',
+            'Penghapusan Armada',
+            'OFFLINE',
+            `Kapal telah dinonaktifkan dari database Neon PostgreSQL.`
+          );
+          await fetchData(true);
+          return { success: true };
+        }
+      }
+      // Fallback
       const success = mockDb.deleteVessel(id);
       await fetchData(true);
       return { success: success };
@@ -91,6 +180,27 @@ export function useVessels() {
 
   const editVessel = useCallback(async (id: number, vesselData: Partial<Vessel>) => {
     try {
+      const savedUser = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
+      if (savedUser && savedUser !== 'Tamu') {
+        const res = await fetch(`/api/kapal?username=${encodeURIComponent(savedUser)}&id=${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(vesselData)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          mockDb.addLogEntry(
+            id,
+            data.kapal.name,
+            'Pembaruan Data',
+            data.kapal.status,
+            `Data detail kapal berhasil diperbarui di database Neon PostgreSQL oleh Admin.`
+          );
+          await fetchData(true);
+          return { success: true, vessel: data.kapal };
+        }
+      }
+      // Fallback
       const updated = mockDb.updateVessel(id, vesselData);
       await fetchData(true);
       return { success: !!updated, vessel: updated };
@@ -127,12 +237,11 @@ export function useVessels() {
     const streamInterval = setInterval(() => {
       if (typeof window === 'undefined') return;
 
-      const currentVessels = mockDb.getVessels();
-      if (currentVessels.length === 0) return;
+      if (vessels.length === 0) return;
 
-      // Select 1 or 2 random vessels to update their coordinates/positions or status
-      const randomIndex1 = Math.floor(Math.random() * currentVessels.length);
-      const vesselToUpdate = currentVessels[randomIndex1];
+      // Select 1 random vessel to update its coordinates/positions or status
+      const randomIndex1 = Math.floor(Math.random() * vessels.length);
+      const vesselToUpdate = vessels[randomIndex1];
 
       // Add a slight movement to its coordinates
       let newLat = vesselToUpdate.latitude;
@@ -166,18 +275,16 @@ export function useVessels() {
         noteText = noteMap[newStatus];
       }
 
-      // Save to mockDb
-      const updatedList = [...currentVessels];
-      updatedList[randomIndex1] = {
-        ...vesselToUpdate,
-        latitude: newLat,
-        longitude: newLng,
-        status: newStatus,
-        update: 'Baru saja'
-      };
-
-      // Set directly to storage to update mock DB
-      localStorage.setItem('primelog_vessels', JSON.stringify(updatedList));
+      // Save coords cache in LocalStorage to keep fluid coordinates
+      const localCacheStr = localStorage.getItem('primelog_vessels_coords');
+      let localCoords: Record<number, { lat: number; lng: number }> = {};
+      if (localCacheStr) {
+        try {
+          localCoords = JSON.parse(localCacheStr);
+        } catch (e) {}
+      }
+      localCoords[vesselToUpdate.id] = { lat: newLat, lng: newLng };
+      localStorage.setItem('primelog_vessels_coords', JSON.stringify(localCoords));
 
       // Add log entry if status changed or just randomly log coordinates
       if (newStatus !== vesselToUpdate.status) {
@@ -203,7 +310,7 @@ export function useVessels() {
     }, 30000); // Trigger streaming simulator every 30 seconds
 
     return () => clearInterval(streamInterval);
-  }, [fetchData]);
+  }, [fetchData, vessels]);
 
   return {
     vessels,

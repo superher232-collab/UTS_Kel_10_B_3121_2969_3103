@@ -1,29 +1,29 @@
+// middleware.ts
 import { NextResponse } from 'next/server'
 import { auth } from './auth'
 
 export default auth((req) => {
   const session = req.auth
-  const isLoggedIn = !!session?.user
   const { pathname } = req.nextUrl
 
-  // 1. Cek protected routes (login required)
+  // Cek login untuk route protected
   const isProtected = pathname.startsWith('/dashboard') || pathname.startsWith('/admin')
-  if (isProtected && !isLoggedIn) {
-    return NextResponse.redirect(new URL('/login?callbackUrl=' + encodeURIComponent(pathname), req.nextUrl))
+  if (isProtected && !session?.user) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
 
-  // 2. ✅ TAMBAHAN: Cek admin routes (role required)
-  const isAdminRoute = pathname.startsWith('/admin')
-  if (isAdminRoute && session?.user?.role !== 'ADMIN') {
-    // Redirect ke dashboard atau halaman unauthorized
-    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
-    // Atau: return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  // Cek role ADMIN khusus untuk route /admin/*
+  if (pathname.startsWith('/admin')) {
+    // ✅ Type assertion biar TypeScript nggak error
+    const user = session?.user as { role?: string }
+    if (user?.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+    }
   }
 
   return NextResponse.next()
 })
 
 export const config = {
-  // ✅ Pastikan matcher mencakup root path juga
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/dashboard', '/admin']
+  matcher: ['/dashboard/:path*', '/admin/:path*']
 }

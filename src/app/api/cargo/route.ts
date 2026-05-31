@@ -1,27 +1,45 @@
 import { sql } from '@vercel/postgres'
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth' // ✅ Import auth dari config NextAuth kamu
+import { auth } from '@/auth'
+
+// ============================================================
+// TYPE EXTENSION: Tambahkan role ke session user
+// ============================================================
+type SessionUser = {
+  id: string
+  email?: string | null
+  name?: string | null
+  role?: string | null
+}
 
 // ============================================================
 // HELPER: Cek Auth & Role Admin
 // ============================================================
-async function requireAdmin() {
+async function requireAdmin(): Promise<{ success: true; user: SessionUser } | { success: false; response: NextResponse }> {
   const session = await auth()
   
   if (!session?.user) {
-    return { error: NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 }) }
+    return { 
+      success: false, 
+      response: NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 }) 
+    }
   }
+  
+  const user = session.user as SessionUser
   
   // ✅ Pastikan role-nya ADMIN (case-sensitive!)
-  if (session.user.role !== 'ADMIN') {
-    return { error: NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 }) }
+  if (user.role !== 'ADMIN') {
+    return { 
+      success: false, 
+      response: NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 }) 
+    }
   }
   
-  return { session }
+  return { success: true, user }
 }
 
 // ============================================================
-// DATABASE INITIALIZATION (tetap sama)
+// DATABASE INITIALIZATION
 // ============================================================
 async function ensureTableExists() {
   try {
@@ -57,15 +75,11 @@ async function ensureTableExists() {
 }
 
 // ============================================================
-// GET — Retrieve Cargo (Public Read, Admin Write)
+// GET — Retrieve Cargo (Public Read)
 // ============================================================
 export async function GET(request: Request) {
   try {
     await ensureTableExists();
-
-    // ✅ Opsional: Kalau mau GET juga dibatasi admin, uncomment baris bawah:
-    // const authCheck = await requireAdmin();
-    // if (authCheck.error) return authCheck.error;
 
     const { searchParams } = new URL(request.url);
     const searchQuery = searchParams.get('q') || '';
@@ -77,7 +91,7 @@ export async function GET(request: Request) {
 
     let sqlQuery = `SELECT * FROM shipments WHERE 1=1`;
     let countQuery = `SELECT COUNT(*) FROM shipments WHERE 1=1`;
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     let paramIndex = 1;
 
     if (searchQuery.trim() !== '') {
@@ -102,7 +116,7 @@ export async function GET(request: Request) {
     }
 
     const totalResult = await sql.query(countQuery, params);
-    const totalCount = parseInt(totalResult.rows[0].count, 10);
+    const totalCount = parseInt(totalResult.rows[0]?.count ?? '0', 10);
 
     sqlQuery += ` ORDER BY id DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
     params.push(limit, offset);
@@ -136,7 +150,7 @@ export async function POST(request: Request) {
   try {
     // ✅ WAJIB: Cek admin sebelum insert data
     const authCheck = await requireAdmin();
-    if (authCheck.error) return authCheck.error;
+    if (!authCheck.success) return authCheck.response;
 
     await ensureTableExists();
 
@@ -159,6 +173,7 @@ export async function POST(request: Request) {
       deskripsi
     } = body;
 
+    // Validasi required fields
     if (!tanggal_kirim || !nama_pengirim || !nama_penerima || !jenis_kendaraan || !jenis_pengiriman) {
       return NextResponse.json(
         { error: 'Field tanggal_kirim, nama_pengirim, nama_penerima, jenis_kendaraan, dan jenis_pengiriman wajib diisi' },
@@ -166,16 +181,19 @@ export async function POST(request: Request) {
       );
     }
 
+    // Generate unique Resi Code
     const dateObj = new Date(tanggal_kirim);
     const yyyy = dateObj.getFullYear();
     const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
     const dd = String(dateObj.getDate()).padStart(2, '0');
     const dateStr = `${yyyy}${mm}${dd}`;
 
-    const countCheck = await sql`
-      SELECT COUNT(*) FROM shipments WHERE DATE(tanggal_kirim) = ${tanggal_kirim};
-    `;
-    const sequenceNum = parseInt(countCheck.rows[0].count, 10) + 1;
+    // ✅ Gunakan parameterized query untuk count
+    const countResult = await sql.query(
+      `SELECT COUNT(*) FROM shipments WHERE tanggal_kirim = $1`,
+      [tanggal_kirim]
+    );
+    const sequenceNum = parseInt(countResult.rows[0]?.count ?? '0', 10) + 1;
     const randomSuffix = String(Math.floor(100 + Math.random() * 900));
     const no_resi = `RESI-${dateStr}-${String(sequenceNum).padStart(3, '0')}${randomSuffix}`;
 
@@ -183,22 +201,34 @@ export async function POST(request: Request) {
     const finalStatusBarang = status_barang || 'aman';
     const finalStatusTransaksi = status_transaksi || 'belum_bayar';
 
-    const result = await sql`
-      INSERT INTO shipments (
+    // ✅ Gunakan parameterized query untuk INSERT
+    const result = await sql.query(
+      `INSERT INTO shipments (
         no_resi, tanggal_kirim, nama_pengirim, nama_penerima,
         no_telepon, kota_asal, kota_tujuan, jenis_barang,
         berat_kg, harga_tarif, jenis_kendaraan, jenis_pengiriman,
         status_pengiriman, status_barang, status_transaksi, deskripsi
-      )
-      VALUES (
-        ${no_resi}, ${tanggal_kirim}, ${nama_pengirim}, ${nama_penerima},
-        ${no_telepon || null}, ${kota_asal || null}, ${kota_tujuan || null}, ${jenis_barang || null},
-        ${berat_kg ? parseFloat(berat_kg) : 0}, ${harga_tarif ? parseFloat(harga_tarif) : 0},
-        ${jenis_kendaraan}, ${jenis_pengiriman}, ${finalStatus},
-        ${finalStatusBarang}, ${finalStatusTransaksi}, ${deskripsi || null}
-      )
-      RETURNING *;
-    `;
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+      RETURNING *`,
+      [
+        no_resi,
+        tanggal_kirim,
+        nama_pengirim,
+        nama_penerima,
+        no_telepon || null,
+        kota_asal || null,
+        kota_tujuan || null,
+        jenis_barang || null,
+        berat_kg ? parseFloat(berat_kg) : 0,
+        harga_tarif ? parseFloat(harga_tarif) : 0,
+        jenis_kendaraan,
+        jenis_pengiriman,
+        finalStatus,
+        finalStatusBarang,
+        finalStatusTransaksi,
+        deskripsi || null
+      ]
+    );
 
     return NextResponse.json({
       status: 'success',

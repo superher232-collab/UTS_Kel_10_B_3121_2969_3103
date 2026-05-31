@@ -1,10 +1,10 @@
+// src/auth.ts
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/db'
 import bcrypt from 'bcryptjs'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  // ✅ Gunakan AUTH_SECRET (NextAuth v5 standard)
   secret: process.env.AUTH_SECRET,
   
   providers: [
@@ -26,31 +26,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const isPasswordMatch = await bcrypt.compare(password, user.password)
         if (!isPasswordMatch) return null
 
+        // ✅ Return user dengan role (pakai as any biar TypeScript nggak error)
         return {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role // ✅ Pastikan enum di DB: 'ADMIN' atau 'CUSTOMER'
-        }
+          role: user.role
+        } as any
       }
     })
   ],
 
   callbacks: {
-    // ✅ Simpan role & id ke JWT token
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.role = user.role
+        // ✅ Casting ke any biar bisa akses role
+        const u = user as any
+        token.id = u.id
+        token.role = u.role
       }
       return token
     },
 
-    // ✅ Restore role & id dari token ke session
     async session({ session, token }) {
-      if (session.user && token.id && token.role) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
+      if (session.user) {
+        // ✅ Casting ke any biar bisa assign role
+        const s = session.user as any
+        const t = token as any
+        s.id = t.id
+        s.role = t.role
       }
       return session
     }
@@ -61,6 +65,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   session: {
-    strategy: 'jwt' // ✅ Wajib untuk credentials provider
+    strategy: 'jwt'
   }
 })

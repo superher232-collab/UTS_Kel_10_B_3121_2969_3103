@@ -6,11 +6,12 @@ import { SearchBar } from './SearchBar'
 import { CargoTable } from './CargoTable'
 import { CargoForm } from './CargoForm'
 import { createShipment, updateShipment, deleteShipment, cancelShipment } from '@/lib/actions'
+import { CargoShipment, VehicleOption } from '../../app/dashboard/cargo/page'
 
 interface CargoDashboardClientProps {
   role: 'ADMIN' | 'CUSTOMER'
-  initialShipments: any[]
-  ships: any[]
+  initialShipments: CargoShipment[]
+  ships: VehicleOption[]
   stats: {
     total: number
     darat: number
@@ -32,7 +33,7 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
   const searchParams = useSearchParams()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editItem, setEditItem] = useState<any | null>(null)
+  const [editItem, setEditItem] = useState<CargoShipment | null>(null)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -70,26 +71,26 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
   }
 
   // Handler for creating/updating cargo
-  const handleSaveCargo = async (payload: any): Promise<boolean> => {
+  const handleSaveCargo = async (payload: Partial<CargoShipment>): Promise<boolean> => {
     setLoading(true)
     try {
       const formData = new FormData()
-      formData.append('senderName', payload.nama_pengirim)
-      formData.append('receiverName', payload.nama_penerima)
-      formData.append('receiverTelp', payload.no_telepon)
-      formData.append('origin', payload.kota_asal)
-      formData.append('destination', payload.kota_tujuan)
-      formData.append('itemName', payload.jenis_barang)
-      formData.append('weight', String(payload.berat_kg))
-      formData.append('tariff', String(payload.harga_tarif))
-      formData.append('shippingType', payload.jenis_kendaraan.toUpperCase())
-      formData.append('shipmentDate', payload.tanggal_kirim)
+      formData.append('senderName', payload.nama_pengirim || '')
+      formData.append('receiverName', payload.nama_penerima || '')
+      formData.append('receiverTelp', payload.no_telepon || '')
+      formData.append('origin', payload.kota_asal || '')
+      formData.append('destination', payload.kota_tujuan || '')
+      formData.append('itemName', payload.jenis_barang || '')
+      formData.append('weight', String(payload.berat_kg || '0'))
+      formData.append('tariff', String(payload.harga_tarif || '0'))
+      formData.append('shippingType', (payload.jenis_kendaraan || 'laut').toUpperCase())
+      formData.append('shipmentDate', payload.tanggal_kirim || '')
       formData.append('vehicleId', payload.vehicleId || '')
       formData.append('notes', payload.deskripsi || '')
 
       let result
       if (editItem) {
-        formData.append('status', payload.status_pengiriman.toUpperCase())
+        formData.append('status', (payload.status_pengiriman || 'diproses').toUpperCase())
         result = await updateShipment(editItem.id, null, formData)
       } else {
         result = await createShipment(null, formData)
@@ -112,7 +113,7 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
         }
         return false
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
       // Raise DB failures to system level error boundary
       showToast('Koneksi database terputus. Silakan coba beberapa saat lagi.', 'error')
@@ -123,9 +124,9 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
   }
 
   // Handler for deleting cargo
-  const handleDeleteCargo = async (id: any): Promise<boolean> => {
+  const handleDeleteCargo = async (id: string): Promise<boolean> => {
     try {
-      const result = await deleteShipment(String(id))
+      const result = await deleteShipment(id)
       if (result.success) {
         showToast(result.message || 'Cargo berhasil dihapus.', 'success')
         router.refresh()
@@ -134,7 +135,7 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
         showToast(result.message || 'Gagal menghapus kargo.', 'error')
         return false
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e)
       showToast('Terjadi kegagalan sistem saat menghapus cargo.', 'error')
       return false
@@ -153,7 +154,7 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
         showToast(result.message || 'Gagal membatalkan kargo.', 'error')
         return false
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e)
       showToast('Terjadi kegagalan sistem saat membatalkan cargo.', 'error')
       return false

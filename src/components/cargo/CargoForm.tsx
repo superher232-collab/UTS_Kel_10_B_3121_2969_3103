@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { CargoShipment } from '../../app/dashboard/cargo/page'
 
 interface Ship {
   id: string;
@@ -13,8 +14,8 @@ interface Ship {
 interface CargoFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => Promise<boolean>;
-  editData?: any | null;
+  onSubmit: (data: Partial<CargoShipment>) => Promise<boolean>;
+  editData?: CargoShipment | null;
   ships?: Ship[];
   role: 'ADMIN' | 'CUSTOMER';
 }

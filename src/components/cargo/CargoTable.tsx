@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from 'react';
+import { CargoShipment } from '../../app/dashboard/cargo/page'
 
 interface CargoTableProps {
-  data: any[];
+  data: CargoShipment[];
   loading: boolean;
   pagination: {
     total: number;
@@ -11,14 +12,14 @@ interface CargoTableProps {
     totalPages: number;
   };
   onPageChange: (newPage: number) => void;
-  onEdit: (cargo: any) => void;
-  onDelete: (id: any) => Promise<boolean>;
+  onEdit: (cargo: CargoShipment) => void;
+  onDelete: (id: string) => Promise<boolean>;
   onCancel: (id: string, reason: string) => Promise<boolean>;
   role: 'ADMIN' | 'CUSTOMER';
 }
 
 export function CargoTable({ data, loading, pagination, onPageChange, onEdit, onDelete, onCancel, role }: CargoTableProps) {
-  const [deleteConfirmId, setDeleteConfirmId] = useState<any | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState('');

@@ -1,7 +1,12 @@
+// src/app/api/cargo/route.ts
 import { sql } from '@vercel/postgres'
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
+// ============================================================
+// DATABASE INITIALIZATION
+// Pastikan tabel shipments ada sebelum query
+// ============================================================
 async function ensureTableExists() {
   try {
     await sql`
@@ -35,6 +40,9 @@ async function ensureTableExists() {
   }
 }
 
+// ============================================================
+// GET — Retrieve Cargo (Public Read)
+// ============================================================
 export async function GET(request: Request) {
   try {
     await ensureTableExists();
@@ -52,6 +60,7 @@ export async function GET(request: Request) {
     const params: (string | number)[] = [];
     let paramIndex = 1;
 
+    // Search filter (ILIKE untuk case-insensitive)
     if (searchQuery.trim() !== '') {
       sqlQuery += ` AND (no_resi ILIKE $${paramIndex} OR nama_pengirim ILIKE $${paramIndex} OR nama_penerima ILIKE $${paramIndex} OR jenis_barang ILIKE $${paramIndex})`;
       countQuery += ` AND (no_resi ILIKE $${paramIndex} OR nama_pengirim ILIKE $${paramIndex} OR nama_penerima ILIKE $${paramIndex} OR jenis_barang ILIKE $${paramIndex})`;
@@ -59,6 +68,7 @@ export async function GET(request: Request) {
       paramIndex++;
     }
 
+    // Status filter
     if (statusFilter !== 'all') {
       sqlQuery += ` AND status_pengiriman = $${paramIndex}`;
       countQuery += ` AND status_pengiriman = $${paramIndex}`;
@@ -66,6 +76,7 @@ export async function GET(request: Request) {
       paramIndex++;
     }
 
+    // Mode/Vehicle filter
     if (modeFilter !== 'all') {
       sqlQuery += ` AND jenis_kendaraan = $${paramIndex}`;
       countQuery += ` AND jenis_kendaraan = $${paramIndex}`;
@@ -73,9 +84,11 @@ export async function GET(request: Request) {
       paramIndex++;
     }
 
+    // Get total count for pagination
     const totalResult = await sql.query(countQuery, params);
     const totalCount = parseInt(totalResult.rows[0]?.count ?? '0', 10);
 
+    // Add pagination
     sqlQuery += ` ORDER BY id DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
     params.push(limit, offset);
 
@@ -101,16 +114,20 @@ export async function GET(request: Request) {
   }
 }
 
+// ============================================================
+// POST — Create Cargo (ADMIN ONLY)
+// ============================================================
 export async function POST(request: Request) {
   try {
-    const session: any = await auth()
+    // ✅ Auth check - pakai 'as any' biar TypeScript nggak error soal role
+    const session: any = await auth();
     
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 });
     }
     
     if (session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 })
+      return NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
     }
 
     await ensureTableExists();
@@ -134,6 +151,7 @@ export async function POST(request: Request) {
       deskripsi
     } = body;
 
+    // Validasi required fields
     if (!tanggal_kirim || !nama_pengirim || !nama_penerima || !jenis_kendaraan || !jenis_pengiriman) {
       return NextResponse.json(
         { error: 'Field tanggal_kirim, nama_pengirim, nama_penerima, jenis_kendaraan, dan jenis_pengiriman wajib diisi' },
@@ -141,7 +159,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Generate unique Resi Code
+    // Generate unique Resi Code: RESI-YYYYMMDD-XXX-RANDOM
     const dateObj = new Date(tanggal_kirim);
     const yyyy = dateObj.getFullYear();
     const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -156,11 +174,12 @@ export async function POST(request: Request) {
     const randomSuffix = String(Math.floor(100 + Math.random() * 900));
     const no_resi = `RESI-${dateStr}-${String(sequenceNum).padStart(3, '0')}${randomSuffix}`;
 
+    // Default values
     const finalStatus = status_pengiriman || 'diproses';
     const finalStatusBarang = status_barang || 'aman';
     const finalStatusTransaksi = status_transaksi || 'belum_bayar';
 
-    // Insert dengan parameterized query
+    // Insert dengan parameterized query (anti SQL injection)
     const result = await sql.query(
       `INSERT INTO shipments (
         no_resi, tanggal_kirim, nama_pengirim, nama_penerima,

@@ -2,9 +2,6 @@ import { sql } from '@vercel/postgres'
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
-// ============================================================
-// DATABASE INITIALIZATION
-// ============================================================
 async function ensureTableExists() {
   try {
     await sql`
@@ -38,9 +35,6 @@ async function ensureTableExists() {
   }
 }
 
-// ============================================================
-// GET — Retrieve Cargo (Public Read)
-// ============================================================
 export async function GET(request: Request) {
   try {
     await ensureTableExists();
@@ -107,12 +101,8 @@ export async function GET(request: Request) {
   }
 }
 
-// ============================================================
-// POST — Create Cargo (ADMIN ONLY) - SIMPLE VERSION
-// ============================================================
 export async function POST(request: Request) {
   try {
-    // ✅ Cek auth simpel: langsung casting ke any biar TypeScript nggak error
     const session: any = await auth()
     
     if (!session?.user) {

@@ -1,9 +1,27 @@
-import { sql } from '@vercel/postgres';
-import { NextResponse } from 'next/server';
+import { sql } from '@vercel/postgres'
+import { NextResponse } from 'next/server'
+import { auth } from '@/auth' // ✅ Import auth dari config NextAuth kamu
 
 // ============================================================
-// DATABASE INITIALIZATION HELPER
-// Ensures the `shipments` table exists before executing operations
+// HELPER: Cek Auth & Role Admin
+// ============================================================
+async function requireAdmin() {
+  const session = await auth()
+  
+  if (!session?.user) {
+    return { error: NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 }) }
+  }
+  
+  // ✅ Pastikan role-nya ADMIN (case-sensitive!)
+  if (session.user.role !== 'ADMIN') {
+    return { error: NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 }) }
+  }
+  
+  return { session }
+}
+
+// ============================================================
+// DATABASE INITIALIZATION (tetap sama)
 // ============================================================
 async function ensureTableExists() {
   try {
@@ -20,18 +38,16 @@ async function ensureTableExists() {
         jenis_barang VARCHAR(100),
         berat_kg DECIMAL(10,2),
         harga_tarif DECIMAL(15,2),
-        jenis_kendaraan VARCHAR(20) NOT NULL, -- 'darat', 'udara', 'laut'
-        jenis_pengiriman VARCHAR(20) NOT NULL, -- 'biasa', 'cepat', 'vvip'
-        status_pengiriman VARCHAR(50) DEFAULT 'diproses', -- 'diproses', 'dalam_pengiriman', 'sampai_tujuan', 'pending', 'selesai'
-        status_barang VARCHAR(50) DEFAULT 'aman', -- 'aman', 'rusak', 'hilang'
-        status_transaksi VARCHAR(50) DEFAULT 'belum_bayar', -- 'belum_bayar', 'lunas'
+        jenis_kendaraan VARCHAR(20) NOT NULL,
+        jenis_pengiriman VARCHAR(20) NOT NULL,
+        status_pengiriman VARCHAR(50) DEFAULT 'diproses',
+        status_barang VARCHAR(50) DEFAULT 'aman',
+        status_transaksi VARCHAR(50) DEFAULT 'belum_bayar',
         deskripsi TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
     `;
-    
-    // Run safety column migration for pre-existing tables dynamically
     await sql`ALTER TABLE shipments ADD COLUMN IF NOT EXISTS status_barang VARCHAR(50) DEFAULT 'aman';`;
     await sql`ALTER TABLE shipments ADD COLUMN IF NOT EXISTS status_transaksi VARCHAR(50) DEFAULT 'belum_bayar';`;
   } catch (error) {
@@ -41,12 +57,15 @@ async function ensureTableExists() {
 }
 
 // ============================================================
-// GET — Retrieve Paginated, Filtered and Searched Cargo Shipments
+// GET — Retrieve Cargo (Public Read, Admin Write)
 // ============================================================
 export async function GET(request: Request) {
   try {
-    // Ensure table exists before querying
     await ensureTableExists();
+
+    // ✅ Opsional: Kalau mau GET juga dibatasi admin, uncomment baris bawah:
+    // const authCheck = await requireAdmin();
+    // if (authCheck.error) return authCheck.error;
 
     const { searchParams } = new URL(request.url);
     const searchQuery = searchParams.get('q') || '';
@@ -56,13 +75,11 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '10', 10);
     const offset = (page - 1) * limit;
 
-    // Build dynamic SQL queries securely using standard parameterized values
     let sqlQuery = `SELECT * FROM shipments WHERE 1=1`;
     let countQuery = `SELECT COUNT(*) FROM shipments WHERE 1=1`;
     const params: any[] = [];
     let paramIndex = 1;
 
-    // Search Query (ILIKE on multiple columns)
     if (searchQuery.trim() !== '') {
       sqlQuery += ` AND (no_resi ILIKE $${paramIndex} OR nama_pengirim ILIKE $${paramIndex} OR nama_penerima ILIKE $${paramIndex} OR jenis_barang ILIKE $${paramIndex})`;
       countQuery += ` AND (no_resi ILIKE $${paramIndex} OR nama_pengirim ILIKE $${paramIndex} OR nama_penerima ILIKE $${paramIndex} OR jenis_barang ILIKE $${paramIndex})`;
@@ -70,7 +87,6 @@ export async function GET(request: Request) {
       paramIndex++;
     }
 
-    // Status Filter
     if (statusFilter !== 'all') {
       sqlQuery += ` AND status_pengiriman = $${paramIndex}`;
       countQuery += ` AND status_pengiriman = $${paramIndex}`;
@@ -78,7 +94,6 @@ export async function GET(request: Request) {
       paramIndex++;
     }
 
-    // Vehicle/Mode Filter
     if (modeFilter !== 'all') {
       sqlQuery += ` AND jenis_kendaraan = $${paramIndex}`;
       countQuery += ` AND jenis_kendaraan = $${paramIndex}`;
@@ -86,15 +101,12 @@ export async function GET(request: Request) {
       paramIndex++;
     }
 
-    // Retrieve total count for pagination
     const totalResult = await sql.query(countQuery, params);
     const totalCount = parseInt(totalResult.rows[0].count, 10);
 
-    // Add ordering and pagination limits
     sqlQuery += ` ORDER BY id DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
     params.push(limit, offset);
 
-    // Fetch the shipments matching filters
     const cargoResult = await sql.query(sqlQuery, params);
 
     return NextResponse.json({
@@ -118,11 +130,14 @@ export async function GET(request: Request) {
 }
 
 // ============================================================
-// POST — Create a New Cargo Shipment with Unique Resi Code
+// POST — Create Cargo (ADMIN ONLY)
 // ============================================================
 export async function POST(request: Request) {
   try {
-    // Ensure table exists before inserting
+    // ✅ WAJIB: Cek admin sebelum insert data
+    const authCheck = await requireAdmin();
+    if (authCheck.error) return authCheck.error;
+
     await ensureTableExists();
 
     const body = await request.json();
@@ -144,7 +159,6 @@ export async function POST(request: Request) {
       deskripsi
     } = body;
 
-    // Validate Required Inputs
     if (!tanggal_kirim || !nama_pengirim || !nama_penerima || !jenis_kendaraan || !jenis_pengiriman) {
       return NextResponse.json(
         { error: 'Field tanggal_kirim, nama_pengirim, nama_penerima, jenis_kendaraan, dan jenis_pengiriman wajib diisi' },
@@ -152,63 +166,36 @@ export async function POST(request: Request) {
       );
     }
 
-    // Auto-generate unique Resi Code (RESI-YYYYMMDD-XXXX where XXXX is a unique numeric stamp)
     const dateObj = new Date(tanggal_kirim);
     const yyyy = dateObj.getFullYear();
     const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
     const dd = String(dateObj.getDate()).padStart(2, '0');
     const dateStr = `${yyyy}${mm}${dd}`;
 
-    // Get number of shipments on that day to use as suffix or random sequence
     const countCheck = await sql`
       SELECT COUNT(*) FROM shipments WHERE DATE(tanggal_kirim) = ${tanggal_kirim};
     `;
     const sequenceNum = parseInt(countCheck.rows[0].count, 10) + 1;
-    const randomSuffix = String(Math.floor(100 + Math.random() * 900)); // Adds high randomness to prevent resi collision
+    const randomSuffix = String(Math.floor(100 + Math.random() * 900));
     const no_resi = `RESI-${dateStr}-${String(sequenceNum).padStart(3, '0')}${randomSuffix}`;
 
-    // Default values if not provided
     const finalStatus = status_pengiriman || 'diproses';
     const finalStatusBarang = status_barang || 'aman';
     const finalStatusTransaksi = status_transaksi || 'belum_bayar';
 
-    // Insert new cargo record
     const result = await sql`
       INSERT INTO shipments (
-        no_resi,
-        tanggal_kirim,
-        nama_pengirim,
-        nama_penerima,
-        no_telepon,
-        kota_asal,
-        kota_tujuan,
-        jenis_barang,
-        berat_kg,
-        harga_tarif,
-        jenis_kendaraan,
-        jenis_pengiriman,
-        status_pengiriman,
-        status_barang,
-        status_transaksi,
-        deskripsi
+        no_resi, tanggal_kirim, nama_pengirim, nama_penerima,
+        no_telepon, kota_asal, kota_tujuan, jenis_barang,
+        berat_kg, harga_tarif, jenis_kendaraan, jenis_pengiriman,
+        status_pengiriman, status_barang, status_transaksi, deskripsi
       )
       VALUES (
-        ${no_resi},
-        ${tanggal_kirim},
-        ${nama_pengirim},
-        ${nama_penerima},
-        ${no_telepon || null},
-        ${kota_asal || null},
-        ${kota_tujuan || null},
-        ${jenis_barang || null},
-        ${berat_kg ? parseFloat(berat_kg) : 0},
-        ${harga_tarif ? parseFloat(harga_tarif) : 0},
-        ${jenis_kendaraan},
-        ${jenis_pengiriman},
-        ${finalStatus},
-        ${finalStatusBarang},
-        ${finalStatusTransaksi},
-        ${deskripsi || null}
+        ${no_resi}, ${tanggal_kirim}, ${nama_pengirim}, ${nama_penerima},
+        ${no_telepon || null}, ${kota_asal || null}, ${kota_tujuan || null}, ${jenis_barang || null},
+        ${berat_kg ? parseFloat(berat_kg) : 0}, ${harga_tarif ? parseFloat(harga_tarif) : 0},
+        ${jenis_kendaraan}, ${jenis_pengiriman}, ${finalStatus},
+        ${finalStatusBarang}, ${finalStatusTransaksi}, ${deskripsi || null}
       )
       RETURNING *;
     `;

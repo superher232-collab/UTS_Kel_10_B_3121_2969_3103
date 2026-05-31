@@ -4,7 +4,9 @@ import { prisma } from '@/lib/db'
 import bcrypt from 'bcryptjs'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // ✅ Gunakan AUTH_SECRET (NextAuth v5 standard)
   secret: process.env.AUTH_SECRET,
+  
   providers: [
     Credentials({
       name: 'Credentials',
@@ -16,54 +18,39 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const email = credentials?.email as string
         const password = credentials?.password as string
 
-        if (!email || !email.includes('@')) {
-          return null
+        if (!email || !email.includes('@') || !password) return null
+
+        const user = await prisma.user.findUnique({ where: { email } })
+        if (!user) return null
+
+        const isPasswordMatch = await bcrypt.compare(password, user.password)
+        if (!isPasswordMatch) return null
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role // ✅ Pastikan enum di DB: 'ADMIN' atau 'CUSTOMER'
         }
-
-        if (!password) {
-          return null
-        }
-
-        const user = await prisma.user.findUnique({
-          where: { email }
-        })
-
-        if (!user) {
-          return null
-        }
-
-        const isPasswordMatch = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        )
-
-        if (isPasswordMatch) {
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role
-          }
-        }
-
-        return null
       }
     })
   ],
 
   callbacks: {
-    jwt: async ({ token, user }) => {
+    // ✅ Simpan role & id ke JWT token
+    async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role
         token.id = user.id
+        token.role = user.role
       }
       return token
     },
 
-    session: async ({ session, token }) => {
-      if (session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).id = token.id as string
+    // ✅ Restore role & id dari token ke session
+    async session({ session, token }) {
+      if (session.user && token.id && token.role) {
+        session.user.id = token.id as string
+        session.user.role = token.role as string
       }
       return session
     }
@@ -74,6 +61,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt' // ✅ Wajib untuk credentials provider
   }
 })

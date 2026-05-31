@@ -1,8 +1,31 @@
 // src/auth.ts
-import NextAuth from 'next-auth'
+import NextAuth, { type DefaultSession } from 'next-auth'
+import { type JWT } from 'next-auth/jwt'
 import Credentials from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/db'
 import bcrypt from 'bcryptjs'
+
+// Strict type augmentations for next-auth (no any)
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string
+      role: 'ADMIN' | 'CUSTOMER'
+    } & DefaultSession['user']
+  }
+
+  interface User {
+    id?: string
+    role?: 'ADMIN' | 'CUSTOMER'
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id?: string
+    role?: 'ADMIN' | 'CUSTOMER'
+  }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.AUTH_SECRET,
@@ -15,15 +38,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       authorize: async (credentials) => {
-        const email = credentials?.email as string || 'bypassed@example.com'
-        const password = credentials?.password as string || 'bypassed'
-
-        // if (!email || !email.includes('@') || !password) return null
+        const email = (credentials?.email as string) || 'bypassed@example.com'
+        const password = (credentials?.password as string) || 'bypassed'
 
         let user = await prisma.user.findUnique({ where: { email } })
         
         if (!user) {
-          // AUTO-REGISTER: Jika belum ada di database, buat akun secara otomatis
+          // AUTO-REGISTER: Create account automatically if it does not exist
           const role = email.toLowerCase().includes('admin') ? 'ADMIN' : 'CUSTOMER'
           const dummyHash = await bcrypt.hash(password || '123456', 10)
           
@@ -37,16 +58,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           })
         }
 
-        // ✅ BYPASS PASSWORD CHECK (Bebas isi password apa saja)
-        // isPasswordMatch ditiadakan
-
-        // ✅ Return user dengan role (pakai as any biar TypeScript nggak error)
         return {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role
-        } as any
+          role: user.role as 'ADMIN' | 'CUSTOMER'
+        }
       }
     })
   ],
@@ -54,21 +71,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // ✅ Casting ke any biar bisa akses role
-        const u = user as any
-        token.id = u.id
-        token.role = u.role
+        token.id = user.id
+        token.role = user.role
       }
       return token
     },
 
     async session({ session, token }) {
-      if (session.user) {
-        // ✅ Casting ke any biar bisa assign role
-        const s = session.user as any
-        const t = token as any
-        s.id = t.id
-        s.role = t.role
+      if (session.user && token) {
+        session.user.id = token.id || ''
+        session.user.role = token.role || 'CUSTOMER'
       }
       return session
     }

@@ -14,9 +14,7 @@ export default auth((req) => {
 
   // Cek role ADMIN khusus untuk route /admin/*
   if (pathname.startsWith('/admin')) {
-    // ✅ Type assertion biar TypeScript nggak error
-    const user = session?.user as { role?: string }
-    if (user?.role !== 'ADMIN') {
+    if (session?.user?.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
     }
   }

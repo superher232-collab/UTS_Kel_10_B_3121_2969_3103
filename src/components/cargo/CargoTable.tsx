@@ -12,12 +12,34 @@ interface CargoTableProps {
   };
   onPageChange: (newPage: number) => void;
   onEdit: (cargo: any) => void;
-  onDelete: (id: number) => Promise<boolean>;
+  onDelete: (id: any) => Promise<boolean>;
+  onCancel: (id: string, reason: string) => Promise<boolean>;
+  role: 'ADMIN' | 'CUSTOMER';
 }
 
-export function CargoTable({ data, loading, pagination, onPageChange, onEdit, onDelete }: CargoTableProps) {
-  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+export function CargoTable({ data, loading, pagination, onPageChange, onEdit, onDelete, onCancel, role }: CargoTableProps) {
+  const [deleteConfirmId, setDeleteConfirmId] = useState<any | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [cancelId, setCancelId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const [canceling, setCanceling] = useState(false);
+  const [cancelError, setCancelError] = useState('');
+
+  const handleCancelExecute = async () => {
+    if (!cancelId) return;
+    if (cancelReason.trim().length < 10) {
+      setCancelError('Alasan pembatalan minimal 10 karakter (BR-03)');
+      return;
+    }
+    setCanceling(true);
+    setCancelError('');
+    const success = await onCancel(cancelId, cancelReason);
+    setCanceling(false);
+    if (success) {
+      setCancelId(null);
+      setCancelReason('');
+    }
+  };
 
   // Universal badge style helper matching Indonesia PrimeLog aesthetics
   const getBadgeStyle = (value: string): React.CSSProperties => {
@@ -267,63 +289,145 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                 {/* Aksi */}
                 <td style={{ ...tableCellStyle, textAlign: 'center' }}>
                   <div style={{ display: 'inline-flex', gap: '10px', alignItems: 'center' }}>
-                    {/* Tombol Edit */}
-                    <button
-                      onClick={() => onEdit(shipment)}
-                      style={{
-                        background: 'rgba(168, 85, 247, 0.1)',
-                        border: '1px solid rgba(168, 85, 247, 0.4)',
-                        borderRadius: '4px',
-                        padding: '6px 10px',
-                        color: '#C084FC',
-                        cursor: 'pointer',
+                    {role === 'ADMIN' ? (
+                      <>
+                        {/* Tombol Edit */}
+                        <button
+                          onClick={() => onEdit(shipment)}
+                          style={{
+                            background: 'rgba(168, 85, 247, 0.1)',
+                            border: '1px solid rgba(168, 85, 247, 0.4)',
+                            borderRadius: '4px',
+                            padding: '6px 10px',
+                            color: '#C084FC',
+                            cursor: 'pointer',
+                            fontSize: '9px',
+                            fontWeight: 'bold',
+                            fontFamily: 'monospace',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#A855F7';
+                            e.currentTarget.style.color = 'white';
+                            e.currentTarget.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(168, 85, 247, 0.1)';
+                            e.currentTarget.style.color = '#C084FC';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          EDIT
+                        </button>
+                        
+                        {/* Tombol Hapus */}
+                        <button
+                          onClick={() => setDeleteConfirmId(shipment.id)}
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.4)',
+                            borderRadius: '4px',
+                            padding: '6px 10px',
+                            color: '#EF4444',
+                            cursor: 'pointer',
+                            fontSize: '9px',
+                            fontWeight: 'bold',
+                            fontFamily: 'monospace',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#EF4444';
+                            e.currentTarget.style.color = 'white';
+                            e.currentTarget.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                            e.currentTarget.style.color = '#EF4444';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          HAPUS
+                        </button>
+                      </>
+                    ) : shipment.status_pengiriman === 'diproses' ? (
+                      <>
+                        {/* Tombol Edit Customer */}
+                        <button
+                          onClick={() => onEdit(shipment)}
+                          style={{
+                            background: 'rgba(168, 85, 247, 0.1)',
+                            border: '1px solid rgba(168, 85, 247, 0.4)',
+                            borderRadius: '4px',
+                            padding: '6px 10px',
+                            color: '#C084FC',
+                            cursor: 'pointer',
+                            fontSize: '9px',
+                            fontWeight: 'bold',
+                            fontFamily: 'monospace',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#A855F7';
+                            e.currentTarget.style.color = 'white';
+                            e.currentTarget.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(168, 85, 247, 0.1)';
+                            e.currentTarget.style.color = '#C084FC';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          EDIT
+                        </button>
+                        
+                        {/* Tombol Batal Customer (BR-03) */}
+                        <button
+                          onClick={() => {
+                            setCancelId(shipment.id);
+                            setCancelReason('');
+                            setCancelError('');
+                          }}
+                          style={{
+                            background: 'rgba(245, 158, 11, 0.1)',
+                            border: '1px solid rgba(245, 158, 11, 0.4)',
+                            borderRadius: '4px',
+                            padding: '6px 10px',
+                            color: '#F59E0B',
+                            cursor: 'pointer',
+                            fontSize: '9px',
+                            fontWeight: 'bold',
+                            fontFamily: 'monospace',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#F59E0B';
+                            e.currentTarget.style.color = 'white';
+                            e.currentTarget.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(245, 158, 11, 0.1)';
+                            e.currentTarget.style.color = '#F59E0B';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          BATAL
+                        </button>
+                      </>
+                    ) : (
+                      <span style={{
                         fontSize: '9px',
-                        fontWeight: 'bold',
+                        color: '#8B7BA8',
                         fontFamily: 'monospace',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#A855F7';
-                        e.currentTarget.style.color = 'white';
-                        e.currentTarget.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(168, 85, 247, 0.1)';
-                        e.currentTarget.style.color = '#C084FC';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      EDIT
-                    </button>
-                    
-                    {/* Tombol Hapus */}
-                    <button
-                      onClick={() => setDeleteConfirmId(shipment.id)}
-                      style={{
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                        fontWeight: 'bold',
+                        border: '1px dashed rgba(168, 85, 247, 0.2)',
+                        padding: '4px 8px',
                         borderRadius: '4px',
-                        padding: '6px 10px',
-                        color: '#EF4444',
-                        cursor: 'pointer',
-                        fontSize: '9px',
-                        fontWeight: 'bold',
-                        fontFamily: 'monospace',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#EF4444';
-                        e.currentTarget.style.color = 'white';
-                        e.currentTarget.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
-                        e.currentTarget.style.color = '#EF4444';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      HAPUS
-                    </button>
+                        background: 'rgba(168, 85, 247, 0.02)',
+                        letterSpacing: '0.5px'
+                      }}>
+                        🔒 LOCK (BR-02)
+                      </span>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -496,6 +600,110 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                 }}
               >
                 {deleting ? 'MENGHAPUS...' : 'YA, HAPUS'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sleek Custom Cancellation Confirmation Dialog with Reason Input */}
+      {cancelId !== null && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(7, 2, 14, 0.8)',
+          zIndex: 300,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backdropFilter: 'blur(8px)'
+        }}>
+          <div style={{
+            background: '#0D0618',
+            border: '1px solid #F59E0B',
+            borderRadius: '12px',
+            padding: '32px',
+            width: '90%',
+            maxWidth: '440px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(245, 158, 11, 0.15)'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'center' }}>
+              <div style={{ fontSize: '32px' }}>⏳</div>
+              <div style={{ fontSize: '13px', fontWeight: 'bold', color: 'white', letterSpacing: '1.5px', fontFamily: 'monospace' }}>BATALKAN PENGIRIMAN CARGO</div>
+            </div>
+            
+            <p style={{ color: '#C7B8EA', fontSize: '11px', fontFamily: 'monospace', lineHeight: '1.5', margin: 0, textAlign: 'center' }}>
+              Berdasarkan aturan bisnis **BR-03**, Anda wajib memasukkan alasan pembatalan minimal 10 karakter.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+              <span style={{ fontSize: '9px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>ALASAN PEMBATALAN *</span>
+              <textarea
+                placeholder="Tulis alasan pembatalan cargo di sini (min. 10 karakter)..."
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                rows={3}
+                style={{
+                  width: '100%',
+                  background: '#07020E',
+                  border: '1px solid rgba(245, 158, 11, 0.4)',
+                  borderRadius: '4px',
+                  padding: '10px 12px',
+                  color: 'white',
+                  fontSize: '12px',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  fontFamily: 'monospace',
+                  resize: 'vertical'
+                }}
+              />
+              {cancelError && (
+                <span style={{ color: '#EF4444', fontSize: '9px', fontWeight: 'bold', fontFamily: 'monospace', marginTop: '2px' }}>
+                  ❌ {cancelError}
+                </span>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+              <button
+                onClick={() => setCancelId(null)}
+                disabled={canceling}
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: '1px solid rgba(245, 158, 11, 0.35)',
+                  color: '#8B7BA8',
+                  padding: '10px',
+                  borderRadius: '6px',
+                  cursor: canceling ? 'not-allowed' : 'pointer',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  fontFamily: 'monospace'
+                }}
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleCancelExecute}
+                disabled={canceling}
+                style={{
+                  flex: 1,
+                  background: '#F59E0B',
+                  border: 'none',
+                  color: 'white',
+                  padding: '10px',
+                  borderRadius: '6px',
+                  cursor: canceling ? 'not-allowed' : 'pointer',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  fontFamily: 'monospace',
+                  boxShadow: '0 0 15px rgba(245, 158, 11, 0.3)'
+                }}
+              >
+                {canceling ? 'MEMBATALKAN...' : 'YA, BATALKAN'}
               </button>
             </div>
           </div>

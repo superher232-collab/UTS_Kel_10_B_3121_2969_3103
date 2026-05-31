@@ -5,11 +5,19 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { SearchBar } from './SearchBar'
 import { CargoTable } from './CargoTable'
 import { CargoForm } from './CargoForm'
-import { createShipment, updateShipment, deleteShipment } from '@/lib/actions'
+import { createShipment, updateShipment, deleteShipment, cancelShipment } from '@/lib/actions'
 
 interface CargoDashboardClientProps {
+  role: 'ADMIN' | 'CUSTOMER'
   initialShipments: any[]
   ships: any[]
+  stats: {
+    total: number
+    darat: number
+    udara: number
+    laut: number
+    selesai: number
+  }
   pagination: {
     total: number
     page: number
@@ -18,7 +26,7 @@ interface CargoDashboardClientProps {
   }
 }
 
-export function CargoDashboardClient({ initialShipments, ships, pagination }: CargoDashboardClientProps) {
+export function CargoDashboardClient({ role, initialShipments, ships, stats, pagination }: CargoDashboardClientProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -133,12 +141,31 @@ export function CargoDashboardClient({ initialShipments, ships, pagination }: Ca
     }
   }
 
-  // Summary counts based on initialShipments list
-  const totalCargo = pagination.total
-  const daratCargo = initialShipments.filter(s => s.jenis_kendaraan === 'darat').length
-  const udaraCargo = initialShipments.filter(s => s.jenis_kendaraan === 'udara').length
-  const lautCargo = initialShipments.filter(s => s.jenis_kendaraan === 'laut').length
-  const selesaiCargo = initialShipments.filter(s => s.status_pengiriman === 'selesai').length
+  // Handler for canceling cargo (BR-03)
+  const handleCancelCargo = async (id: string, reason: string): Promise<boolean> => {
+    try {
+      const result = await cancelShipment(id, reason)
+      if (result.success) {
+        showToast(result.message || 'Cargo berhasil dibatalkan.', 'success')
+        router.refresh()
+        return true
+      } else {
+        showToast(result.message || 'Gagal membatalkan kargo.', 'error')
+        return false
+      }
+    } catch (e: any) {
+      console.error(e)
+      showToast('Terjadi kegagalan sistem saat membatalkan cargo.', 'error')
+      return false
+    }
+  }
+
+  // Summary counts based on database stats (Overall values)
+  const totalCargo = stats.total
+  const daratCargo = stats.darat
+  const udaraCargo = stats.udara
+  const lautCargo = stats.laut
+  const selesaiCargo = stats.selesai
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%', boxSizing: 'border-box' }}>
@@ -257,6 +284,8 @@ export function CargoDashboardClient({ initialShipments, ships, pagination }: Ca
           setIsModalOpen(true)
         }}
         onDelete={handleDeleteCargo}
+        onCancel={handleCancelCargo}
+        role={role}
       />
 
       {/* Form Component */}
@@ -269,6 +298,7 @@ export function CargoDashboardClient({ initialShipments, ships, pagination }: Ca
         onSubmit={handleSaveCargo}
         editData={editItem}
         ships={ships}
+        role={role}
       />
 
       <style>{`

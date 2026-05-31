@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -7,9 +9,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// ─────────────────────────────────────────────────────────────
+// ENUMS (Type-safe values)
+// ─────────────────────────────────────────────────────────────
+
 enum Role {
   ADMIN
   CUSTOMER
+}
+
+enum VehicleType {
+  KAPAL
+  TRUCK
+  PESAWAT
+}
+
+enum VehicleStatus {
+  TERSEDIA
+  DIPAKAI
+  PERBAIKAN
+  NONAKTIF
 }
 
 enum ShipmentStatus {
@@ -18,6 +37,7 @@ enum ShipmentStatus {
   SAMPAI
   PENDING
   SELESAI
+  DIBATALKAN
 }
 
 enum ShippingType {
@@ -26,51 +46,138 @@ enum ShippingType {
   LAUT
 }
 
+enum PaymentStatus {
+  BELUM_BAYAR
+  LUNAS
+  REFUND
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODELS
+// ─────────────────────────────────────────────────────────────
+
 model User {
   id        String     @id @default(uuid())
   name      String
   email     String     @unique
   password  String
   role      Role       @default(CUSTOMER)
+  
+  // Profile tambahan untuk customer
+  phone     String?
+  address   String?
+  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  
+  // Relations
   shipments Shipment[]
+  
+  @@index([email])
+  @@index([role])
 }
 
 model Vehicle {
-  id        String     @id @default(uuid())
-  name      String
-  type      String
-  plateNo   String     @unique
-  capacity  Float
-  status    String     @default("TERSEDIA")
-  shipments Shipment[]
+  id          String        @id @default(uuid())
+  name        String
+  type        VehicleType   // ✅ Enum, bukan String
+  plateNo     String        @unique
+  capacity    Float         // dalam kg atau ton
+  status      VehicleStatus @default(TERSEDIA) // ✅ Enum
+  
+  // ✅ Fields untuk Map Tracking
+  latitude    Float?        // Koordinat terakhir
+  longitude   Float?
+  lastUpdate  DateTime?     // Timestamp update posisi
+  
+  // Info operasional
+  currentRoute String?      // Rute aktif (contoh: "Jakarta → Makassar")
+  eta         DateTime?     // Estimasi tiba di tujuan
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  // Relations
+  shipments   Shipment[]
+  
+  @@index([type])
+  @@index([status])
+  @@index([plateNo])
 }
 
 model Shipment {
-  id           String         @id @default(uuid())
-  receiptNo    String         @unique
-  shipmentDate DateTime       @default(now())
-  senderName   String
-  receiverName String
-  receiverTelp String
-  origin       String
-  destination  String
-  itemName     String
-  weight       Float
-  tariff       Float
-  shippingType ShippingType
-  status       ShipmentStatus @default(DIPROSES)
-  notes        String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  userId       String
-  user         User           @relation(fields: [userId], references: [id])
-  vehicleId    String?
-  vehicle      Vehicle?       @relation(fields: [vehicleId], references: [id])
-
+  id              String          @id @default(uuid())
+  receiptNo       String          @unique  // No. resi
+  shipmentDate    DateTime        @default(now())
+  
+  // Info Pengirim & Penerima
+  senderName      String
+  senderPhone     String?
+  senderAddress   String?
+  
+  receiverName    String
+  receiverTelp    String
+  receiverAddress String?
+  
+  // Rute
+  origin          String
+  destination     String
+  
+  // Detail Barang
+  itemName        String
+  itemDescription String?         // ✅ Deskripsi detail cargo
+  weight          Float           // dalam kg
+  dimensions      String?         // "PxLxT" cm
+  quantity        Int             @default(1)
+  
+  // Harga & Pembayaran
+  tariff          Float
+  paymentStatus   PaymentStatus   @default(BELUM_BAYAR) // ✅ Enum billing
+  paidAt          DateTime?
+  
+  // Pengiriman
+  shippingType    ShippingType
+  status          ShipmentStatus  @default(DIPROSES)
+  notes           String?
+  
+  // Tracking
+  eta             DateTime?       // ✅ Estimasi tiba
+  actualArrival   DateTime?       // Waktu tiba sebenarnya
+  currentLocation String?         // ✅ Lokasi terakhir (untuk customer tracking)
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  // Relations
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  vehicleId       String?
+  vehicle         Vehicle?        @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  
+  // Indexes untuk query cepat
   @@index([receiptNo])
-  @@index([senderName])
-  @@index([receiverName])
-  @@index([itemName])
+  @@index([userId])
+  @@index([vehicleId])
+  @@index([status])
+  @@index([shipmentDate])
+  @@index([origin, destination])
+}
+
+// ─────────────────────────────────────────────────────────────
+// OPSIONAL: Model Log untuk Audit Trail (kalau butuh)
+// ─────────────────────────────────────────────────────────────
+model ActivityLog {
+  id          String   @id @default(uuid())
+  action      String   // "CREATE", "UPDATE_STATUS", "CANCEL", dll
+  entityType  String   // "Shipment", "Vehicle", "User"
+  entityId    String   // ID entity yang diubah
+  performedBy String   // ID user yang melakukan
+  metadata    Json?    // Data tambahan (status lama → baru, dll)
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([entityType, entityId])
+  @@index([performedBy])
+  @@index([createdAt])
 }

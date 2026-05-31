@@ -16,9 +16,10 @@ interface CargoFormProps {
   onSubmit: (data: any) => Promise<boolean>;
   editData?: any | null;
   ships?: Ship[];
+  role: 'ADMIN' | 'CUSTOMER';
 }
 
-export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [] }: CargoFormProps) {
+export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], role }: CargoFormProps) {
   const CITIES = [
     { name: 'Jakarta', island: 'Jawa' },
     { name: 'Surabaya', island: 'Jawa' },
@@ -215,8 +216,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [] }: C
       newErrors.kota_tujuan = 'Kota asal dan tujuan tidak boleh sama';
     }
 
-    // Ship validation
-    if (!form.vehicleId) {
+    // Ship validation — only required for Admin (BR-07)
+    if (role === 'ADMIN' && !form.vehicleId) {
       newErrors.vehicleId = 'Kapal pengangkut wajib dipilih';
     }
 
@@ -601,18 +602,32 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [] }: C
           {/* Tarif/Harga Pengiriman */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>TARIF PENGIRIMAN (RP)</span>
-            <input
-              type="text"
-              placeholder="e.g. 150000"
-              value={form.harga_tarif}
-              onChange={(e) => setForm(prev => ({ ...prev, harga_tarif: e.target.value }))}
-              style={{
+            {role === 'ADMIN' ? (
+              <input
+                type="text"
+                placeholder="e.g. 150000"
+                value={form.harga_tarif}
+                onChange={(e) => setForm(prev => ({ ...prev, harga_tarif: e.target.value }))}
+                style={{
+                  ...inputStyle,
+                  borderColor: errors.harga_tarif ? '#EF4444' : 'rgba(168, 85, 247, 0.35)'
+                }}
+                onFocus={(e) => !errors.harga_tarif && (e.target.style.borderColor = '#A855F7')}
+                onBlur={(e) => !errors.harga_tarif && (e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)')}
+              />
+            ) : (
+              <div style={{
                 ...inputStyle,
-                borderColor: errors.harga_tarif ? '#EF4444' : 'rgba(168, 85, 247, 0.35)'
-              }}
-              onFocus={(e) => !errors.harga_tarif && (e.target.style.borderColor = '#A855F7')}
-              onBlur={(e) => !errors.harga_tarif && (e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)')}
-            />
+                background: 'rgba(255, 255, 255, 0.05)',
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                color: '#8B7BA8',
+                cursor: 'not-allowed',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                Auto-kalkulasi sistem (BR-05)
+              </div>
+            )}
             {errors.harga_tarif && <span style={errorTextStyle}>{errors.harga_tarif}</span>}
           </div>
 
@@ -643,25 +658,39 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [] }: C
             </div>
           </div>
 
-          {/* Ship Selector — Dynamic from DB */}
+          {/* Ship Selector — Dynamic from DB (Admin Only, BR-07) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KAPAL PENGANGKUT *</span>
-            <select
-              value={form.vehicleId}
-              onChange={(e) => setForm(prev => ({ ...prev, vehicleId: e.target.value }))}
-              style={{
+            {role === 'ADMIN' ? (
+              <select
+                value={form.vehicleId}
+                onChange={(e) => setForm(prev => ({ ...prev, vehicleId: e.target.value }))}
+                style={{
+                  ...inputStyle,
+                  cursor: 'pointer',
+                  borderColor: errors.vehicleId ? '#EF4444' : 'rgba(168, 85, 247, 0.35)'
+                }}
+              >
+                <option value="" style={{ background: '#0D0618', color: '#8B7BA8' }}>— Pilih Kapal —</option>
+                {ships.map((ship) => (
+                  <option key={ship.id} value={ship.id} style={{ background: '#0D0618' }}>
+                    🚢 {ship.name} ({ship.capacity.toLocaleString()} ton) — {ship.plateNo}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div style={{
                 ...inputStyle,
-                cursor: 'pointer',
-                borderColor: errors.vehicleId ? '#EF4444' : 'rgba(168, 85, 247, 0.35)'
-              }}
-            >
-              <option value="" style={{ background: '#0D0618', color: '#8B7BA8' }}>— Pilih Kapal —</option>
-              {ships.map((ship) => (
-                <option key={ship.id} value={ship.id} style={{ background: '#0D0618' }}>
-                  🚢 {ship.name} ({ship.capacity.toLocaleString()} ton) — {ship.plateNo}
-                </option>
-              ))}
-            </select>
+                background: 'rgba(255, 255, 255, 0.05)',
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                color: '#8B7BA8',
+                cursor: 'not-allowed',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                Dialokasikan oleh operator
+              </div>
+            )}
             {errors.vehicleId && <span style={errorTextStyle}>{errors.vehicleId}</span>}
           </div>
 
@@ -679,48 +708,65 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [] }: C
             </select>
           </div>
 
-          {/* Status Pengiriman */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>STATUS CARGO *</span>
-            <select
-              value={form.status_pengiriman}
-              onChange={(e) => setForm(prev => ({ ...prev, status_pengiriman: e.target.value }))}
-              style={{ ...inputStyle, cursor: 'pointer' }}
-            >
-              <option value="diproses" style={{ background: '#0D0618' }}>📋 DIPROSES</option>
-              <option value="dalam_pengiriman" style={{ background: '#0D0618' }}>⚡ DALAM PENGIRIMAN</option>
-              <option value="sampai_tujuan" style={{ background: '#0D0618' }}>🏁 SAMPAI TUJUAN</option>
-              <option value="pending" style={{ background: '#0D0618' }}>⏳ PENDING</option>
-              <option value="selesai" style={{ background: '#0D0618' }}>✅ SELESAI</option>
-            </select>
-          </div>
+          {/* Status Dropdowns — Only editable by Admin (BR-09, BR-08) */}
+          {role === 'ADMIN' ? (
+            <>
+              {/* Status Pengiriman */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>STATUS CARGO *</span>
+                <select
+                  value={form.status_pengiriman}
+                  onChange={(e) => setForm(prev => ({ ...prev, status_pengiriman: e.target.value }))}
+                  style={{ ...inputStyle, cursor: 'pointer' }}
+                >
+                  <option value="diproses" style={{ background: '#0D0618' }}>📋 DIPROSES</option>
+                  <option value="dalam_pengiriman" style={{ background: '#0D0618' }}>⚡ DALAM PENGIRIMAN</option>
+                  <option value="sampai_tujuan" style={{ background: '#0D0618' }}>🏁 SAMPAI TUJUAN</option>
+                  <option value="pending" style={{ background: '#0D0618' }}>⏳ PENDING</option>
+                  <option value="selesai" style={{ background: '#0D0618' }}>✅ SELESAI</option>
+                </select>
+              </div>
 
-          {/* Status Kondisi Barang */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KONDISI BARANG *</span>
-            <select
-              value={form.status_barang}
-              onChange={(e) => setForm(prev => ({ ...prev, status_barang: e.target.value }))}
-              style={{ ...inputStyle, cursor: 'pointer' }}
-            >
-              <option value="aman" style={{ background: '#0D0618' }}>🛡️ AMAN (SEMPURNA)</option>
-              <option value="rusak" style={{ background: '#0D0618' }}>⚠️ RUSAK (DAMAGE)</option>
-              <option value="hilang" style={{ background: '#0D0618' }}>❌ HILANG (LOST)</option>
-            </select>
-          </div>
+              {/* Status Kondisi Barang */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KONDISI BARANG *</span>
+                <select
+                  value={form.status_barang}
+                  onChange={(e) => setForm(prev => ({ ...prev, status_barang: e.target.value }))}
+                  style={{ ...inputStyle, cursor: 'pointer' }}
+                >
+                  <option value="aman" style={{ background: '#0D0618' }}>🛡️ AMAN (SEMPURNA)</option>
+                  <option value="rusak" style={{ background: '#0D0618' }}>⚠️ RUSAK (DAMAGE)</option>
+                  <option value="hilang" style={{ background: '#0D0618' }}>❌ HILANG (LOST)</option>
+                </select>
+              </div>
 
-          {/* Status Transaksi Pembayaran */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>STATUS PEMBAYARAN *</span>
-            <select
-              value={form.status_transaksi}
-              onChange={(e) => setForm(prev => ({ ...prev, status_transaksi: e.target.value }))}
-              style={{ ...inputStyle, cursor: 'pointer' }}
-            >
-              <option value="belum_bayar" style={{ background: '#0D0618' }}>⏳ UNPAID (BELUM LUNAS)</option>
-              <option value="lunas" style={{ background: '#0D0618' }}>💳 PAID (LUNAS)</option>
-            </select>
-          </div>
+              {/* Status Transaksi Pembayaran */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>STATUS PEMBAYARAN *</span>
+                <select
+                  value={form.status_transaksi}
+                  onChange={(e) => setForm(prev => ({ ...prev, status_transaksi: e.target.value }))}
+                  style={{ ...inputStyle, cursor: 'pointer' }}
+                >
+                  <option value="belum_bayar" style={{ background: '#0D0618' }}>⏳ UNPAID (BELUM LUNAS)</option>
+                  <option value="lunas" style={{ background: '#0D0618' }}>💳 PAID (LUNAS)</option>
+                </select>
+              </div>
+            </>
+          ) : editData ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', gridColumn: '1 / -1' }}>
+              <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>STATUS PENGIRIMAN</span>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ ...inputStyle, flex: 1, background: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', cursor: 'not-allowed', color: '#8B7BA8' }}>
+                  Kargo: {form.status_pengiriman.toUpperCase()}
+                </div>
+                <div style={{ ...inputStyle, flex: 1, background: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', cursor: 'not-allowed', color: '#8B7BA8' }}>
+                  Pembayaran: {form.status_transaksi.toUpperCase()}
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           {/* Deskripsi (Colspan 2) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', gridColumn: '1 / -1' }}>

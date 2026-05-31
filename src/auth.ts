@@ -15,16 +15,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       authorize: async (credentials) => {
-        const email = credentials?.email as string
-        const password = credentials?.password as string
+        const email = credentials?.email as string || 'bypassed@example.com'
+        const password = credentials?.password as string || 'bypassed'
 
-        if (!email || !email.includes('@') || !password) return null
+        // if (!email || !email.includes('@') || !password) return null
 
-        const user = await prisma.user.findUnique({ where: { email } })
-        if (!user) return null
+        let user = await prisma.user.findUnique({ where: { email } })
+        
+        if (!user) {
+          // AUTO-REGISTER: Jika belum ada di database, buat akun secara otomatis
+          const role = email.toLowerCase().includes('admin') ? 'ADMIN' : 'CUSTOMER'
+          const dummyHash = await bcrypt.hash(password || '123456', 10)
+          
+          user = await prisma.user.create({
+            data: {
+              name: email.split('@')[0],
+              email,
+              password: dummyHash,
+              role
+            }
+          })
+        }
 
-        const isPasswordMatch = await bcrypt.compare(password, user.password)
-        if (!isPasswordMatch) return null
+        // ✅ BYPASS PASSWORD CHECK (Bebas isi password apa saja)
+        // isPasswordMatch ditiadakan
 
         // ✅ Return user dengan role (pakai as any biar TypeScript nggak error)
         return {

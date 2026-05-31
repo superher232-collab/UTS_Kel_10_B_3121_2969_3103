@@ -1,11 +1,12 @@
 import { ShipmentStatus } from '@prisma/client'
 
 const ALLOWED_TRANSITIONS: Record<ShipmentStatus, ShipmentStatus[]> = {
-  [ShipmentStatus.DIPROSES]: [ShipmentStatus.DALAM_PENGIRIMAN],
+  [ShipmentStatus.DIPROSES]: [ShipmentStatus.DALAM_PENGIRIMAN, ShipmentStatus.DIBATALKAN],
   [ShipmentStatus.DALAM_PENGIRIMAN]: [ShipmentStatus.SAMPAI, ShipmentStatus.PENDING],
   [ShipmentStatus.SAMPAI]: [ShipmentStatus.SELESAI, ShipmentStatus.PENDING],
   [ShipmentStatus.PENDING]: [ShipmentStatus.DALAM_PENGIRIMAN, ShipmentStatus.SAMPAI],
-  [ShipmentStatus.SELESAI]: []
+  [ShipmentStatus.SELESAI]: [],
+  [ShipmentStatus.DIBATALKAN]: []
 }
 
 export const validateStatusTransition = (current: ShipmentStatus, next: ShipmentStatus): boolean => {

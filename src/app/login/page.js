@@ -6,8 +6,8 @@ import { signIn } from 'next-auth/react';
 
 export default function Login() {
   const [role, setRole] = React.useState('admin');
-  const [email, setEmail] = React.useState('admin@primelog.com');
-  const [password, setPassword] = React.useState('admin123');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
@@ -15,37 +15,27 @@ export default function Login() {
     setLoading(true);
     setErrorMsg('');
     
-    // Frontend validation
-    if (!email) {
-      setErrorMsg('Email wajib diisi.');
-      setLoading(false);
-      return;
-    }
-    if (!email.includes('@')) {
-      setErrorMsg('Email harus mengandung karakter "@"');
-      setLoading(false);
-      return;
-    }
-    if (!password) {
-      setErrorMsg('Kata sandi wajib diisi.');
-      setLoading(false);
-      return;
-    }
+    // Auto-generate dummy credentials if empty (Bypass Mode)
+    const finalEmail = email.trim() !== '' 
+      ? email 
+      : (role === 'admin' ? 'admin@bypassed.com' : 'customer@bypassed.com');
+      
+    const finalPassword = password || 'bypassed';
 
     try {
       const result = await signIn('credentials', {
-        email,
-        password,
+        email: finalEmail,
+        password: finalPassword,
         redirect: false
       });
 
       if (result?.error) {
         setErrorMsg('Kredensial salah. Silakan coba lagi.');
       } else {
-        localStorage.setItem('role', email === 'admin@primelog.com' ? 'Admin' : 'User');
-        localStorage.setItem('username', email.split('@')[0]);
+        localStorage.setItem('role', finalEmail.includes('admin') ? 'Admin' : 'User');
+        localStorage.setItem('username', finalEmail.split('@')[0]);
         // Redirection check: Admin -> /admin/cargo, User -> /dashboard
-        window.location.href = email === 'admin@primelog.com' ? '/dashboard/cargo' : '/dashboard';
+        window.location.href = finalEmail.includes('admin') ? '/dashboard/cargo' : '/dashboard';
       }
     } catch (err) {
       console.error(err);

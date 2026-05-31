@@ -2,8 +2,59 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 
 export default function Login() {
+  const [role, setRole] = React.useState('admin');
+  const [email, setEmail] = React.useState('admin@primelog.com');
+  const [password, setPassword] = React.useState('admin123');
+  const [errorMsg, setErrorMsg] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    setErrorMsg('');
+    
+    // Frontend validation
+    if (!email) {
+      setErrorMsg('Email wajib diisi.');
+      setLoading(false);
+      return;
+    }
+    if (!email.includes('@')) {
+      setErrorMsg('Email harus mengandung karakter "@"');
+      setLoading(false);
+      return;
+    }
+    if (!password) {
+      setErrorMsg('Kata sandi wajib diisi.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false
+      });
+
+      if (result?.error) {
+        setErrorMsg('Kredensial salah. Silakan coba lagi.');
+      } else {
+        localStorage.setItem('role', email === 'admin@primelog.com' ? 'Admin' : 'User');
+        localStorage.setItem('username', email.split('@')[0]);
+        // Redirection check: Admin -> /admin/cargo, User -> /dashboard
+        window.location.href = email === 'admin@primelog.com' ? '/dashboard/cargo' : '/dashboard';
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMsg('Terjadi kesalahan koneksi sistem.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{
       width: '100%',
@@ -112,6 +163,18 @@ export default function Login() {
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
               <select id="roleSelect"
+                value={role}
+                onChange={(e) => {
+                  const selectedRole = e.target.value;
+                  setRole(selectedRole);
+                  if (selectedRole === 'admin') {
+                    setEmail('admin@primelog.com');
+                    setPassword('admin123');
+                  } else {
+                    setEmail('customer@primelog.com');
+                    setPassword('customer123');
+                  }
+                }}
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -140,7 +203,7 @@ export default function Login() {
               fontFamily: 'var(--font-body)',
               fontSize: '12px',
               letterSpacing: '1px'
-            }}>NAMA PENGGUNA</label>
+            }}>{role === 'admin' ? 'EMAIL ADMINISTRATOR' : 'EMAIL PENGGUNA'}</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -160,9 +223,10 @@ export default function Login() {
               </svg>
               <input 
                 id="usernameInput"
-                type="text" 
-                placeholder="Masukkan nama pengguna" 
-                defaultValue="primelog"
+                type="email" 
+                placeholder={role === 'admin' ? 'Masukkan email admin' : 'Masukkan email pengguna'} 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -204,6 +268,8 @@ export default function Login() {
               <input 
                 type="password" 
                 placeholder="Masukkan kata sandi" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -261,15 +327,27 @@ export default function Login() {
             <a href="#" style={{ color: 'var(--purple-logo, #C084FC)', fontFamily: 'var(--font-body)', fontSize: '13px', textDecoration: 'none' }}>Lupa kata sandi?</a>
           </div>
 
+          {errorMsg && (
+            <div style={{
+              color: '#EF4444',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: '4px',
+              padding: '10px',
+              fontSize: '12px',
+              fontFamily: 'var(--font-body)',
+              marginTop: '10px',
+              textAlign: 'center'
+            }}>
+              {errorMsg}
+            </div>
+          )}
+
           {/* Submit Button */}
-          <button type="button" onClick={() => {
-            const roleSelect = document.getElementById('roleSelect').value;
-            const userInput = document.getElementById('usernameInput').value || roleSelect; // Default username to role if empty
-            localStorage.setItem('role', roleSelect === 'admin' ? 'Admin' : 'User');
-            localStorage.setItem('username', userInput);
-            window.location.href = '/dashboard';
-          }} style={{
-            background: 'linear-gradient(90deg, #A855F7 0%, #9249F2 50%, #7C3AED 100%)',
+          <button type="button" onClick={handleLogin} disabled={loading} style={{
+            background: loading 
+              ? 'rgba(168, 85, 247, 0.5)' 
+              : 'linear-gradient(90deg, #A855F7 0%, #9249F2 50%, #7C3AED 100%)',
             border: 'none',
             borderRadius: '4px',
             color: 'white',
@@ -277,7 +355,7 @@ export default function Login() {
             fontWeight: '500',
             fontSize: '14px',
             padding: '14px',
-            cursor: 'pointer',
+            cursor: loading ? 'not-allowed' : 'pointer',
             textAlign: 'center',
             textDecoration: 'none',
             marginTop: '10px',
@@ -287,21 +365,25 @@ export default function Login() {
             alignItems: 'center',
             gap: '8px',
             boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)',
-            transition: 'all 0.3s ease'
+            transition: 'all 0.3s ease',
+            opacity: loading ? 0.7 : 1
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = '0 4px 20px rgba(168, 85, 247, 0.6)';
-            e.currentTarget.style.transform = 'translateY(-1px)';
+            if (!loading) {
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(168, 85, 247, 0.6)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+            }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = '0 4px 15px rgba(168, 85, 247, 0.3)';
-            e.currentTarget.style.transform = 'translateY(0)';
+            if (!loading) {
+              e.currentTarget.style.boxShadow = '0 4px 15px rgba(168, 85, 247, 0.3)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }
           }}
           >
-            AKSES SISTEM
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
+            {loading ? 'MEMVERIFIKASI...' : 'AKSES SISTEM'}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ width: '16px', height: '16px' }}>
+              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </svg>
           </button>
         </form>

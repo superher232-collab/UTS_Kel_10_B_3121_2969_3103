@@ -3,6 +3,7 @@ import React, { useState, ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { DashboardProvider, useDashboard } from '@/context/DashboardContext';
 
 function NavigationMenu() {
@@ -154,6 +155,21 @@ function NavigationMenu() {
                 <div style={{ ...megamenuItemStyle, borderLeft: '3px solid #EF4444' }}>
                   <span style={{ fontSize: '11px', color: '#EF4444', fontWeight: 'bold' }}>Perawatan ({maint})</span>
                   <span style={{ fontSize: '9px', color: '#8B7BA8' }}>Dok Galangan</span>
+                </div>
+              </Link>
+
+              {/* CARGO MANAGEMENT SEPARATOR */}
+              <div style={{ gridColumn: '1 / -1', fontSize: '10px', color: '#06B6D4', fontWeight: 'bold', borderBottom: '1px solid rgba(6, 182, 212, 0.2)', borderTop: '1px solid rgba(168, 85, 247, 0.15)', paddingBottom: '6px', paddingTop: '10px', marginTop: '4px', letterSpacing: '1px' }}>
+                MANAJEMEN KARGO
+              </div>
+
+              <Link href="/dashboard/cargo" style={{ textDecoration: 'none', gridColumn: '1 / -1' }}>
+                <div style={{ ...megamenuItemStyle, borderLeft: '3px solid #06B6D4', flexDirection: 'row', gap: '10px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '14px' }}>📦</span>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '11px', color: '#06B6D4', fontWeight: 'bold' }}>Pusat Kontrol Cargo</span>
+                    <span style={{ fontSize: '9px', color: '#8B7BA8' }}>CRUD Prisma · Server Actions · Tracking</span>
+                  </div>
                 </div>
               </Link>
             </div>
@@ -363,31 +379,33 @@ function NavigationMenu() {
         </div>
 
         {/* EXIT / OUTBOUND BUTTON */}
-        <Link href="/login" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          padding: '8px 12px',
-          borderRadius: '4px',
-          color: '#8B7BA8',
-          textDecoration: 'none',
-          fontSize: '11px',
-          fontWeight: 'bold',
-          transition: 'all 0.2s',
-          cursor: 'pointer',
-          fontFamily: 'monospace'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
-          e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-          e.currentTarget.style.color = '#EF4444';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent';
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-          e.currentTarget.style.color = '#8B7BA8';
-        }}
+        <button
+          onClick={() => signOut({ callbackUrl: '/login' })}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            padding: '8px 12px',
+            borderRadius: '4px',
+            color: '#8B7BA8',
+            background: 'transparent',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            transition: 'all 0.2s',
+            cursor: 'pointer',
+            fontFamily: 'monospace'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
+            e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            e.currentTarget.style.color = '#EF4444';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+            e.currentTarget.style.color = '#8B7BA8';
+          }}
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -395,7 +413,7 @@ function NavigationMenu() {
             <line x1="21" y1="12" x2="9" y2="12"></line>
           </svg>
           KELUAR
-        </Link>
+        </button>
       </div>
 
       <style>{`

@@ -1,0 +1,76 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum ShipmentStatus {
+  DIPROSES
+  DALAM_PENGIRIMAN
+  SAMPAI
+  PENDING
+  SELESAI
+}
+
+enum ShippingType {
+  DARAT
+  UDARA
+  LAUT
+}
+
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  password  String
+  role      Role       @default(CUSTOMER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  shipments Shipment[]
+}
+
+model Vehicle {
+  id        String     @id @default(uuid())
+  name      String
+  type      String
+  plateNo   String     @unique
+  capacity  Float
+  status    String     @default("TERSEDIA")
+  shipments Shipment[]
+}
+
+model Shipment {
+  id           String         @id @default(uuid())
+  receiptNo    String         @unique
+  shipmentDate DateTime       @default(now())
+  senderName   String
+  receiverName String
+  receiverTelp String
+  origin       String
+  destination  String
+  itemName     String
+  weight       Float
+  tariff       Float
+  shippingType ShippingType
+  status       ShipmentStatus @default(DIPROSES)
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  userId       String
+  user         User           @relation(fields: [userId], references: [id])
+  vehicleId    String?
+  vehicle      Vehicle?       @relation(fields: [vehicleId], references: [id])
+
+  @@index([receiptNo])
+  @@index([senderName])
+  @@index([receiverName])
+  @@index([itemName])
+}

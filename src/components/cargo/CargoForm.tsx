@@ -1,16 +1,45 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface Ship {
+  id: string;
+  name: string;
+  type: string;
+  plateNo: string;
+  capacity: number;
+  status: string;
+}
+
 interface CargoFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: any) => Promise<boolean>;
   editData?: any | null;
+  ships?: Ship[];
 }
 
-export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProps) {
+export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [] }: CargoFormProps) {
+  const CITIES = [
+    { name: 'Jakarta', island: 'Jawa' },
+    { name: 'Surabaya', island: 'Jawa' },
+    { name: 'Medan', island: 'Sumatra' },
+    { name: 'Makassar', island: 'Sulawesi' },
+    { name: 'Palembang', island: 'Sumatra' },
+    { name: 'Balikpapan', island: 'Kalimantan' },
+    { name: 'Manado', island: 'Sulawesi' },
+    { name: 'Denpasar', island: 'Bali' },
+    { name: 'Semarang', island: 'Jawa' },
+    { name: 'Yogyakarta', island: 'Jawa' },
+    { name: 'Padang', island: 'Sumatra' },
+    { name: 'Pontianak', island: 'Kalimantan' },
+    { name: 'Ambon', island: 'Maluku' },
+    { name: 'Jayapura', island: 'Papua' }
+  ];
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
   const [form, setForm] = useState({
-    tanggal_kirim: '',
+    tanggal_kirim: todayStr,
     nama_pengirim: '',
     nama_penerima: '',
     no_telepon: '',
@@ -19,7 +48,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
     jenis_barang: '',
     berat_kg: '',
     harga_tarif: '',
-    jenis_kendaraan: 'darat',
+    jenis_kendaraan: 'laut',
+    vehicleId: '',
     jenis_pengiriman: 'biasa',
     status_pengiriman: 'diproses',
     status_barang: 'aman',
@@ -30,10 +60,32 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Autocomplete UI states
+  const [showOriginDropdown, setShowOriginDropdown] = useState(false);
+  const [showDestDropdown, setShowDestDropdown] = useState(false);
+  const [originSearch, setOriginSearch] = useState('');
+  const [destSearch, setDestSearch] = useState('');
+  const [debouncedOriginSearch, setDebouncedOriginSearch] = useState('');
+  const [debouncedDestSearch, setDebouncedDestSearch] = useState('');
+
+  // Debouncing search inputs
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedOriginSearch(originSearch);
+    }, 150);
+    return () => clearTimeout(handler);
+  }, [originSearch]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedDestSearch(destSearch);
+    }, 150);
+    return () => clearTimeout(handler);
+  }, [destSearch]);
+
   // Sync editData values if editing
   useEffect(() => {
     if (editData) {
-      // Format date correctly to YYYY-MM-DD for date input
       let dateStr = '';
       if (editData.tanggal_kirim) {
         const d = new Date(editData.tanggal_kirim);
@@ -53,18 +105,20 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
         jenis_barang: editData.jenis_barang || '',
         berat_kg: editData.berat_kg ? String(editData.berat_kg) : '',
         harga_tarif: editData.harga_tarif ? String(editData.harga_tarif) : '',
-        jenis_kendaraan: editData.jenis_kendaraan || 'darat',
+        jenis_kendaraan: 'laut',
+        vehicleId: editData.vehicleId || '',
         jenis_pengiriman: editData.jenis_pengiriman || 'biasa',
         status_pengiriman: editData.status_pengiriman || 'diproses',
         status_barang: editData.status_barang || 'aman',
         status_transaksi: editData.status_transaksi || 'belum_bayar',
         deskripsi: editData.deskripsi || ''
       });
+      setOriginSearch(editData.kota_asal || '');
+      setDestSearch(editData.kota_tujuan || '');
       setErrors({});
     } else {
-      // Reset form if creating
       setForm({
-        tanggal_kirim: new Date().toISOString().split('T')[0], // Default to today's date
+        tanggal_kirim: todayStr,
         nama_pengirim: '',
         nama_penerima: '',
         no_telepon: '',
@@ -73,27 +127,99 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
         jenis_barang: '',
         berat_kg: '',
         harga_tarif: '',
-        jenis_kendaraan: 'darat',
+        jenis_kendaraan: 'laut',
+        vehicleId: '',
         jenis_pengiriman: 'biasa',
         status_pengiriman: 'diproses',
         status_barang: 'aman',
         status_transaksi: 'belum_bayar',
         deskripsi: ''
       });
+      setOriginSearch('');
+      setDestSearch('');
       setErrors({});
     }
   }, [editData, isOpen]);
 
+  const getFilteredOrigins = () => {
+    let list = [...CITIES];
+    if (debouncedOriginSearch.trim()) {
+      const q = debouncedOriginSearch.toLowerCase();
+      list = list.filter(c => c.name.toLowerCase().includes(q));
+    }
+    list.sort((a, b) => a.name.localeCompare(b.name));
+    return list;
+  };
+
+  const getFilteredDestinations = () => {
+    let list = [...CITIES];
+
+    if (debouncedDestSearch.trim()) {
+      const q = debouncedDestSearch.toLowerCase();
+      list = list.filter(c => c.name.toLowerCase().includes(q));
+    }
+
+    const originCity = CITIES.find(c => c.name.toLowerCase() === form.kota_asal.trim().toLowerCase());
+    if (originCity) {
+      const originIsland = originCity.island;
+      list.sort((a, b) => {
+        const aIsCross = a.island !== originIsland;
+        const bIsCross = b.island !== originIsland;
+        if (aIsCross && !bIsCross) return -1;
+        if (!aIsCross && bIsCross) return 1;
+        return a.name.localeCompare(b.name);
+      });
+    } else {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  };
+
   if (!isOpen) return null;
 
-  // Validate form entries
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!form.tanggal_kirim) newErrors.tanggal_kirim = 'Tanggal kirim wajib diisi';
+    // Date validation
+    if (!form.tanggal_kirim) {
+      newErrors.tanggal_kirim = 'Tanggal kirim wajib diisi';
+    } else {
+      const [year, month, day] = form.tanggal_kirim.split('-').map(Number);
+      const selectedDate = new Date(year, month - 1, day);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate < today) {
+        newErrors.tanggal_kirim = 'Tanggal kirim tidak boleh di masa lalu';
+      }
+    }
+
     if (!form.nama_pengirim.trim()) newErrors.nama_pengirim = 'Nama pengirim wajib diisi';
     if (!form.nama_penerima.trim()) newErrors.nama_penerima = 'Nama penerima wajib diisi';
-    
+
+    // City validation
+    if (!form.kota_asal.trim()) {
+      newErrors.kota_asal = 'Kota asal wajib dipilih';
+    } else if (!CITIES.some(c => c.name.toLowerCase() === form.kota_asal.trim().toLowerCase())) {
+      newErrors.kota_asal = 'Pilih kota dari daftar yang tersedia';
+    }
+
+    if (!form.kota_tujuan.trim()) {
+      newErrors.kota_tujuan = 'Kota tujuan wajib dipilih';
+    } else if (!CITIES.some(c => c.name.toLowerCase() === form.kota_tujuan.trim().toLowerCase())) {
+      newErrors.kota_tujuan = 'Pilih kota dari daftar yang tersedia';
+    }
+
+    if (form.kota_asal.trim() && form.kota_tujuan.trim() &&
+        form.kota_asal.trim().toLowerCase() === form.kota_tujuan.trim().toLowerCase()) {
+      newErrors.kota_tujuan = 'Kota asal dan tujuan tidak boleh sama';
+    }
+
+    // Ship validation
+    if (!form.vehicleId) {
+      newErrors.vehicleId = 'Kapal pengangkut wajib dipilih';
+    }
+
     if (form.berat_kg && isNaN(Number(form.berat_kg))) {
       newErrors.berat_kg = 'Berat harus berupa angka numeric';
     } else if (Number(form.berat_kg) <= 0) {
@@ -154,6 +280,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
     fontFamily: 'monospace'
   };
 
+  const originCity = CITIES.find(c => c.name.toLowerCase() === form.kota_asal.trim().toLowerCase());
+
   return (
     <div style={{
       position: 'fixed',
@@ -191,15 +319,15 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
           alignItems: 'center',
           fontFamily: 'monospace'
         }}>
-          <span>{editData ? `REVISI CARGO RESI: ${editData.no_resi}` : 'REGISTRASI CARGO MULTI-MODAL'}</span>
-          <button 
-            onClick={onClose} 
-            style={{ 
-              background: 'transparent', 
-              border: 'none', 
-              color: '#8B7BA8', 
-              cursor: 'pointer', 
-              fontSize: '16px' 
+          <span>{editData ? `REVISI CARGO RESI: ${editData.no_resi}` : 'REGISTRASI CARGO MARITIM'}</span>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#8B7BA8',
+              cursor: 'pointer',
+              fontSize: '16px'
             }}
           >
             ✕
@@ -208,17 +336,19 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
 
         {/* Form Fields Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          
-          {/* Tanggal Kirim */}
+
+          {/* Tanggal Kirim — Native date with min blocking */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>TANGGAL KIRIM *</span>
             <input
               type="date"
               value={form.tanggal_kirim}
+              min={todayStr}
               onChange={(e) => setForm(prev => ({ ...prev, tanggal_kirim: e.target.value }))}
               style={{
                 ...inputStyle,
-                borderColor: errors.tanggal_kirim ? '#EF4444' : 'rgba(168, 85, 247, 0.35)'
+                borderColor: errors.tanggal_kirim ? '#EF4444' : 'rgba(168, 85, 247, 0.35)',
+                colorScheme: 'dark'
               }}
               onFocus={(e) => !errors.tanggal_kirim && (e.target.style.borderColor = '#A855F7')}
               onBlur={(e) => !errors.tanggal_kirim && (e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)')}
@@ -294,32 +424,160 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
             {errors.no_telepon && <span style={errorTextStyle}>{errors.no_telepon}</span>}
           </div>
 
-          {/* Kota Asal */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KOTA ASAL</span>
+          {/* Kota Asal — Autocomplete Dropdown */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', position: 'relative' }}>
+            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KOTA ASAL *</span>
             <input
               type="text"
-              placeholder="e.g. Jakarta, Surabaya"
-              value={form.kota_asal}
-              onChange={(e) => setForm(prev => ({ ...prev, kota_asal: e.target.value }))}
-              style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = '#A855F7'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)'}
+              placeholder="Ketik nama kota..."
+              value={originSearch}
+              onChange={(e) => {
+                setOriginSearch(e.target.value);
+                setForm(prev => ({ ...prev, kota_asal: e.target.value }));
+                setShowOriginDropdown(true);
+              }}
+              onFocus={() => setShowOriginDropdown(true)}
+              onBlur={() => {
+                setTimeout(() => setShowOriginDropdown(false), 150);
+              }}
+              style={{
+                ...inputStyle,
+                borderColor: errors.kota_asal ? '#EF4444' : showOriginDropdown ? '#A855F7' : 'rgba(168, 85, 247, 0.35)'
+              }}
             />
+            {showOriginDropdown && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                background: '#0D0618',
+                border: '1px solid rgba(168, 85, 247, 0.5)',
+                borderRadius: '4px',
+                maxHeight: '180px',
+                overflowY: 'auto',
+                zIndex: 300,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.7)',
+                marginTop: '2px'
+              }}>
+                {getFilteredOrigins().map((city) => (
+                  <div
+                    key={city.name}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setForm(prev => ({ ...prev, kota_asal: city.name }));
+                      setOriginSearch(city.name);
+                      setShowOriginDropdown(false);
+                      setErrors(prev => { const n = { ...prev }; delete n.kota_asal; return n; });
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      color: 'white',
+                      fontFamily: 'monospace',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      borderBottom: '1px solid rgba(168, 85, 247, 0.1)',
+                      transition: 'background 0.15s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(168, 85, 247, 0.15)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <span>{city.name}</span>
+                    <span style={{ fontSize: '9px', color: '#8B7BA8' }}>{city.island}</span>
+                  </div>
+                ))}
+                {getFilteredOrigins().length === 0 && (
+                  <div style={{ padding: '12px', fontSize: '10px', color: '#8B7BA8', textAlign: 'center' }}>
+                    Kota tidak ditemukan
+                  </div>
+                )}
+              </div>
+            )}
+            {errors.kota_asal && <span style={errorTextStyle}>{errors.kota_asal}</span>}
           </div>
 
-          {/* Kota Tujuan */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KOTA TUJUAN</span>
+          {/* Kota Tujuan — Autocomplete Dropdown with Cross-Island Priority */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', position: 'relative' }}>
+            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KOTA TUJUAN *</span>
             <input
               type="text"
-              placeholder="e.g. Batam, Sorong"
-              value={form.kota_tujuan}
-              onChange={(e) => setForm(prev => ({ ...prev, kota_tujuan: e.target.value }))}
-              style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = '#A855F7'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)'}
+              placeholder="Ketik nama kota..."
+              value={destSearch}
+              onChange={(e) => {
+                setDestSearch(e.target.value);
+                setForm(prev => ({ ...prev, kota_tujuan: e.target.value }));
+                setShowDestDropdown(true);
+              }}
+              onFocus={() => setShowDestDropdown(true)}
+              onBlur={() => {
+                setTimeout(() => setShowDestDropdown(false), 150);
+              }}
+              style={{
+                ...inputStyle,
+                borderColor: errors.kota_tujuan ? '#EF4444' : showDestDropdown ? '#A855F7' : 'rgba(168, 85, 247, 0.35)'
+              }}
             />
+            {showDestDropdown && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                background: '#0D0618',
+                border: '1px solid rgba(168, 85, 247, 0.5)',
+                borderRadius: '4px',
+                maxHeight: '180px',
+                overflowY: 'auto',
+                zIndex: 300,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.7)',
+                marginTop: '2px'
+              }}>
+                {getFilteredDestinations().map((city) => {
+                  const isCrossIsland = originCity && city.island !== originCity.island;
+                  return (
+                    <div
+                      key={city.name}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setForm(prev => ({ ...prev, kota_tujuan: city.name }));
+                        setDestSearch(city.name);
+                        setShowDestDropdown(false);
+                        setErrors(prev => { const n = { ...prev }; delete n.kota_tujuan; return n; });
+                      }}
+                      style={{
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        fontSize: '11px',
+                        color: 'white',
+                        fontFamily: 'monospace',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        borderBottom: '1px solid rgba(168, 85, 247, 0.1)',
+                        transition: 'background 0.15s',
+                        background: isCrossIsland ? 'rgba(6, 182, 212, 0.05)' : 'transparent'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = isCrossIsland ? 'rgba(6, 182, 212, 0.15)' : 'rgba(168, 85, 247, 0.15)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = isCrossIsland ? 'rgba(6, 182, 212, 0.05)' : 'transparent'}
+                    >
+                      <span>{city.name}</span>
+                      <span style={{ fontSize: '9px', color: isCrossIsland ? '#06B6D4' : '#8B7BA8' }}>
+                        {isCrossIsland ? `🚢 ${city.island}` : city.island}
+                      </span>
+                    </div>
+                  );
+                })}
+                {getFilteredDestinations().length === 0 && (
+                  <div style={{ padding: '12px', fontSize: '10px', color: '#8B7BA8', textAlign: 'center' }}>
+                    Kota tidak ditemukan
+                  </div>
+                )}
+              </div>
+            )}
+            {errors.kota_tujuan && <span style={errorTextStyle}>{errors.kota_tujuan}</span>}
           </div>
 
           {/* Berat Barang */}
@@ -358,18 +616,53 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
             {errors.harga_tarif && <span style={errorTextStyle}>{errors.harga_tarif}</span>}
           </div>
 
-          {/* Jenis Kendaraan (Moda) */}
+          {/* Moda Transportasi — LOCKED to LAUT */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>MODA TRANSPORTASI *</span>
+            <div style={{
+              ...inputStyle,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(6, 182, 212, 0.08)',
+              borderColor: 'rgba(6, 182, 212, 0.3)',
+              cursor: 'not-allowed',
+              opacity: 0.9
+            }}>
+              <span style={{ fontSize: '14px' }}>🚢</span>
+              <span style={{ color: '#06B6D4', fontWeight: 'bold', flex: 1 }}>LAUT (KAPAL)</span>
+              <span style={{
+                fontSize: '8px',
+                color: '#F59E0B',
+                background: 'rgba(245, 158, 11, 0.15)',
+                padding: '2px 6px',
+                borderRadius: '2px',
+                fontWeight: 'bold',
+                border: '1px solid rgba(245, 158, 11, 0.3)'
+              }}>TERKUNCI</span>
+            </div>
+          </div>
+
+          {/* Ship Selector — Dynamic from DB */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>KAPAL PENGANGKUT *</span>
             <select
-              value={form.jenis_kendaraan}
-              onChange={(e) => setForm(prev => ({ ...prev, jenis_kendaraan: e.target.value }))}
-              style={{ ...inputStyle, cursor: 'pointer' }}
+              value={form.vehicleId}
+              onChange={(e) => setForm(prev => ({ ...prev, vehicleId: e.target.value }))}
+              style={{
+                ...inputStyle,
+                cursor: 'pointer',
+                borderColor: errors.vehicleId ? '#EF4444' : 'rgba(168, 85, 247, 0.35)'
+              }}
             >
-              <option value="darat" style={{ background: '#0D0618' }}>🚛 DARAT (TRUCK)</option>
-              <option value="udara" style={{ background: '#0D0618' }}>✈️ UDARA (PESAWAT)</option>
-              <option value="laut" style={{ background: '#0D0618' }}>🚢 LAUT (KAPAL)</option>
+              <option value="" style={{ background: '#0D0618', color: '#8B7BA8' }}>— Pilih Kapal —</option>
+              {ships.map((ship) => (
+                <option key={ship.id} value={ship.id} style={{ background: '#0D0618' }}>
+                  🚢 {ship.name} ({ship.capacity.toLocaleString()} ton) — {ship.plateNo}
+                </option>
+              ))}
             </select>
+            {errors.vehicleId && <span style={errorTextStyle}>{errors.vehicleId}</span>}
           </div>
 
           {/* Jenis Pengiriman */}
@@ -467,7 +760,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData }: CargoFormProp
           >
             Batal
           </button>
-          
+
           <button
             onClick={handleFormSubmit}
             disabled={loading}

@@ -3,42 +3,6 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
 // ============================================================
-// TYPE EXTENSION: Tambahkan role ke session user
-// ============================================================
-type SessionUser = {
-  id: string
-  email?: string | null
-  name?: string | null
-  role?: string | null
-}
-
-// ============================================================
-// HELPER: Cek Auth & Role Admin
-// ============================================================
-async function requireAdmin(): Promise<{ success: true; user: SessionUser } | { success: false; response: NextResponse }> {
-  const session = await auth()
-  
-  if (!session?.user) {
-    return { 
-      success: false, 
-      response: NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 }) 
-    }
-  }
-  
-  const user = session.user as SessionUser
-  
-  // ✅ Pastikan role-nya ADMIN (case-sensitive!)
-  if (user.role !== 'ADMIN') {
-    return { 
-      success: false, 
-      response: NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 }) 
-    }
-  }
-  
-  return { success: true, user }
-}
-
-// ============================================================
 // DATABASE INITIALIZATION
 // ============================================================
 async function ensureTableExists() {
@@ -144,13 +108,20 @@ export async function GET(request: Request) {
 }
 
 // ============================================================
-// POST — Create Cargo (ADMIN ONLY)
+// POST — Create Cargo (ADMIN ONLY) - SIMPLE VERSION
 // ============================================================
 export async function POST(request: Request) {
   try {
-    // ✅ WAJIB: Cek admin sebelum insert data
-    const authCheck = await requireAdmin();
-    if (!authCheck.success) return authCheck.response;
+    // ✅ Cek auth simpel: langsung casting ke any biar TypeScript nggak error
+    const session: any = await auth()
+    
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 })
+    }
+    
+    if (session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 })
+    }
 
     await ensureTableExists();
 
@@ -173,7 +144,6 @@ export async function POST(request: Request) {
       deskripsi
     } = body;
 
-    // Validasi required fields
     if (!tanggal_kirim || !nama_pengirim || !nama_penerima || !jenis_kendaraan || !jenis_pengiriman) {
       return NextResponse.json(
         { error: 'Field tanggal_kirim, nama_pengirim, nama_penerima, jenis_kendaraan, dan jenis_pengiriman wajib diisi' },
@@ -188,7 +158,6 @@ export async function POST(request: Request) {
     const dd = String(dateObj.getDate()).padStart(2, '0');
     const dateStr = `${yyyy}${mm}${dd}`;
 
-    // ✅ Gunakan parameterized query untuk count
     const countResult = await sql.query(
       `SELECT COUNT(*) FROM shipments WHERE tanggal_kirim = $1`,
       [tanggal_kirim]
@@ -201,7 +170,7 @@ export async function POST(request: Request) {
     const finalStatusBarang = status_barang || 'aman';
     const finalStatusTransaksi = status_transaksi || 'belum_bayar';
 
-    // ✅ Gunakan parameterized query untuk INSERT
+    // Insert dengan parameterized query
     const result = await sql.query(
       `INSERT INTO shipments (
         no_resi, tanggal_kirim, nama_pengirim, nama_penerima,

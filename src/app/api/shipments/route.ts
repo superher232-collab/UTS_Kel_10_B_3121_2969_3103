@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import { prisma } from '@/lib/db'
 import { ShipmentStatus, ShippingType, PaymentStatus, Role } from '@prisma/client'
 import { z } from 'zod'
+import { logAudit } from '@/lib/audit'
 
 // Pre-defined shipping distance matrix for major hubs (BR-05)
 const PORT_DISTANCES: Record<string, Record<string, number>> = {
@@ -159,6 +160,14 @@ export async function POST(request: Request) {
         notes,
         userId: session.user.id
       }
+    })
+
+    await logAudit({
+      userId: session.user.id,
+      action: 'SHIPMENT_CREATE',
+      resourceType: 'Shipment',
+      resourceId: shipment.id,
+      metadata: { receiptNo: shipment.receiptNo }
     })
 
     return NextResponse.json({

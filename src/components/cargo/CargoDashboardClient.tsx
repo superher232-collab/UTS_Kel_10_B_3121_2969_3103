@@ -87,6 +87,7 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
       formData.append('shipmentDate', payload.tanggal_kirim || '')
       formData.append('vehicleId', payload.vehicleId || '')
       formData.append('notes', payload.deskripsi || '')
+      formData.append('targetUserId', (payload as any).targetUserId || '')
 
       let result
       if (editItem) {

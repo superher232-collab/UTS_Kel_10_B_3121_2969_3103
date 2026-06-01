@@ -27,7 +27,14 @@ export function useVessels() {
     try {
       // Check if we are simulating network failure / connection loss
       if (simulateFailure) {
-        throw new Error('Sinyal Terputus: Gagal menghubungkan ke satelit monitoring PrimeLog.');
+        console.warn('📶 [PrimeLog Simulation] Sinyal Terputus: Gagal menghubungkan ke satelit monitoring.');
+        // Gracefully fallback to cached state and raise connection lost signal without throwing a raw Error
+        setVessels(lastDataRef.current.vessels);
+        setLogs(lastDataRef.current.logs);
+        setWeather(lastDataRef.current.weather);
+        setErrorSignal(true);
+        setLoading(false);
+        return;
       }
 
       // Fetch from PostgreSQL database via API

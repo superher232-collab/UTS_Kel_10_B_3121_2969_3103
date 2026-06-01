@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { CargoShipment } from '../../app/dashboard/cargo/page'
 
 interface CargoTableProps {
@@ -233,7 +234,14 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                 {/* No Resi + Moda */}
                 <td style={tableCellStyle}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ color: 'white', fontWeight: 'bold', letterSpacing: '0.5px' }}>{shipment.no_resi}</span>
+                    <Link
+                      href={`/dashboard/cargo/${shipment.id}`}
+                      style={{ color: '#C084FC', fontWeight: 'bold', letterSpacing: '0.5px', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#A855F7'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#C084FC'}
+                    >
+                      {shipment.no_resi}
+                    </Link>
                     <span style={{ fontSize: '9px', color: '#A855F7' }}>{getModaIcon(shipment.jenis_kendaraan)} ─ {getLayananLabel(shipment.jenis_pengiriman)}</span>
                   </div>
                 </td>
@@ -290,6 +298,35 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                 {/* Aksi */}
                 <td style={{ ...tableCellStyle, textAlign: 'center' }}>
                   <div style={{ display: 'inline-flex', gap: '10px', alignItems: 'center' }}>
+                    <Link
+                      href={`/dashboard/cargo/${shipment.id}`}
+                      style={{
+                        background: 'rgba(6, 182, 212, 0.1)',
+                        border: '1px solid rgba(6, 182, 212, 0.4)',
+                        borderRadius: '4px',
+                        padding: '6px 10px',
+                        color: '#06B6D4',
+                        cursor: 'pointer',
+                        fontSize: '9px',
+                        fontWeight: 'bold',
+                        fontFamily: 'monospace',
+                        textDecoration: 'none',
+                        transition: 'all 0.2s',
+                        display: 'inline-block'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#06B6D4';
+                        e.currentTarget.style.color = 'white';
+                        e.currentTarget.style.boxShadow = '0 0 10px rgba(6, 182, 212, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(6, 182, 212, 0.1)';
+                        e.currentTarget.style.color = '#06B6D4';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      TRACK
+                    </Link>
                     {role === 'ADMIN' ? (
                       <>
                         {/* Tombol Edit */}

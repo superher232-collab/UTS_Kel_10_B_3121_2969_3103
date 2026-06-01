@@ -56,7 +56,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
     status_pengiriman: 'diproses',
     status_barang: 'aman',
     status_transaksi: 'belum_bayar',
-    deskripsi: ''
+    deskripsi: '',
+    targetUserId: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -113,7 +114,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
         status_pengiriman: editData.status_pengiriman || 'diproses',
         status_barang: editData.status_barang || 'aman',
         status_transaksi: editData.status_transaksi || 'belum_bayar',
-        deskripsi: editData.deskripsi || ''
+        deskripsi: editData.deskripsi || '',
+        targetUserId: (editData as any).userId || ''
       });
       setOriginSearch(editData.kota_asal || '');
       setDestSearch(editData.kota_tujuan || '');
@@ -135,7 +137,8 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
         status_pengiriman: 'diproses',
         status_barang: 'aman',
         status_transaksi: 'belum_bayar',
-        deskripsi: ''
+        deskripsi: '',
+        targetUserId: ''
       });
       setOriginSearch('');
       setDestSearch('');
@@ -753,6 +756,18 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
                   <option value="belum_bayar" style={{ background: '#0D0618' }}>⏳ UNPAID (BELUM LUNAS)</option>
                   <option value="lunas" style={{ background: '#0D0618' }}>💳 PAID (LUNAS)</option>
                 </select>
+              </div>
+
+              {/* Target User ID Klien */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>USER ID CUSTOMER (KLIEN)</span>
+                <input
+                  type="text"
+                  placeholder="ID Akun Customer (Opsional)"
+                  value={form.targetUserId}
+                  onChange={(e) => setForm(prev => ({ ...prev, targetUserId: e.target.value }))}
+                  style={inputStyle}
+                />
               </div>
             </>
           ) : editData ? (

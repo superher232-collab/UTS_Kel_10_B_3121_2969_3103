@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import { prisma } from '@/lib/db'
 import { ShipmentStatus } from '@prisma/client'
 import { z } from 'zod'
+import { logAudit } from '@/lib/audit'
 
 const CancelSchema = z.object({
   reason: z.string().min(10, 'VAL-003: Alasan pembatalan wajib diisi minimal 10 karakter.')
@@ -81,6 +82,14 @@ export async function POST(
           notes: updatedNotes
         }
       })
+    })
+
+    await logAudit({
+      userId: session.user.id,
+      action: 'SHIPMENT_CANCEL',
+      resourceType: 'Shipment',
+      resourceId: updatedShipment.id,
+      metadata: { reason }
     })
 
     return NextResponse.json({

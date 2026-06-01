@@ -165,7 +165,7 @@ export const createShipment = async (prevState: ActionState | null, formData: Fo
         })
       }
 
-      return await tx.shipment.create({
+      const newShipment = await tx.shipment.create({
         data: {
           receiptNo,
           shipmentDate: shipmentDateObj,
@@ -185,6 +185,18 @@ export const createShipment = async (prevState: ActionState | null, formData: Fo
           userId: assignedUserId
         }
       })
+
+      await tx.trackingHistory.create({
+        data: {
+          shipmentId: newShipment.id,
+          previousStatus: null,
+          newStatus: 'DIPROSES',
+          notes: 'Cargo berhasil didaftarkan.',
+          changedBy: currentUserId
+        }
+      })
+
+      return newShipment
     })
 
     revalidatePath('/dashboard/cargo')
@@ -337,7 +349,7 @@ export const updateShipment = async (
       const paymentStatusToUse = isSelesaiTransition ? PaymentStatus.LUNAS : currentShipment.paymentStatus
       const actualArrivalToUse = isSelesaiTransition ? new Date() : undefined
 
-      return await tx.shipment.update({
+      const shipmentAfterUpdate = await tx.shipment.update({
         where: { id },
         data: {
           senderName,
@@ -356,6 +368,21 @@ export const updateShipment = async (
           notes
         }
       })
+
+      const statusChanged = nextStatus && nextStatus !== currentShipment.status
+      if (statusChanged) {
+        await tx.trackingHistory.create({
+          data: {
+            shipmentId: id,
+            previousStatus: currentShipment.status,
+            newStatus: nextStatus,
+            notes: `Status diperbarui menjadi ${nextStatus}.`,
+            changedBy: currentUserId
+          }
+        })
+      }
+
+      return shipmentAfterUpdate
     })
 
     revalidatePath('/dashboard/cargo')
@@ -399,6 +426,8 @@ export const updateShipmentStatus = async (id: string, nextStatus: ShipmentStatu
       updateData.paymentStatus = PaymentStatus.LUNAS
     }
 
+    const currentUserId = (session.user as any).id as string
+
     const updated = await prisma.$transaction(async (tx) => {
       // If completed, release vehicle back to available
       if (nextStatus === ShipmentStatus.SELESAI && currentShipment.vehicleId) {
@@ -408,10 +437,22 @@ export const updateShipmentStatus = async (id: string, nextStatus: ShipmentStatu
         })
       }
 
-      return await tx.shipment.update({
+      const shipmentAfterUpdate = await tx.shipment.update({
         where: { id },
         data: updateData
       })
+
+      await tx.trackingHistory.create({
+        data: {
+          shipmentId: id,
+          previousStatus: currentShipment.status,
+          newStatus: nextStatus,
+          notes: `Status diperbarui menjadi ${nextStatus}.`,
+          changedBy: currentUserId
+        }
+      })
+
+      return shipmentAfterUpdate
     })
 
     revalidatePath('/dashboard/cargo')
@@ -483,13 +524,25 @@ export const cancelShipment = async (id: string, reason: string): Promise<Action
         })
       }
 
-      return await tx.shipment.update({
+      const shipmentAfterUpdate = await tx.shipment.update({
         where: { id },
         data: {
           status: ShipmentStatus.DIBATALKAN,
           notes: cancelNotes
         }
       })
+
+      await tx.trackingHistory.create({
+        data: {
+          shipmentId: id,
+          previousStatus: shipment.status,
+          newStatus: ShipmentStatus.DIBATALKAN,
+          notes: `Pengiriman dibatalkan. Alasan: ${reason.trim()}`,
+          changedBy: currentUserId
+        }
+      })
+
+      return shipmentAfterUpdate
     })
 
     revalidatePath('/dashboard/cargo')

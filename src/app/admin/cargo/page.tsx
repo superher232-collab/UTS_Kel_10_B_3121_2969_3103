@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
-export default function AdminCargoPage() {
-  redirect('/dashboard/cargo')
+export default function AdminCargoPageRedirect() {
+  redirect('/admin?tab=cargo');
 }

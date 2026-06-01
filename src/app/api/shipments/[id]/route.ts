@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import { prisma } from '@/lib/db'
 import { ShipmentStatus, ShippingType } from '@prisma/client'
 import { z } from 'zod'
+import { logAudit } from '@/lib/audit'
 
 const UpdateShipmentSchema = z.object({
   receiverName: z.string().min(1, 'Nama penerima wajib diisi').optional(),
@@ -101,6 +102,14 @@ export async function PATCH(
     const updatedShipment = await prisma.shipment.update({
       where: { id },
       data: validated.data
+    })
+
+    await logAudit({
+      userId: session.user.id,
+      action: 'SHIPMENT_UPDATE',
+      resourceType: 'Shipment',
+      resourceId: updatedShipment.id,
+      metadata: { changedFields: Object.keys(validated.data) }
     })
 
     return NextResponse.json({

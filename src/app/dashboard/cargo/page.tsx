@@ -138,14 +138,20 @@ export default async function DashboardCargoPage({ searchParams }: PageProps) {
     whereClause.userId = userId
   }
 
-  // Search filter
+  // Search filter supporting bulk tracking (multiple comma/space/semicolon separated receipt numbers)
   if (q.trim() !== '') {
-    whereClause.OR = [
-      { receiptNo: { contains: q, mode: 'insensitive' as const } },
-      { senderName: { contains: q, mode: 'insensitive' as const } },
-      { receiverName: { contains: q, mode: 'insensitive' as const } },
-      { itemName: { contains: q, mode: 'insensitive' as const } }
-    ]
+    const qList = q.split(/[\s,;]+/).map(item => item.trim()).filter(item => item.length > 0)
+    // If the query contains multiple items, perform an exact IN match on receiptNo (Bulk Tracking)
+    if (qList.length > 1) {
+      whereClause.receiptNo = { in: qList }
+    } else {
+      whereClause.OR = [
+        { receiptNo: { contains: q, mode: 'insensitive' as const } },
+        { senderName: { contains: q, mode: 'insensitive' as const } },
+        { receiverName: { contains: q, mode: 'insensitive' as const } },
+        { itemName: { contains: q, mode: 'insensitive' as const } }
+      ]
+    }
   }
 
   // Status filter (pakai enum Prisma)

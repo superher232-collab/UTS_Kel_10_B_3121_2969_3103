@@ -34,8 +34,8 @@ export default function Login() {
       } else {
         localStorage.setItem('role', finalEmail.includes('admin') ? 'Admin' : 'User');
         localStorage.setItem('username', finalEmail.split('@')[0]);
-        // Redirection check: Admin -> /admin/cargo, User -> /dashboard
-        window.location.href = finalEmail.includes('admin') ? '/dashboard/cargo' : '/dashboard';
+        // Redirection check: Admin -> /admin, User -> /dashboard
+        window.location.href = finalEmail.includes('admin') ? '/admin' : '/dashboard';
       }
     } catch (err) {
       console.error(err);

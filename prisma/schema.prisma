@@ -57,21 +57,29 @@ enum PaymentStatus {
 // ─────────────────────────────────────────────────────────────
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  password  String
-  role      Role       @default(CUSTOMER)
+  id         String     @id @default(uuid())
+  name       String
+  email      String     @unique
+  password   String
+  role       Role       @default(CUSTOMER)
   
   // Profile tambahan untuk customer
-  phone     String?
-  address   String?
+  phone      String?
+  address    String?
   
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  emailNotif Boolean    @default(true) // ✅ Email notifications preference
+  smsNotif   Boolean    @default(true) // ✅ SMS notifications preference
+  
+  deletedAt  DateTime?  // ✅ Soft delete field
+  
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
   
   // Relations
-  shipments Shipment[]
+  shipments    Shipment[]
+  tickets      SupportTicket[]
+  chatMessages ChatMessage[]
+  auditLogs    AuditLog[]
   
   @@index([email])
   @@index([role])
@@ -144,6 +152,8 @@ model Shipment {
   eta             DateTime?       // ✅ Estimasi tiba
   actualArrival   DateTime?       // Waktu tiba sebenarnya
   currentLocation String?         // ✅ Lokasi terakhir (untuk customer tracking)
+  proofPhotoUrl   String?
+  proofSignature  String?
   
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
@@ -154,6 +164,10 @@ model Shipment {
   
   vehicleId       String?
   vehicle         Vehicle?        @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  
+  trackingHistory TrackingHistory[]
+  ticket          SupportTicket?
+  invoice         Invoice?
   
   // Indexes untuk query cepat
   @@index([receiptNo])
@@ -180,4 +194,99 @@ model ActivityLog {
   @@index([entityType, entityId])
   @@index([performedBy])
   @@index([createdAt])
+}
+
+model TrackingHistory {
+  id             String   @id @default(uuid())
+  shipmentId     String
+  shipment       Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  previousStatus String?
+  newStatus      String
+  notes          String?
+  changedBy      String?  // userId or "SYSTEM"
+  changedAt      DateTime @default(now())
+  
+  @@index([shipmentId, changedAt])
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  ESCALATED
+}
+
+enum TicketSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model SupportTicket {
+  id               String        @id @default(uuid())
+  ticketNo         String        @unique // TKT-XXXXXX
+  userId           String
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shipmentId       String?       @unique
+  shipment         Shipment?     @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+  title            String
+  description      String
+  type             String        // COMPLAINT | INQUIRY | FEEDBACK
+  severity         TicketSeverity @default(MEDIUM)
+  status           TicketStatus  @default(OPEN)
+  resolution       String?
+  compensation     Float?
+  compensationType String?       // REFUND | DISCOUNT | RESHIP | NONE
+  createdAt        DateTime      @default(now())
+  resolvedAt       DateTime?
+  messages         ChatMessage[]
+  @@index([userId, status])
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  @@index([ticketId, createdAt])
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action       String   // e.g., "SHIPMENT_STATUS_UPDATE"
+  resourceType String   // "Shipment" | "User" | "Ticket"
+  resourceId   String
+  metadata     String?  // JSON string
+  createdAt    DateTime @default(now())
+  @@index([userId, createdAt])
+}
+
+model SystemSettings {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String   // JSON string
+  category  String   // "NOTIFICATION" | "TARIFF" | "FEATURE_FLAG"
+  updatedAt DateTime @updatedAt
+}
+
+model Invoice {
+  id         String   @id @default(uuid())
+  invoiceNo  String   @unique // INV-XXXXXX
+  shipmentId String   @unique
+  shipment   Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  subtotal   Float
+  tax        Float?
+  discount   Float?
+  total      Float
+  status     String   // DRAFT | ISSUED | PAID
+  issuedAt   DateTime @default(now())
+  paidAt     DateTime?
 }

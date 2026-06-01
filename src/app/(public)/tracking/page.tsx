@@ -37,16 +37,17 @@ export const generateMetadata = async ({ searchParams }: Props): Promise<Metadat
 export default async function TrackingPage({ searchParams }: Props) {
   const { resi } = await searchParams
   
-  let shipment = null
+  const resiList = resi ? resi.split(/[\s,;]+/).map(r => r.trim()).filter(r => r.length > 0) : []
+  let shipments: any[] = []
   let error = false
 
-  if (resi) {
+  if (resiList.length > 0) {
     try {
-      shipment = await prisma.shipment.findUnique({
-        where: { receiptNo: resi },
+      shipments = await prisma.shipment.findMany({
+        where: { receiptNo: { in: resiList } },
         include: { vehicle: true }
       })
-      if (!shipment) {
+      if (shipments.length === 0) {
         error = true
       }
     } catch (e) {
@@ -116,7 +117,7 @@ export default async function TrackingPage({ searchParams }: Props) {
             type="text"
             name="resi"
             defaultValue={resi || ''}
-            placeholder="Masukkan Nomor Resi (e.g. CRG-YYYYMMDD-XXXX)"
+            placeholder="Masukkan Resi (pisahkan dengan koma/spasi untuk bulk track)"
             required
             style={{
               flex: 1,
@@ -150,125 +151,132 @@ export default async function TrackingPage({ searchParams }: Props) {
       </div>
 
       {/* Shipment Status Visualizer */}
-      {shipment && (
-        <div style={{
-          background: '#0D0618',
-          border: '1px solid rgba(168, 85, 247, 0.3)',
-          borderRadius: '8px',
-          padding: '32px',
-          width: '90%',
-          maxWidth: '560px',
-          boxShadow: '0 10px 35px rgba(0,0,0,0.7)'
-        }}>
-          {/* Quick Header */}
-          <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.2)', paddingBottom: '16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <span style={{ fontSize: '9px', color: '#8B7BA8', display: 'block' }}>NOMOR RESI</span>
-              <span style={{ fontSize: '15px', color: 'white', fontWeight: 'bold' }}>{shipment.receiptNo}</span>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <span style={{ fontSize: '9px', color: '#8B7BA8', display: 'block' }}>STATUS</span>
-              <span style={{
-                padding: '3px 8px',
-                borderRadius: '4px',
-                fontSize: '9px',
-                fontWeight: 'bold',
-                background: shipment.status === 'SELESAI' ? 'rgba(34, 197, 94, 0.1)' : shipment.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(168, 85, 247, 0.1)',
-                color: shipment.status === 'SELESAI' ? '#22C55E' : shipment.status === 'PENDING' ? '#F59E0B' : '#C084FC',
-                border: `1px solid ${shipment.status === 'SELESAI' ? '#22C55E' : shipment.status === 'PENDING' ? '#F59E0B' : '#A855F7'}`
-              }}>
-                {shipment.status}
-              </span>
-            </div>
-          </div>
-
-          {/* Details Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px', background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '6px', border: '1px solid rgba(168, 85, 247, 0.1)' }}>
-            <div>
-              <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>PENGIRIM</span>
-              <span style={{ fontSize: '11px', color: 'white' }}>{shipment.senderName}</span>
-            </div>
-            <div>
-              <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>PENERIMA</span>
-              <span style={{ fontSize: '11px', color: 'white' }}>{shipment.receiverName}</span>
-            </div>
-            <div>
-              <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>RUTE</span>
-              <span style={{ fontSize: '11px', color: 'white' }}>{shipment.origin} ➔ {shipment.destination}</span>
-            </div>
-            <div>
-              <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>NAMA BARANG</span>
-              <span style={{ fontSize: '11px', color: 'white' }}>{shipment.itemName} ({shipment.weight} kg)</span>
-            </div>
-            <div>
-              <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>MODA LAYANAN</span>
-              <span style={{ fontSize: '11px', color: 'white' }}>{shipment.shippingType}</span>
-            </div>
-            <div>
-              <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>ARMADA PENGANGKUT</span>
-              <span style={{ fontSize: '11px', color: '#06B6D4' }}>{shipment.vehicle ? shipment.vehicle.name : 'Belum Ditugaskan'}</span>
-            </div>
-          </div>
-
-          {/* Glowing Timeline */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative' }}>
-            {/* Center connector line */}
-            <div style={{
-              position: 'absolute',
-              left: '15px',
-              top: '10px',
-              bottom: '10px',
-              width: '2px',
-              background: 'rgba(168, 85, 247, 0.15)',
-              zIndex: 1
-            }}></div>
-
-            {timelineSteps.map((step) => {
-              const statusType = getStepStatus(step.label, shipment.status)
-              
-              let dotBg = '#07020E'
-              let dotBorder = 'rgba(168, 85, 247, 0.3)'
-              let textColor = '#8B7BA8'
-              let glow = 'none'
-
-              if (statusType === 'completed') {
-                dotBg = '#A855F7'
-                dotBorder = '#A855F7'
-                textColor = 'white'
-              } else if (statusType === 'active') {
-                dotBg = '#07020E'
-                dotBorder = '#C084FC'
-                textColor = '#C084FC'
-                glow = '0 0 10px #A855F7'
-              }
-
-              return (
-                <div key={step.label} style={{ display: 'flex', gap: '16px', zIndex: 2, alignItems: 'flex-start' }}>
-                  {/* Timeline Circle */}
-                  <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    background: dotBg,
-                    border: `2px solid ${dotBorder}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    flexShrink: 0,
-                    boxShadow: glow
-                  }}>
-                    {step.icon}
-                  </div>
-                  {/* Timeline description */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 'bold', color: textColor }}>{step.label.replace('_', ' ')}</span>
-                    <span style={{ fontSize: '9px', color: '#8B7BA8', lineHeight: '1.4' }}>{step.desc}</span>
-                  </div>
+      {shipments.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: '100%', alignItems: 'center' }}>
+          {shipments.map((shipment) => (
+            <div
+              key={shipment.id}
+              style={{
+                background: '#0D0618',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
+                borderRadius: '8px',
+                padding: '32px',
+                width: '90%',
+                maxWidth: '560px',
+                boxShadow: '0 10px 35px rgba(0,0,0,0.7)'
+              }}
+            >
+              {/* Quick Header */}
+              <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.2)', paddingBottom: '16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <span style={{ fontSize: '9px', color: '#8B7BA8', display: 'block' }}>NOMOR RESI</span>
+                  <span style={{ fontSize: '15px', color: 'white', fontWeight: 'bold' }}>{shipment.receiptNo}</span>
                 </div>
-              )
-            })}
-          </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: '9px', color: '#8B7BA8', display: 'block' }}>STATUS</span>
+                  <span style={{
+                    padding: '3px 8px',
+                    borderRadius: '4px',
+                    fontSize: '9px',
+                    fontWeight: 'bold',
+                    background: shipment.status === 'SELESAI' ? 'rgba(34, 197, 94, 0.1)' : shipment.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(168, 85, 247, 0.1)',
+                    color: shipment.status === 'SELESAI' ? '#22C55E' : shipment.status === 'PENDING' ? '#F59E0B' : '#C084FC',
+                    border: `1px solid ${shipment.status === 'SELESAI' ? '#22C55E' : shipment.status === 'PENDING' ? '#F59E0B' : '#A855F7'}`
+                  }}>
+                    {shipment.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Details Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px', background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '6px', border: '1px solid rgba(168, 85, 247, 0.1)' }}>
+                <div>
+                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>PENGIRIM</span>
+                  <span style={{ fontSize: '11px', color: 'white' }}>{shipment.senderName}</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>PENERIMA</span>
+                  <span style={{ fontSize: '11px', color: 'white' }}>{shipment.receiverName}</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>RUTE</span>
+                  <span style={{ fontSize: '11px', color: 'white' }}>{shipment.origin} ➔ {shipment.destination}</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>NAMA BARANG</span>
+                  <span style={{ fontSize: '11px', color: 'white' }}>{shipment.itemName} ({shipment.weight} kg)</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>MODA LAYANAN</span>
+                  <span style={{ fontSize: '11px', color: 'white' }}>{shipment.shippingType}</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>ARMADA PENGANGKUT</span>
+                  <span style={{ fontSize: '11px', color: '#06B6D4' }}>{shipment.vehicle ? shipment.vehicle.name : 'Belum Ditugaskan'}</span>
+                </div>
+              </div>
+
+              {/* Glowing Timeline */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative' }}>
+                {/* Center connector line */}
+                <div style={{
+                  position: 'absolute',
+                  left: '15px',
+                  top: '10px',
+                  bottom: '10px',
+                  width: '2px',
+                  background: 'rgba(168, 85, 247, 0.15)',
+                  zIndex: 1
+                }}></div>
+
+                {timelineSteps.map((step) => {
+                  const statusType = getStepStatus(step.label, shipment.status)
+                  
+                  let dotBg = '#07020E'
+                  let dotBorder = 'rgba(168, 85, 247, 0.3)'
+                  let textColor = '#8B7BA8'
+                  let glow = 'none'
+
+                  if (statusType === 'completed') {
+                    dotBg = '#A855F7'
+                    dotBorder = '#A855F7'
+                    textColor = 'white'
+                  } else if (statusType === 'active') {
+                    dotBg = '#07020E'
+                    dotBorder = '#C084FC'
+                    textColor = '#C084FC'
+                    glow = '0 0 10px #A855F7'
+                  }
+
+                  return (
+                    <div key={step.label} style={{ display: 'flex', gap: '16px', zIndex: 2, alignItems: 'flex-start' }}>
+                      {/* Timeline Circle */}
+                      <div style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        background: dotBg,
+                        border: `2px solid ${dotBorder}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '12px',
+                        flexShrink: 0,
+                        boxShadow: glow
+                      }}>
+                        {step.icon}
+                      </div>
+                      {/* Timeline description */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 'bold', color: textColor }}>{step.label.replace('_', ' ')}</span>
+                        <span style={{ fontSize: '9px', color: '#8B7BA8', lineHeight: '1.4' }}>{step.desc}</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

@@ -32,11 +32,11 @@ const main = async (): Promise<void> => {
     }
   })
 
-  // Seed Vehicles (Kapal only — moda transportasi terkunci LAUT)
+  // Seed Vehicles (Tingkatan paket maritim: STANDAR, CEPAT, VVIP)
   const v1 = await prisma.vehicle.create({
     data: {
       name: 'KM NUSANTARA',
-      type: 'KAPAL',
+      type: 'STANDAR',
       plateNo: 'ID-SHIP-001',
       capacity: 5000.0,
       status: 'TERSEDIA'
@@ -46,7 +46,7 @@ const main = async (): Promise<void> => {
   const v2 = await prisma.vehicle.create({
     data: {
       name: 'KM PELNI SINABUNG',
-      type: 'KAPAL',
+      type: 'CEPAT',
       plateNo: 'ID-SHIP-002',
       capacity: 3500.0,
       status: 'TERSEDIA'
@@ -56,7 +56,7 @@ const main = async (): Promise<void> => {
   const v3 = await prisma.vehicle.create({
     data: {
       name: 'MV MERATUS JAYAPURA',
-      type: 'KAPAL',
+      type: 'VVIP',
       plateNo: 'ID-SHIP-003',
       capacity: 8000.0,
       status: 'TERSEDIA'

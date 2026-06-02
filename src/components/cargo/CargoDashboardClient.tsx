@@ -9,7 +9,7 @@ import { createShipment, updateShipment, deleteShipment, cancelShipment } from '
 import { CargoShipment, VehicleOption } from '../../app/dashboard/cargo/page'
 
 interface CargoDashboardClientProps {
-  role: 'ADMIN' | 'CUSTOMER'
+  role: 'ADMIN' | 'OPERATOR'
   initialShipments: CargoShipment[]
   ships: VehicleOption[]
   stats: {
@@ -217,7 +217,7 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
           </span>
         </div>
 
-        {role === 'ADMIN' && (
+        {(role === 'ADMIN' || role === 'OPERATOR') && (
           <button
             onClick={() => {
               setEditItem(null)

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { confirmShipmentPayment } from '@/lib/actions';
 import { CargoShipment } from '../../app/dashboard/cargo/page'
 
 interface CargoTableProps {
@@ -16,7 +17,7 @@ interface CargoTableProps {
   onEdit: (cargo: CargoShipment) => void;
   onDelete: (id: string) => Promise<boolean>;
   onCancel: (id: string, reason: string) => Promise<boolean>;
-  role: 'ADMIN' | 'CUSTOMER';
+  role: 'ADMIN' | 'OPERATOR';
 }
 
 export function CargoTable({ data, loading, pagination, onPageChange, onEdit, onDelete, onCancel, role }: CargoTableProps) {
@@ -26,6 +27,9 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
   const [cancelReason, setCancelReason] = useState('');
   const [canceling, setCanceling] = useState(false);
   const [cancelError, setCancelError] = useState('');
+  const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
+  const [paymentModalShipment, setPaymentModalShipment] = useState<CargoShipment | null>(null);
+  const [processingPayment, setProcessingPayment] = useState(false);
 
   const handleCancelExecute = async () => {
     if (!cancelId) return;
@@ -41,6 +45,231 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
       setCancelId(null);
       setCancelReason('');
     }
+  };
+
+  const handleExecutePayment = async () => {
+    if (!paymentModalShipment) return
+    setProcessingPayment(true)
+    try {
+      const result = await confirmShipmentPayment(paymentModalShipment.id)
+      if (result.success) {
+        setPaymentModalShipment(null)
+      } else {
+        alert(`Gagal: ${result.message}`)
+      }
+    } catch {
+      alert('Terjadi kesalahan saat mengonfirmasi pembayaran.')
+    } finally {
+      setProcessingPayment(false)
+    }
+  }
+
+  const handlePrintReceipt = (shipment: CargoShipment) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Mohon izinkan pop-up untuk mencetak resi.');
+      return;
+    }
+
+    const qrUrl = shipment.metode_pembayaran === 'QRIS'
+      ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021138580016ID.CO.QRIS.WWW0215ID10200874983050303035204531153033605802ID5912PRIMELOG%20LTD6007JAKARTA61051211062070703A0163045E1B`
+      : '';
+
+    const formattedTariff = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(shipment.harga_tarif);
+    const dateFormatted = new Date(shipment.tanggal_kirim).toLocaleDateString('id-ID', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Resi Pengiriman ${shipment.no_resi} - PrimeLog</title>
+          <style>
+            body {
+              font-family: 'Courier New', Courier, monospace;
+              color: #000;
+              margin: 20px;
+              font-size: 13px;
+              line-height: 1.4;
+            }
+            .container {
+              max-width: 400px;
+              margin: 0 auto;
+              border: 1px dashed #000;
+              padding: 20px;
+            }
+            .header {
+              text-align: center;
+              margin-bottom: 20px;
+              border-bottom: 2px double #000;
+              padding-bottom: 10px;
+            }
+            .brand {
+              font-size: 20px;
+              font-weight: bold;
+              letter-spacing: 2px;
+            }
+            .title {
+              font-size: 11px;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              color: #555;
+            }
+            .barcode {
+              text-align: center;
+              margin: 15px 0;
+              font-size: 32px;
+              letter-spacing: 4px;
+              font-weight: 300;
+            }
+            .info-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 15px 0;
+            }
+            .info-table td {
+              padding: 4px 0;
+              vertical-align: top;
+            }
+            .info-table td.label {
+              width: 35%;
+              font-weight: bold;
+            }
+            .separator {
+              border-top: 1px dashed #000;
+              margin: 10px 0;
+            }
+            .total-box {
+              background: #f0f0f0;
+              padding: 10px;
+              text-align: center;
+              font-size: 16px;
+              font-weight: bold;
+              border: 1px solid #000;
+              margin-top: 10px;
+            }
+            .qr-container {
+              text-align: center;
+              margin: 15px 0;
+            }
+            .qr-image {
+              border: 1px solid #000;
+              padding: 4px;
+              background: #fff;
+            }
+            .footer {
+              text-align: center;
+              margin-top: 25px;
+              font-size: 10px;
+              border-top: 1px dashed #000;
+              padding-top: 10px;
+            }
+            @media print {
+              body { margin: 0; }
+              .container { border: none; max-width: 100%; padding: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="brand">PRIMELOG</div>
+              <div class="title">Maritime Logistics Command Center</div>
+              <div style="font-size: 10px; margin-top: 4px;">Konektivitas Nusantara Laut & Pelabuhan</div>
+            </div>
+
+            <div class="barcode">
+              ||||||| | ||| ||||
+              <div style="font-size: 12px; font-weight: bold; letter-spacing: 1px; margin-top: 4px;">${shipment.no_resi}</div>
+            </div>
+
+            <div class="separator"></div>
+
+            <table class="info-table">
+              <tr>
+                <td class="label">TANGGAL:</td>
+                <td>${dateFormatted}</td>
+              </tr>
+              <tr>
+                <td class="label">PENGIRIM:</td>
+                <td>${shipment.nama_pengirim}</td>
+              </tr>
+              <tr>
+                <td class="label">PENERIMA:</td>
+                <td>${shipment.nama_penerima} (${shipment.no_telepon})</td>
+              </tr>
+              <tr>
+                <td class="label">RUTE:</td>
+                <td style="font-weight: bold;">${shipment.kota_asal} ➔ ${shipment.kota_tujuan}</td>
+              </tr>
+              <tr>
+                <td class="label">BARANG:</td>
+                <td>${shipment.jenis_barang}</td>
+              </tr>
+              <tr>
+                <td class="label">BERAT:</td>
+                <td>${shipment.berat_kg.toFixed(1)} kg</td>
+              </tr>
+              <tr>
+                <td class="label">LAYANAN:</td>
+                <td>LAUT - ${shipment.jenis_pengiriman?.toUpperCase() || 'STANDARD'}</td>
+              </tr>
+            </table>
+
+            <div class="separator"></div>
+
+            <table class="info-table">
+              <tr>
+                <td class="label">METODE BAYAR:</td>
+                <td style="font-weight: bold;">${shipment.metode_pembayaran || 'TUNAI'}</td>
+              </tr>
+              <tr>
+                <td class="label">STATUS TRANSAKSI:</td>
+                <td style="font-weight: bold; color: ${shipment.status_transaksi === 'lunas' ? 'green' : 'black'};">
+                  ${shipment.status_transaksi?.toUpperCase().replace('_', ' ') || 'BELUM LUNAS'}
+                </td>
+              </tr>
+            </table>
+
+            <div class="total-box">
+              TOTAL: ${formattedTariff}
+            </div>
+
+            ${qrUrl ? `
+              <div class="qr-container">
+                <div style="font-size: 9px; font-weight: bold; margin-bottom: 6px;">SCAN UNTUK PEMBAYARAN QRIS:</div>
+                <img src="${qrUrl}" class="qr-image" width="130" height="130" alt="QRIS Code" />
+                <div style="font-size: 8px; color: #555; margin-top: 4px;">Merchant: PRIMELOG LOGISTICS LTD</div>
+              </div>
+            ` : ''}
+
+            <div class="footer">
+              <p>Terima kasih telah menggunakan jasa PrimeLog.</p>
+              <p>Kargo Anda aman dalam jaringan satelit maritim kami.</p>
+              <p style="font-size: 8px; color: #777;">Resi dicetak secara elektronik. Validitas data terintegrasi ke blockchain PrimeLog.</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 15px;" class="no-print">
+              <button onclick="window.print()" style="padding: 6px 16px; font-family: monospace; font-weight: bold; cursor: pointer; background: #000; color: #fff; border: none; border-radius: 4px;">PRINT / CETAK RESI</button>
+            </div>
+          </div>
+
+          <script>
+            // Auto trigger print window on load
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+              }, 500);
+            }
+          </script>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
   };
 
   // Universal badge style helper matching Indonesia PrimeLog aesthetics
@@ -84,7 +313,7 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
         color: '#A855F7',
         boxShadow: '0 0 6px rgba(168, 85, 247, 0.15)'
       };
-    } else if (text === 'pending' || text === 'rusak' || text === 'belum_bayar') {
+    } else if (text === 'pending' || text === 'rusak' || text === 'belum_bayar' || text === 'menunggu_pembatalan') {
       return {
         ...base,
         background: 'rgba(245, 158, 11, 0.08)',
@@ -280,7 +509,7 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                   </div>
                 </td>
 
-                {/* Status Stack */}
+                {/* Status Stack — pengiriman + barang only */}
                 <td style={tableCellStyle}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                     <span style={getBadgeStyle(shipment.status_pengiriman)}>
@@ -288,9 +517,6 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                     </span>
                     <span style={getBadgeStyle(shipment.status_barang || 'aman')}>
                       📦 {shipment.status_barang?.toUpperCase()}
-                    </span>
-                    <span style={getBadgeStyle(shipment.status_transaksi || 'belum_bayar')}>
-                      💳 {shipment.status_transaksi?.toUpperCase().replace('_', ' ')}
                     </span>
                   </div>
                 </td>
@@ -327,8 +553,73 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                     >
                       TRACK
                     </Link>
+                    <button
+                      onClick={() => handlePrintReceipt(shipment)}
+                      style={{
+                        background: 'rgba(34, 197, 94, 0.1)',
+                        border: '1px solid rgba(34, 197, 94, 0.4)',
+                        borderRadius: '4px',
+                        padding: '6px 10px',
+                        color: '#22C55E',
+                        cursor: 'pointer',
+                        fontSize: '9px',
+                        fontWeight: 'bold',
+                        fontFamily: 'monospace',
+                        transition: 'all 0.2s',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#22C55E';
+                        e.currentTarget.style.color = 'white';
+                        e.currentTarget.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)';
+                        e.currentTarget.style.color = '#22C55E';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      🖨️ CETAK
+                    </button>
                     {role === 'ADMIN' ? (
                       <>
+                        {/* Tombol ACC Batal */}
+                        {shipment.status_pengiriman === 'menunggu_pembatalan' && (
+                          <button
+                            onClick={() => {
+                              if (confirm('Apakah Anda yakin ingin menyetujui pembatalan kargo ini?')) {
+                                onCancel(shipment.id, 'Disetujui oleh Administrator');
+                              }
+                            }}
+                            style={{
+                              background: 'rgba(245, 158, 11, 0.1)',
+                              border: '1px solid rgba(245, 158, 11, 0.4)',
+                              borderRadius: '4px',
+                              padding: '6px 10px',
+                              color: '#F59E0B',
+                              cursor: 'pointer',
+                              fontSize: '9px',
+                              fontWeight: 'bold',
+                              fontFamily: 'monospace',
+                              transition: 'all 0.2s',
+                              marginRight: '10px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#F59E0B';
+                              e.currentTarget.style.color = 'white';
+                              e.currentTarget.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'rgba(245, 158, 11, 0.1)';
+                              e.currentTarget.style.color = '#F59E0B';
+                              e.currentTarget.style.boxShadow = 'none';
+                            }}
+                          >
+                            ACC BATAL
+                          </button>
+                        )}
                         {/* Tombol Edit */}
                         <button
                           onClick={() => onEdit(shipment)}
@@ -389,7 +680,45 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                       </>
                     ) : shipment.status_pengiriman === 'diproses' ? (
                       <>
-                        {/* Tombol Batal Customer (BR-03) */}
+                        {/* Tombol Bayar — buka modal QRIS/TUNAI */}
+                        {shipment.status_transaksi === 'belum_bayar' && (
+                          <button
+                            onClick={() => setPaymentModalShipment(shipment)}
+                            style={{
+                              background: 'rgba(34, 197, 94, 0.1)',
+                              border: '1px solid rgba(34, 197, 94, 0.4)',
+                              borderRadius: '4px',
+                              padding: '6px 10px',
+                              color: '#22C55E',
+                              cursor: 'pointer',
+                              fontSize: '9px',
+                              fontWeight: 'bold',
+                              fontFamily: 'monospace',
+                              transition: 'all 0.2s',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '3px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#22C55E';
+                              e.currentTarget.style.color = 'white';
+                              e.currentTarget.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)';
+                              e.currentTarget.style.color = '#22C55E';
+                              e.currentTarget.style.boxShadow = 'none';
+                            }}
+                          >
+                            💳 BAYAR
+                          </button>
+                        )}
+                        {shipment.status_transaksi === 'lunas' && (
+                          <span style={{ fontSize: '9px', color: '#22C55E', fontFamily: 'monospace', fontWeight: 'bold', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: '4px', background: 'rgba(34,197,94,0.05)' }}>
+                            ✅ LUNAS
+                          </span>
+                        )}
+                        {/* Tombol Batal Operator (BR-03) */}
                         <button
                           onClick={() => {
                             setCancelId(shipment.id);
@@ -719,11 +1048,141 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
         </div>
       )}
 
+      {/* Payment Modal — QRIS & TUNAI */}
+      {paymentModalShipment && (
+        <div style={{
+          position: 'fixed', inset: 0,
+          background: 'rgba(7, 2, 14, 0.88)',
+          zIndex: 400,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          backdropFilter: 'blur(10px)',
+          animation: 'fadeInModal 0.2s ease'
+        }}>
+          <div style={{
+            background: '#0D0618',
+            border: `1px solid ${paymentModalShipment.metode_pembayaran === 'QRIS' ? 'rgba(245, 158, 11, 0.5)' : 'rgba(34, 197, 94, 0.5)'}`,
+            borderRadius: '16px',
+            padding: '32px',
+            width: '100%', maxWidth: '420px',
+            display: 'flex', flexDirection: 'column', gap: '20px',
+            boxShadow: paymentModalShipment.metode_pembayaran === 'QRIS'
+              ? '0 0 60px rgba(245, 158, 11, 0.2), 0 20px 60px rgba(0,0,0,0.8)'
+              : '0 0 60px rgba(34, 197, 94, 0.2), 0 20px 60px rgba(0,0,0,0.8)',
+            animation: 'scaleInModal 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}>
+            {/* Header */}
+            <div style={{ textAlign: 'center', borderBottom: '1px dashed rgba(168,85,247,0.2)', paddingBottom: '16px' }}>
+              <div style={{ fontSize: '28px', marginBottom: '8px' }}>
+                {paymentModalShipment.metode_pembayaran === 'QRIS' ? '📱' : '💵'}
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: 'bold', color: 'white', fontFamily: 'monospace', letterSpacing: '1px' }}>
+                PEMBAYARAN {paymentModalShipment.metode_pembayaran === 'QRIS' ? 'QRIS' : 'TUNAI'}
+              </div>
+              <div style={{ fontSize: '10px', color: '#8B7BA8', fontFamily: 'monospace', marginTop: '4px' }}>
+                {paymentModalShipment.no_resi} · {paymentModalShipment.nama_penerima}
+              </div>
+            </div>
+
+            {/* Total */}
+            <div style={{ textAlign: 'center', background: 'rgba(6,182,212,0.05)', border: '1px solid rgba(6,182,212,0.2)', borderRadius: '10px', padding: '16px' }}>
+              <div style={{ fontSize: '9px', color: '#8B7BA8', fontFamily: 'monospace', letterSpacing: '1px', marginBottom: '6px' }}>TOTAL TAGIHAN</div>
+              <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#06B6D4', fontFamily: 'monospace' }}>
+                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(paymentModalShipment.harga_tarif)}
+              </div>
+            </div>
+
+            {/* QRIS mode — show QR */}
+            {paymentModalShipment.metode_pembayaran === 'QRIS' && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                <div style={{ background: 'white', padding: '12px', borderRadius: '10px', border: '2px solid rgba(245,158,11,0.4)', boxShadow: '0 0 20px rgba(245,158,11,0.15)' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021138580016ID.CO.QRIS.WWW0215ID10200874983050303035204531153033605802ID5912PRIMELOG%20LTD6007JAKARTA61051211062070703A0163045E1B`}
+                    alt="QRIS Code"
+                    width={180} height={180}
+                    style={{ display: 'block' }}
+                  />
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '10px', color: '#C7B8EA', fontFamily: 'monospace' }}>Scan kode QR menggunakan aplikasi pembayaran</div>
+                  <div style={{ fontSize: '9px', color: '#8B7BA8', fontFamily: 'monospace', marginTop: '2px' }}>Merchant: PRIMELOG LOGISTICS LTD · ID10200874983</div>
+                </div>
+                <div style={{ width: '100%', height: '1px', background: 'rgba(168,85,247,0.15)' }} />
+                <div style={{ fontSize: '10px', color: '#F59E0B', fontFamily: 'monospace', textAlign: 'center', fontWeight: 'bold' }}>
+                  ⚠️ Klik konfirmasi setelah pelanggan berhasil scan & bayar
+                </div>
+              </div>
+            )}
+
+            {/* TUNAI mode */}
+            {paymentModalShipment.metode_pembayaran !== 'QRIS' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ background: 'rgba(34,197,94,0.05)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>🪙</div>
+                  <div style={{ fontSize: '11px', color: '#C7B8EA', fontFamily: 'monospace', lineHeight: '1.6' }}>
+                    Pastikan Anda telah menerima uang tunai<br/>
+                    sebesar nominal di atas dari pelanggan.<br/>
+                    <span style={{ color: '#22C55E', fontWeight: 'bold' }}>Kembalian dihitung oleh Operator.</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => setPaymentModalShipment(null)}
+                disabled={processingPayment}
+                style={{
+                  flex: 1, background: 'rgba(239,68,68,0.08)',
+                  border: '1px solid rgba(239,68,68,0.35)',
+                  color: '#EF4444', padding: '12px',
+                  borderRadius: '8px', cursor: 'pointer',
+                  fontSize: '11px', fontWeight: 'bold', fontFamily: 'monospace'
+                }}
+              >
+                ✕ BATAL
+              </button>
+              <button
+                onClick={handleExecutePayment}
+                disabled={processingPayment}
+                style={{
+                  flex: 2,
+                  background: processingPayment
+                    ? 'rgba(34,197,94,0.3)'
+                    : 'linear-gradient(135deg, #15803d, #22C55E)',
+                  border: 'none', color: 'white',
+                  padding: '12px', borderRadius: '8px',
+                  cursor: processingPayment ? 'not-allowed' : 'pointer',
+                  fontSize: '11px', fontWeight: 'bold', fontFamily: 'monospace',
+                  boxShadow: processingPayment ? 'none' : '0 0 20px rgba(34,197,94,0.35)',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {processingPayment
+                  ? '⏳ MEMPROSES...'
+                  : paymentModalShipment.metode_pembayaran === 'QRIS'
+                    ? '✅ KONFIRMASI SUDAH DIBAYAR'
+                    : '✅ KONFIRMASI TERIMA TUNAI'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Floating Hover style */}
       <style>{`
         .ship-node:hover {
           background: rgba(168, 85, 247, 0.05) !important;
           border-left: 2px solid #A855F7 !important;
+        }
+        @keyframes fadeInModal {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes scaleInModal {
+          from { transform: scale(0.88); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
         }
       `}</style>
     </div>

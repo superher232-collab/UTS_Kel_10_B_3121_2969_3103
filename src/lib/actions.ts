@@ -62,6 +62,7 @@ const ShipmentSchema = z.object({
   }, { message: 'Format tanggal kirim tidak valid' }),
   vehicleId: z.string().nullable().optional(),
   notes: z.string().optional().nullable(),
+  paymentMethod: z.string().optional().nullable(),
   targetUserId: z.string().optional().nullable()
 }).refine((data) => data.origin.trim().toLowerCase() !== data.destination.trim().toLowerCase(), {
   message: 'Kota asal dan tujuan tidak boleh sama',
@@ -106,6 +107,7 @@ export const createShipment = async (prevState: ActionState | null, formData: Fo
     shipmentDate: formData.get('shipmentDate') as string,
     vehicleId: (formData.get('vehicleId') as string) || null,
     notes: formData.get('notes') as string,
+    paymentMethod: formData.get('paymentMethod') as string,
     targetUserId: formData.get('targetUserId') as string
   }
 
@@ -132,6 +134,7 @@ export const createShipment = async (prevState: ActionState | null, formData: Fo
     shipmentDate,
     vehicleId,
     notes,
+    paymentMethod,
     targetUserId
   } = validatedFields.data
 
@@ -180,6 +183,7 @@ export const createShipment = async (prevState: ActionState | null, formData: Fo
           shippingType: shippingType as ShippingType,
           status: ShipmentStatus.DIPROSES,
           paymentStatus: PaymentStatus.BELUM_BAYAR,
+          // paymentMethod: paymentMethod || 'TUNAI', // TODO: uncomment setelah prisma generate
           vehicleId: role === Role.ADMIN ? vehicleId : null,
           notes,
           userId: assignedUserId
@@ -238,7 +242,8 @@ export const updateShipment = async (
     shippingType: formData.get('shippingType') as string,
     shipmentDate: formData.get('shipmentDate') as string,
     vehicleId: (formData.get('vehicleId') as string) || null,
-    notes: formData.get('notes') as string
+    notes: formData.get('notes') as string,
+    paymentMethod: formData.get('paymentMethod') as string
   }
 
   const validatedFields = ShipmentSchema.safeParse(rawData)
@@ -309,7 +314,8 @@ export const updateShipment = async (
       shippingType,
       shipmentDate,
       vehicleId,
-      notes
+      notes,
+      paymentMethod
     } = validatedFields.data
 
     const [year, month, day] = shipmentDate.split('-').map(Number)
@@ -364,6 +370,7 @@ export const updateShipment = async (
           status: nextStatus || currentShipment.status,
           vehicleId: role === Role.ADMIN ? vehicleId : currentShipment.vehicleId,
           paymentStatus: paymentStatusToUse,
+          paymentMethod: paymentMethod || currentShipment.paymentMethod,
           actualArrival: actualArrivalToUse,
           notes
         }
@@ -513,11 +520,14 @@ export const cancelShipment = async (id: string, reason: string): Promise<Action
       }
     }
 
-    const cancelNotes = `[BATAL: ${reason.trim()}] ${shipment.notes || ''}`
+    const isOperator = role !== Role.ADMIN
+    const targetStatus = isOperator ? ShipmentStatus.MENUNGGU_PEMBATALAN : ShipmentStatus.DIBATALKAN
+    const prefix = isOperator ? 'MENUNGGU BATAL' : 'BATAL'
+    const cancelNotes = `[${prefix}: ${reason.trim()}] ${shipment.notes || ''}`
 
     const updated = await prisma.$transaction(async (tx) => {
-      // Release vehicle if cancel active allocation
-      if (shipment.vehicleId) {
+      // Release vehicle if cancel active allocation AND it is fully cancelled by Admin
+      if (!isOperator && shipment.vehicleId) {
         await tx.vehicle.update({
           where: { id: shipment.vehicleId },
           data: { status: 'TERSEDIA' }
@@ -527,7 +537,7 @@ export const cancelShipment = async (id: string, reason: string): Promise<Action
       const shipmentAfterUpdate = await tx.shipment.update({
         where: { id },
         data: {
-          status: ShipmentStatus.DIBATALKAN,
+          status: targetStatus,
           notes: cancelNotes
         }
       })
@@ -536,8 +546,10 @@ export const cancelShipment = async (id: string, reason: string): Promise<Action
         data: {
           shipmentId: id,
           previousStatus: shipment.status,
-          newStatus: ShipmentStatus.DIBATALKAN,
-          notes: `Pengiriman dibatalkan. Alasan: ${reason.trim()}`,
+          newStatus: targetStatus,
+          notes: isOperator 
+            ? `Pengajuan pembatalan diajukan oleh Operator. Alasan: ${reason.trim()}`
+            : `Pengiriman dibatalkan oleh Admin. Alasan: ${reason.trim()}`,
           changedBy: currentUserId
         }
       })
@@ -546,7 +558,10 @@ export const cancelShipment = async (id: string, reason: string): Promise<Action
     })
 
     revalidatePath('/dashboard/cargo')
-    return { success: true, message: `Sukses membatalkan pengiriman cargo ${shipment.receiptNo}`, data: updated }
+    const successMsg = isOperator 
+      ? `Pengajuan pembatalan cargo ${shipment.receiptNo} berhasil dikirim.` 
+      : `Sukses membatalkan pengiriman cargo ${shipment.receiptNo}`
+    return { success: true, message: successMsg, data: updated }
   } catch (error: any) {
     console.error('Failed to cancel shipment:', error)
     return {
@@ -629,5 +644,43 @@ export const searchShipments = async (query: string): Promise<any[]> => {
   } catch (error) {
     console.error('Search failed:', error)
     throw new Error('Terjadi kesalahan saat mencari data kargo di database.')
+  }
+}
+
+export async function confirmShipmentPayment(id: string): Promise<ActionState> {
+  const session = await auth()
+  if (!session?.user) {
+    return {
+      success: false,
+      message: 'AKSES DITOLAK: Silakan masuk terlebih dahulu.'
+    }
+  }
+
+  try {
+    const shipment = await prisma.shipment.findUnique({ where: { id } })
+    if (!shipment) {
+      return { success: false, message: 'Kargo tidak ditemukan.' }
+    }
+
+    const updated = await prisma.shipment.update({
+      where: { id },
+      data: {
+        paymentStatus: PaymentStatus.LUNAS,
+        paidAt: new Date()
+      }
+    })
+
+    revalidatePath('/dashboard/cargo')
+    revalidatePath('/admin')
+    return {
+      success: true,
+      message: `Pembayaran kargo resi ${shipment.receiptNo} berhasil dikonfirmasi LUNAS.`
+    }
+  } catch (error: any) {
+    console.error('Failed to confirm payment:', error)
+    return {
+      success: false,
+      message: `Gagal mengonfirmasi pembayaran: ${error.message}`
+    }
   }
 }

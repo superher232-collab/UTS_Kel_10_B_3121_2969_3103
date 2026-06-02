@@ -150,7 +150,7 @@ export default async function SupportDashboardPage() {
                 <span style={{ color: '#06B6D4', fontWeight: 'bold' }}>support@primelog-fleet.id</span>
               </div>
               <div>
-                <span style={{ color: '#8B7BA8', display: 'block' }}>CUSTOMER CARE</span>
+                <span style={{ color: '#8B7BA8', display: 'block' }}>OPERATOR CARE</span>
                 <span style={{ color: 'white', fontWeight: 'bold' }}>+62 (21) 8080-9090 (24/7)</span>
               </div>
             </div>

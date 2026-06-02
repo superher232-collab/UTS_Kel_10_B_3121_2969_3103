@@ -52,6 +52,7 @@ function mapShipmentToApi(s: any) {
     status_pengiriman: s.status.toLowerCase(),
     status_barang: 'aman',
     status_transaksi: s.paymentStatus.toLowerCase(),
+    metode_pembayaran: s.paymentMethod || 'TUNAI',
     deskripsi: s.notes,
     createdAt: s.createdAt,
     updatedAt: s.updatedAt,
@@ -171,7 +172,8 @@ export async function POST(request: Request) {
       harga_tarif,
       jenis_kendaraan,
       deskripsi,
-      targetUserId // Admins can book for other users (optional)
+      metode_pembayaran,
+      targetUserId
     } = body
 
     // Validation checks
@@ -235,6 +237,7 @@ export async function POST(request: Request) {
         shippingType,
         status: ShipmentStatus.DIPROSES,
         paymentStatus: PaymentStatus.BELUM_BAYAR,
+        paymentMethod: metode_pembayaran || 'TUNAI',
         notes: deskripsi || null,
         userId: finalUserId
       },

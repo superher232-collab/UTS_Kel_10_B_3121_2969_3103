@@ -43,7 +43,7 @@ export function FleetManagerClient({ initialVehicles, pendingShipments }: FleetM
   // Vehicle CRUD Modal states
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [name, setName] = useState('')
-  const [type, setType] = useState('KAPAL')
+  const [type, setType] = useState('STANDAR')
   const [plateNo, setPlateNo] = useState('')
   const [capacity, setCapacity] = useState('')
   const [vehicleStatus, setVehicleStatus] = useState('TERSEDIA')
@@ -159,7 +159,7 @@ export function FleetManagerClient({ initialVehicles, pendingShipments }: FleetM
         setPlateNo('')
         setCapacity('')
         setVehicleStatus('TERSEDIA')
-        setType('KAPAL')
+        setType('STANDAR')
 
         router.refresh()
         setTimeout(() => {
@@ -721,9 +721,9 @@ export function FleetManagerClient({ initialVehicles, pendingShipments }: FleetM
                     onChange={(e) => setType(e.target.value)}
                     style={inputStyle}
                   >
-                    <option value="KAPAL">🚢 LAUT (KAPAL)</option>
-                    <option value="TRUCK">🚛 DARAT (TRUCK)</option>
-                    <option value="PESAWAT">✈️ UDARA (PESAWAT)</option>
+                    <option value="STANDAR">🚢 STANDAR (REGULER)</option>
+                    <option value="CEPAT">⚡ CEPAT (EXPRESS)</option>
+                    <option value="VVIP">👑 VVIP (PREMIUM)</option>
                   </select>
                 </div>
 

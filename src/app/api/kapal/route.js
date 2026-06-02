@@ -66,7 +66,7 @@ export async function GET(request) {
       return {
         id: v.id,
         name: v.name,
-        type: v.type === VehicleType.KAPAL ? 'Kapal Petikemas' : v.type === VehicleType.TRUCK ? 'Truck Trailer' : 'Pesawat Cargo',
+        type: v.type === VehicleType.STANDAR ? 'Kapal Standar' : v.type === VehicleType.CEPAT ? 'Kapal Cepat' : 'Kapal VVIP',
         status: statusStr,
         location: locationStr,
         destination: destStr,
@@ -141,11 +141,11 @@ export async function POST(request) {
       prismaStatus = VehicleStatus.PERBAIKAN;
     }
 
-    let vehicleType = VehicleType.KAPAL;
-    if (type.toUpperCase().includes('TRUCK')) {
-      vehicleType = VehicleType.TRUCK;
-    } else if (type.toUpperCase().includes('PESAWAT')) {
-      vehicleType = VehicleType.PESAWAT;
+    let vehicleType = VehicleType.STANDAR;
+    if (type.toUpperCase().includes('CEPAT')) {
+      vehicleType = VehicleType.CEPAT;
+    } else if (type.toUpperCase().includes('VVIP')) {
+      vehicleType = VehicleType.VVIP;
     }
 
     const newVehicle = await prisma.vehicle.create({
@@ -167,7 +167,7 @@ export async function POST(request) {
       kapal: {
         id: newVehicle.id,
         name: newVehicle.name,
-        type: newVehicle.type === VehicleType.KAPAL ? 'Kapal Petikemas' : newVehicle.type === VehicleType.TRUCK ? 'Truck Trailer' : 'Pesawat Cargo',
+        type: newVehicle.type === VehicleType.STANDAR ? 'Kapal Standar' : newVehicle.type === VehicleType.CEPAT ? 'Kapal Cepat' : 'Kapal VVIP',
         status: status,
         location: location || '',
         destination: destination || '',
@@ -289,11 +289,11 @@ export async function PUT(request) {
       prismaStatus = VehicleStatus.PERBAIKAN;
     }
 
-    let vehicleType = VehicleType.KAPAL;
-    if (type.toUpperCase().includes('TRUCK')) {
-      vehicleType = VehicleType.TRUCK;
-    } else if (type.toUpperCase().includes('PESAWAT')) {
-      vehicleType = VehicleType.PESAWAT;
+    let vehicleType = VehicleType.STANDAR;
+    if (type.toUpperCase().includes('CEPAT')) {
+      vehicleType = VehicleType.CEPAT;
+    } else if (type.toUpperCase().includes('VVIP')) {
+      vehicleType = VehicleType.VVIP;
     }
 
     const updated = await prisma.vehicle.update({
@@ -312,7 +312,7 @@ export async function PUT(request) {
       kapal: {
         id: updated.id,
         name: updated.name,
-        type: updated.type === VehicleType.KAPAL ? 'Kapal Petikemas' : updated.type === VehicleType.TRUCK ? 'Truck Trailer' : 'Pesawat Cargo',
+        type: updated.type === VehicleType.STANDAR ? 'Kapal Standar' : updated.type === VehicleType.CEPAT ? 'Kapal Cepat' : 'Kapal VVIP',
         status: status,
         location: location || '',
         destination: destination || '',

@@ -10,7 +10,7 @@ export default function RegisterPage() {
     name: '',
     email: '',
     password: '',
-    role: 'CUSTOMER',
+    role: 'OPERATOR',
     phone: '',
     address: ''
   })
@@ -382,7 +382,7 @@ export default function RegisterPage() {
                   cursor: 'pointer'
                 }}
               >
-                <option value="CUSTOMER" style={{ background: '#140A24', color: 'white' }}>Customer (Pengirim)</option>
+                <option value="OPERATOR" style={{ background: '#140A24', color: 'white' }}>Operator (Cabang)</option>
                 <option value="ADMIN" style={{ background: '#140A24', color: 'white' }}>Admin (Operator)</option>
               </select>
             </div>

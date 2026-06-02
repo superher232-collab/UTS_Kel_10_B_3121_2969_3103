@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { CargoDashboardClient } from '@/components/cargo/CargoDashboardClient';
 import { FleetManagerClient } from '@/components/admin/FleetManagerClient';
 import { InteractiveMap } from '@/components/map/InteractiveMap';
+import { AnalyticsClient } from '@/components/admin/AnalyticsClient';
 
 interface AdminDashboardClientProps {
   initialTab: string;
@@ -49,33 +50,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
   // CLIENT STATE FETCHERS FOR THE TABS
   // ─────────────────────────────────────────────────────────────
   
-  // 1. ANALYTICS STATE
-  const [analyticsData, setAnalyticsData] = useState<any>(null);
-  const [analyticsLoading, setAnalyticsLoading] = useState(false);
-  const [analyticsError, setAnalyticsError] = useState('');
-
-  useEffect(() => {
-    if (activeTab === 'analytics') {
-      async function fetchAnalytics() {
-        setAnalyticsLoading(true);
-        setAnalyticsError('');
-        try {
-          const [overview, routes, vehicles] = await Promise.all([
-            fetch('/api/admin/analytics/overview').then(r => r.json()),
-            fetch('/api/admin/analytics/routes').then(r => r.json()),
-            fetch('/api/admin/analytics/vehicles').then(r => r.json())
-          ]);
-          if (overview.error || routes.error || vehicles.error) throw new Error('Gagal memuat analitis');
-          setAnalyticsData({ overview: overview.data, routes: routes.data, vehicles: vehicles.data });
-        } catch (e: any) {
-          setAnalyticsError(e.message || 'Gagal memuat sebagian data analitis');
-        } finally {
-          setAnalyticsLoading(false);
-        }
-      }
-      fetchAnalytics();
-    }
-  }, [activeTab]);
+  // Analytics state handled inside AnalyticsClient component itself
 
   // 2. USERS DIRECTORY STATE
   const [users, setUsers] = useState<any[]>([]);
@@ -112,7 +87,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
   const handleRoleToggle = async (userId: string, currentRole: string) => {
     setUsersActionError('');
     setUsersActionSuccess('');
-    const targetRole = currentRole === 'ADMIN' ? 'CUSTOMER' : 'ADMIN';
+    const targetRole = currentRole === 'ADMIN' ? 'OPERATOR' : 'ADMIN';
     if (!confirm(`Ubah peran user ini menjadi ${targetRole}?`)) return;
     try {
       const res = await fetch(`/api/admin/users/${userId}`, {
@@ -450,120 +425,15 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
           />
         )}
 
-        {/* VIEW 3: ANALISIS SISTEM */}
+        {/* VIEW 3: ANALISIS & LAPORAN */}
         {activeTab === 'analytics' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>📊 ANALISIS METRIK & VISUALISASI SISTEM</h1>
-              <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>METRIK REAL-TIME EFISIENSI RUTE, PENDAPATAN, & UTILISASI ARMADA</span>
+              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0, color: 'white' }}>📊 ANALITIK & LAPORAN OPERASIONAL</h1>
+              <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>LAPORAN HARIAN · MINGGUAN · BULANAN · KESELURUHAN — DIPERBARUI OTOMATIS</span>
             </div>
+            <AnalyticsClient role="ADMIN" />
 
-            {analyticsLoading ? (
-              <div style={{ textAlign: 'center', padding: '60px', color: '#A855F7', fontWeight: 'bold' }}>📡 MENGAMBIL METRIK DARI SATELIT...</div>
-            ) : analyticsError ? (
-              <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid #EF4444', color: '#EF4444', fontSize: '11px', fontWeight: 'bold' }}>⚠️ ERROR: {analyticsError}</div>
-            ) : analyticsData ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-                  {[
-                    { label: 'PENDAPATAN TERAKUMULASI', value: formatCurrency(analyticsData.overview?.totalRevenue || 0), color: '#22C55E' },
-                    { label: 'UTILISASI ARMADA AKTIF', value: `${analyticsData.vehicles?.utilizationRate || 0}%`, color: '#3B82F6' },
-                    { label: 'ANTREAN KARGO PENDING', value: analyticsData.overview?.pendingShipments || 0, color: '#F59E0B' },
-                    { label: 'ARMADA TERLAMBAT / DELAYED', value: analyticsData.overview?.delayedShipments || 0, color: '#EF4444' }
-                  ].map(c => (
-                    <div key={c.label} style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '8px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <span style={{ fontSize: '8px', color: '#8B7BA8', fontWeight: 'bold', letterSpacing: '0.5px' }}>{c.label}</span>
-                      <div style={{ fontSize: '20px', fontWeight: 'bold', color: c.color }}>{c.value}</div>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '24px' }}>
-                  {/* Revenue by mode */}
-                  <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-                    <h3 style={{ margin: '0 0 20px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>💰 PENDAPATAN BERDASARKAN METODE TRANSPORTASI</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                      {analyticsData.overview?.revenueByType.map((item: any) => {
-                        const maxRevenue = Math.max(...(analyticsData.overview?.revenueByType.map((i: any) => i.revenue) || [1]));
-                        const percentage = Math.round((item.revenue / maxRevenue) * 100);
-                        return (
-                          <div key={item.type} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
-                              <span style={{ fontWeight: 'bold' }}>{item.type} ({item.count} Trip)</span>
-                              <span style={{ color: '#22C55E' }}>{formatCurrency(item.revenue)}</span>
-                            </div>
-                            <div style={{ background: 'rgba(255,255,255,0.05)', height: '10px', borderRadius: '4px', overflow: 'hidden' }}>
-                              <div style={{ width: `${percentage}%`, height: '100%', background: 'linear-gradient(90deg, #A855F7 0%, #22C55E 100%)', transition: 'width 1s ease-out' }}></div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Top Routes */}
-                  <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-                    <h3 style={{ margin: '0 0 20px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>📍 5 RUTE DENGAN TRIP TERBANYAK</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                      {analyticsData.routes?.topRoutes.slice(0, 5).map((route: any) => {
-                        const maxTrips = Math.max(...(analyticsData.routes?.topRoutes.map((i: any) => i.count) || [1]));
-                        const percentage = Math.round((route.count / maxTrips) * 100);
-                        return (
-                          <div key={route.routeString} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
-                              <span style={{ fontWeight: 'bold' }}>{route.routeString}</span>
-                              <span style={{ color: '#A855F7' }}>{route.count} Trip ({route.avgDeliveryHours} Jam Rerata)</span>
-                            </div>
-                            <div style={{ background: 'rgba(255,255,255,0.05)', height: '10px', borderRadius: '4px', overflow: 'hidden' }}>
-                              <div style={{ width: `${percentage}%`, height: '100%', background: 'linear-gradient(90deg, #A855F7 0%, #3B82F6 100%)', transition: 'width 1s ease-out' }}></div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Fleet Performance Table */}
-                <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-                  <h3 style={{ margin: '0 0 16px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>🚀 TINGKAT UTILISASI & DISTRIBUSI ARMADA AKTIF</h3>
-                  <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '1px solid rgba(168, 85, 247, 0.2)', color: '#8B7BA8' }}>
-                          <th style={{ padding: '12px 8px' }}>NAMA ARMADA</th>
-                          <th style={{ padding: '12px 8px' }}>TIPE</th>
-                          <th style={{ padding: '12px 8px' }}>NOMOR PLAT</th>
-                          <th style={{ padding: '12px 8px' }}>STATUS</th>
-                          <th style={{ padding: '12px 8px' }}>JUMLAH TRIP</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {analyticsData.vehicles?.allVehicles.map((v: any) => (
-                          <tr key={v.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                            <td style={{ padding: '12px 8px', fontWeight: 'bold' }}>{v.name}</td>
-                            <td style={{ padding: '12px 8px' }}>{v.type}</td>
-                            <td style={{ padding: '12px 8px', color: '#A855F7' }}>{v.plateNo}</td>
-                            <td style={{ padding: '12px 8px' }}>
-                              <span style={{
-                                background: v.status === 'TERSEDIA' ? 'rgba(34,197,94,0.1)' : v.status === 'DIPAKAI' ? 'rgba(59,130,246,0.1)' : 'rgba(239,68,68,0.1)',
-                                border: `1px solid ${v.status === 'TERSEDIA' ? '#22C55E' : v.status === 'DIPAKAI' ? '#3B82F6' : '#EF4444'}`,
-                                color: v.status === 'TERSEDIA' ? '#22C55E' : v.status === 'DIPAKAI' ? '#3B82F6' : '#EF4444',
-                                padding: '2px 6px',
-                                borderRadius: '4px',
-                                fontSize: '9px',
-                                fontWeight: 'bold'
-                              }}>{v.status}</span>
-                            </td>
-                            <td style={{ padding: '12px 8px', fontWeight: 'bold' }}>{v.tripCount} Trip</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            ) : null}
           </div>
         )}
 

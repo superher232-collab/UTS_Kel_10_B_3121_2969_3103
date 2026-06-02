@@ -17,7 +17,7 @@ interface CargoFormProps {
   onSubmit: (data: Partial<CargoShipment>) => Promise<boolean>;
   editData?: CargoShipment | null;
   ships?: Ship[];
-  role: 'ADMIN' | 'CUSTOMER';
+  role: 'ADMIN' | 'OPERATOR';
 }
 
 export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], role }: CargoFormProps) {
@@ -56,6 +56,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
     status_pengiriman: 'diproses',
     status_barang: 'aman',
     status_transaksi: 'belum_bayar',
+    metode_pembayaran: 'TUNAI',
     deskripsi: '',
     targetUserId: ''
   });
@@ -114,6 +115,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
         status_pengiriman: editData.status_pengiriman || 'diproses',
         status_barang: editData.status_barang || 'aman',
         status_transaksi: editData.status_transaksi || 'belum_bayar',
+        metode_pembayaran: editData.metode_pembayaran || 'TUNAI',
         deskripsi: editData.deskripsi || '',
         targetUserId: (editData as any).userId || ''
       });
@@ -137,6 +139,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
         status_pengiriman: 'diproses',
         status_barang: 'aman',
         status_transaksi: 'belum_bayar',
+        metode_pembayaran: 'TUNAI',
         deskripsi: '',
         targetUserId: ''
       });
@@ -712,6 +715,19 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
             </select>
           </div>
 
+          {/* Metode Pembayaran */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>METODE PEMBAYARAN *</span>
+            <select
+              value={form.metode_pembayaran}
+              onChange={(e) => setForm(prev => ({ ...prev, metode_pembayaran: e.target.value }))}
+              style={{ ...inputStyle, cursor: 'pointer' }}
+            >
+              <option value="TUNAI" style={{ background: '#0D0618' }}>💵 TUNAI (CASH)</option>
+              <option value="QRIS" style={{ background: '#0D0618' }}>📱 QRIS (CASHLESS)</option>
+            </select>
+          </div>
+
           {/* Status Dropdowns — Only editable by Admin (BR-09, BR-08) */}
           {role === 'ADMIN' ? (
             <>
@@ -760,7 +776,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
 
               {/* Target User ID Klien */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>USER ID CUSTOMER (KLIEN)</span>
+                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>USER ID OPERATOR (KLIEN)</span>
                 <input
                   type="text"
                   placeholder="ID Akun Customer (Opsional)"

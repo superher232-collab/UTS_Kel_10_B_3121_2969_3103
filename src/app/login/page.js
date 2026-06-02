@@ -161,8 +161,8 @@ export default function Login() {
                     setEmail('admin@primelog.com');
                     setPassword('admin123');
                   } else {
-                    setEmail('customer@primelog.com');
-                    setPassword('customer123');
+                    setEmail('operator@primelog.com');
+                    setPassword('operator123');
                   }
                 }}
                 style={{
@@ -314,7 +314,7 @@ export default function Login() {
               </div>
               <span style={{ color: 'var(--text-light, #C7B8EA)', fontFamily: 'var(--font-body)', fontSize: '13px' }}>Ingat saya</span>
             </label>
-            <a href="#" style={{ color: 'var(--purple-logo, #C084FC)', fontFamily: 'var(--font-body)', fontSize: '13px', textDecoration: 'none' }}>Lupa kata sandi?</a>
+            <Link href="/forgot-password" style={{ color: 'var(--purple-logo, #C084FC)', fontFamily: 'var(--font-body)', fontSize: '13px', textDecoration: 'none' }}>Lupa kata sandi?</Link>
           </div>
 
           {errorMsg && (
@@ -377,6 +377,10 @@ export default function Login() {
             </svg>
           </button>
         </form>
+
+        <p style={{ marginTop: '20px', marginBottom: '10px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body, monospace)' }}>
+          Belum punya akun? <Link href="/register" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Daftar di sini</Link>
+        </p>
 
         {/* Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '40px' }}>

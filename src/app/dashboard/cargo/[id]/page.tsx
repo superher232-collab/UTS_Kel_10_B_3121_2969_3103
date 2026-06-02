@@ -117,7 +117,7 @@ export default async function ShipmentDetailPage({ params }: PageProps) {
   }
 
   const { id } = await params
-  const role = (session.user as any).role as 'ADMIN' | 'CUSTOMER'
+  const role = (session.user as any).role as 'ADMIN' | 'OPERATOR'
   const userId = (session.user as any).id as string
 
   // Fetch shipment from DB including relations

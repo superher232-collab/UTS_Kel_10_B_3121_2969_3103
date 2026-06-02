@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import { useDashboard } from '@/context/DashboardContext';
+import { AnalyticsClient } from '@/components/admin/AnalyticsClient';
 
 export default function AnalyticsPage() {
   const { armada = [], logs = [], errorSignal } = useDashboard() || {};
@@ -71,7 +72,16 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', color: 'white', fontFamily: 'monospace' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%', color: 'white', fontFamily: 'monospace' }}>
+
+      {/* ── PUSAT ANALITIK (Harian / Mingguan / Bulanan / Keseluruhan) ── */}
+      <AnalyticsClient role="OPERATOR" />
+
+      {/* ── MONITORING ARMADA (Legacy telemetri) ── */}
+      <div style={{ borderTop: '1px dashed rgba(168,85,247,0.2)', paddingTop: '24px' }}>
+        <div style={{ fontSize: '10px', color: '#8B7BA8', letterSpacing: '1.5px', marginBottom: '16px', fontWeight: 'bold' }}>
+          🛰️ MONITORING ARMADA &amp; LOGBOOK TELEMETRI
+        </div>
       
       {/* SWR warning info */}
       {errorSignal && (
@@ -358,6 +368,8 @@ export default function AnalyticsPage() {
             </tbody>
           </table>
         </div>
+      </div>
+
       </div>
 
       <style>{`

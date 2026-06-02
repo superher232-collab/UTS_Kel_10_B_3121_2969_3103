@@ -20,6 +20,36 @@ export default function NavigationMenu() {
     setIsAdmin(localStorage.getItem('role') === 'Admin');
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (pathname?.startsWith('/admin')) {
+      const titles: Record<string, string> = {
+        komando: 'Ruang Komando — PrimeLog Admin',
+        fleet: 'Manajemen Armada — PrimeLog Admin',
+        map: 'Peta Maritim — PrimeLog Admin',
+        analytics: 'Analitik Performa — PrimeLog Admin',
+        cargo: 'Kontrol Cargo — PrimeLog Admin',
+        settings: 'Konfigurasi Sistem — PrimeLog Admin',
+        users: 'Direktori User — PrimeLog Admin',
+        audit: 'Audit Trail — PrimeLog Admin'
+      };
+      document.title = titles[activeTab] || 'Command Hub — PrimeLog Admin';
+    } else {
+      const titles: Record<string, string> = {
+        '/dashboard': 'Dashboard Portal — PrimeLog Operator',
+        '/dashboard/map': 'Radar Maritim — PrimeLog Operator',
+        '/dashboard/cargo': 'Pusat Kargo — PrimeLog Operator',
+        '/dashboard/analytics': 'Analitik Real-Time — PrimeLog Operator',
+        '/dashboard/support': 'Pusat Dukungan Tiket — PrimeLog',
+        '/dashboard/pemeliharaan': 'Pemeliharaan Armada — PrimeLog',
+        '/dashboard/peringatan': 'Pusat Peringatan — PrimeLog',
+        '/dashboard/stats': 'Statistik Pengiriman — PrimeLog'
+      };
+      document.title = titles[pathname] || 'Portal Operator — PrimeLog';
+    }
+  }, [pathname, activeTab]);
+
   const isAdminView = pathname?.startsWith('/admin');
 
   // Helper checking active tab on admin page
@@ -67,7 +97,7 @@ export default function NavigationMenu() {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontSize: '15px', fontWeight: 'bold', letterSpacing: '2px', color: 'white' }}>PRIMELOG</span>
           <span style={{ fontSize: '8px', color: '#C084FC', letterSpacing: '0.5px', fontWeight: 'bold' }}>
-            {isAdminView ? 'ADMIN COMMAND HUB' : 'CUSTOMER PORTAL'}
+            {isAdminView ? 'ADMIN COMMAND HUB' : 'OPERATOR PORTAL'}
           </span>
         </div>
       </div>
@@ -358,7 +388,7 @@ export default function NavigationMenu() {
         </div>
       ) : (
         // =============================================================
-        // 🚢 CUSTOMER PORTAL NAVBAR LAYOUT (Pruned halu links, fully functional)
+        // 🚢 OPERATOR PORTAL NAVBAR LAYOUT (Pruned halu links, fully functional)
         // =============================================================
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           

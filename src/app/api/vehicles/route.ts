@@ -7,7 +7,7 @@ import { z } from 'zod'
 
 const VehicleCreateSchema = z.object({
   name: z.string().min(1, 'Nama armada wajib diisi'),
-  type: z.string().min(1, 'Tipe armada (KAPAL/TRUCK/PESAWAT) wajib diisi'),
+  type: z.string().min(1, 'Tipe armada (STANDAR/CEPAT/VVIP) wajib diisi'),
   plateNo: z.string().min(3, 'Nomor pelat/registrasi wajib diisi'),
   capacity: z.preprocess(
     (val) => (val === '' || val === null ? undefined : Number(val)),

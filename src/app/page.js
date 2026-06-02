@@ -8,6 +8,11 @@ import CTA from "@/components/CTA";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
+export const metadata = {
+  title: 'PrimeLog - Fleet Command System',
+  description: 'Sistem komando armada maritim modern dan logistik pintar Indonesia. Lacak pengiriman kargo laut secara real-time, pantau armada dengan peta live satelit, dan optimalkan layanan kargo Anda.'
+}
+
 export default function Home() {
   return (
     <div style={{

@@ -27,6 +27,7 @@ function mapShipmentToCargo(s: any) {
     status_pengiriman: s.status.toLowerCase(),
     status_barang: 'aman',
     status_transaksi: s.paymentStatus?.toLowerCase() || 'belum_bayar',
+    metode_pembayaran: s.paymentMethod || 'TUNAI',
     deskripsi: s.notes || null,
     eta: s.eta?.toISOString() || null,
     currentLocation: s.currentLocation || null
@@ -53,6 +54,11 @@ interface PageProps {
     mode?: string;
     page?: string;
   }>;
+}
+
+export const metadata = {
+  title: 'Admin Command Hub - PrimeLog',
+  description: 'Pusat Komando dan Pengendalian PrimeLog. Kelola kargo, armada kapal, penugasan kru, analitik operasional, dan tiket bantuan pelanggan dari satu konsol terpadu.'
 }
 
 export default async function AdminUnifiedDashboardPage({ searchParams }: PageProps) {

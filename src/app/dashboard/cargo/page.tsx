@@ -27,6 +27,7 @@ export type CargoShipment = {
   deskripsi: string | null
   eta?: string | null
   currentLocation?: string | null
+  metode_pembayaran?: string | null
 }
 
 export type VehicleOption = {
@@ -77,6 +78,7 @@ function mapShipmentToCargo(s: any): CargoShipment {
     status_pengiriman: s.status.toLowerCase(),
     status_barang: 'aman', // Default, bisa diextend
     status_transaksi: s.paymentStatus?.toLowerCase() || 'belum_bayar',
+    metode_pembayaran: s.paymentMethod || 'TUNAI',
     deskripsi: s.notes || null,
     eta: s.eta?.toISOString() || null,
     currentLocation: s.currentLocation || null
@@ -116,7 +118,7 @@ export default async function DashboardCargoPage({ searchParams }: PageProps) {
     )
   }
 
-  const role = (session.user as any).role as 'ADMIN' | 'CUSTOMER'
+  const role = (session.user as any).role as 'ADMIN' | 'OPERATOR'
   const userId = (session.user as any).id as string
 
   // 2. Parse Search Params (Next.js 15/16 App Router)

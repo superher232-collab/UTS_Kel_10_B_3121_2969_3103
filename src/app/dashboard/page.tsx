@@ -6,6 +6,11 @@ import { prisma } from '@/lib/db';
 import Link from 'next/link';
 import { InteractiveMap } from '@/components/map/InteractiveMap';
 
+export const metadata = {
+  title: 'Dashboard Operator - PrimeLog',
+  description: 'Ruang kendali Operator PrimeLog. Kelola dan daftarkan pengiriman kargo, lacak armada live satelit, dan ajukan complaint support.'
+}
+
 export default async function CustomerDashboardPage() {
   const session = await auth();
 
@@ -148,7 +153,7 @@ export default async function CustomerDashboardPage() {
         {/* Shortcuts & Quick Actions Dashboard Hub */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <h2 style={{ fontSize: '14px', fontWeight: 'bold', color: '#C084FC', letterSpacing: '1px', margin: 0 }}>
-            ⚡ PINTASAN AKSI CEPAT CUSTOMER
+            ⚡ PINTASAN AKSI CEPAT OPERATOR
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[

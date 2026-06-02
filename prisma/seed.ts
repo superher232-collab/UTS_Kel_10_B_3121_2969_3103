@@ -28,7 +28,7 @@ const main = async (): Promise<void> => {
       name: 'John Doe',
       email: 'customer@primelog.com',
       password: customerPasswordHash,
-      role: Role.CUSTOMER
+      role: Role.OPERATOR
     }
   })
 

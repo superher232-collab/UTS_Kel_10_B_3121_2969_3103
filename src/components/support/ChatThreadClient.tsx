@@ -10,7 +10,7 @@ export interface SerializedMessage {
   message: string
   senderId: string
   senderName: string
-  senderRole: 'ADMIN' | 'OPERATOR'
+  senderRole: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
   createdAt: string
 }
 
@@ -32,7 +32,7 @@ export interface TicketDetails {
 }
 
 interface ChatThreadClientProps {
-  role: 'ADMIN' | 'OPERATOR'
+  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
   userId: string
   ticket: TicketDetails
   initialMessages: SerializedMessage[]
@@ -373,7 +373,7 @@ export function ChatThreadClient({ role, userId, ticket, initialMessages }: Chat
           )}
 
           {/* Customer Self-Close widget */}
-          {role === 'OPERATOR' && !isClosed && (
+          {role !== 'ADMIN' && !isClosed && (
             <div style={{
               background: '#0D0618',
               border: '1px solid rgba(168, 85, 247, 0.2)',

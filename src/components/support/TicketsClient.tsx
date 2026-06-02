@@ -27,7 +27,7 @@ export interface SerializedShipment {
 }
 
 interface TicketsClientProps {
-  role: 'ADMIN' | 'OPERATOR'
+  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
   userId: string
   initialTickets: SerializedTicket[]
   shipments: SerializedShipment[]
@@ -239,7 +239,7 @@ export function TicketsClient({ role, userId, initialTickets, shipments }: Ticke
           </span>
         </div>
 
-        {role === 'OPERATOR' && (
+        {role !== 'ADMIN' && (
           <button
             onClick={() => setIsModalOpen(true)}
             style={{

@@ -9,7 +9,7 @@ import { createShipment, updateShipment, deleteShipment, cancelShipment } from '
 import { CargoShipment, VehicleOption } from '../../app/dashboard/cargo/page'
 
 interface CargoDashboardClientProps {
-  role: 'ADMIN' | 'OPERATOR'
+  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
   initialShipments: CargoShipment[]
   ships: VehicleOption[]
   stats: {

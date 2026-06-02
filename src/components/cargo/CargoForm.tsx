@@ -17,7 +17,7 @@ interface CargoFormProps {
   onSubmit: (data: Partial<CargoShipment>) => Promise<boolean>;
   editData?: CargoShipment | null;
   ships?: Ship[];
-  role: 'ADMIN' | 'OPERATOR';
+  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER';
 }
 
 export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], role }: CargoFormProps) {

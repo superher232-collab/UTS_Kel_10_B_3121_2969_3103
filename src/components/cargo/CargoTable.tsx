@@ -17,7 +17,7 @@ interface CargoTableProps {
   onEdit: (cargo: CargoShipment) => void;
   onDelete: (id: string) => Promise<boolean>;
   onCancel: (id: string, reason: string) => Promise<boolean>;
-  role: 'ADMIN' | 'OPERATOR';
+  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER';
 }
 
 export function CargoTable({ data, loading, pagination, onPageChange, onEdit, onDelete, onCancel, role }: CargoTableProps) {

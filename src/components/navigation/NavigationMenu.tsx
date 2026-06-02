@@ -464,6 +464,42 @@ export default function NavigationMenu() {
             </div>
           </div>
 
+          {/* Megamenu Category: Analytics */}
+          <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
+            <Link href="/dashboard/analytics" style={{ textDecoration: 'none' }}>
+              <div className="megamenu-tab" style={{
+                padding: '10px 16px',
+                background: pathname?.startsWith('/dashboard/analytics') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
+                border: pathname?.startsWith('/dashboard/analytics') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
+                color: pathname?.startsWith('/dashboard/analytics') ? '#C084FC' : '#8B7BA8',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                cursor: 'pointer',
+                borderRadius: '6px',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                📊 ANALYTICS <span style={{ fontSize: '8px' }}>▼</span>
+              </div>
+            </Link>
+
+            <div className="megamenu-content">
+              <div style={{ borderRight: '1px solid rgba(168, 85, 247, 0.2)', paddingRight: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#C084FC', letterSpacing: '1px' }}>ANALYTICS PANEL</span>
+                <span style={{ fontSize: '8px', color: '#8B7BA8', lineHeight: '1.4' }}>Pantau telemetri armada real-time, status logistik perutean, dan indikator utilisasi.</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '9px' }}>
+                <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#8B7BA8', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>AKSES CEPAT</span>
+                <Link href="/dashboard/analytics" style={{ textDecoration: 'none', color: '#06B6D4', fontWeight: 'bold' }}>
+                  ➔ MONITOR ANALYTICS UTAMA
+                </Link>
+              </div>
+            </div>
+          </div>
+
           {/* Megamenu Category: Support */}
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/dashboard/support" style={{ textDecoration: 'none' }}>

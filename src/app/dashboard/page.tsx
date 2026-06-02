@@ -109,24 +109,7 @@ export default async function CustomerDashboardPage() {
             <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Kelola pengiriman kargo, lacak armada maritim, dan ajukan complaint support di satu platform terpadu.</span>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <Link
-              href="/dashboard/cargo"
-              style={{
-                background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)',
-                color: 'white',
-                padding: '12px 20px',
-                borderRadius: '6px',
-                textDecoration: 'none',
-                fontSize: '11px',
-                fontWeight: 'bold',
-                boxShadow: '0 0 15px rgba(168, 85, 247, 0.35)',
-                transition: 'all 0.2s'
-              }}
-            >
-              📦 BUAT KARGO BARU
-            </Link>
-          </div>
+
         </div>
 
         {/* 3 Metrics Dashboard Grid */}
@@ -276,9 +259,9 @@ export default async function CustomerDashboardPage() {
                           <Link href={`/dashboard/cargo?q=${s.receiptNo}`} style={{ background: 'transparent', border: '1px solid rgba(6,182,212,0.4)', color: '#06B6D4', padding: '3px 6px', borderRadius: '4px', textDecoration: 'none', fontSize: '9px', fontWeight: 'bold' }}>LACAK 🔍</Link>
                           <Link href={`/dashboard/cargo/${s.id}`} style={{ background: 'transparent', border: '1px solid rgba(168,85,247,0.4)', color: '#C084FC', padding: '3px 6px', borderRadius: '4px', textDecoration: 'none', fontSize: '9px', fontWeight: 'bold' }}>DETAIL / INVOICE 📋</Link>
                           
-                          {/* Cancel/Edit actions enabled strictly ONLY if status is DIPROSES (BR-02/BR-03) */}
+                          {/* Cancel actions enabled strictly ONLY if status is DIPROSES (BR-02/BR-03) */}
                           {isDiproses ? (
-                            <Link href="/dashboard/cargo" style={{ background: 'transparent', border: '1px solid rgba(239,68,68,0.5)', color: '#EF4444', padding: '3px 6px', borderRadius: '4px', textDecoration: 'none', fontSize: '9px', fontWeight: 'bold' }}>BATAL / EDIT ✏️</Link>
+                            <Link href="/dashboard/cargo" style={{ background: 'transparent', border: '1px solid rgba(239,68,68,0.5)', color: '#EF4444', padding: '3px 6px', borderRadius: '4px', textDecoration: 'none', fontSize: '9px', fontWeight: 'bold' }}>BATAL ❌</Link>
                           ) : (
                             <span style={{ border: '1px solid rgba(255,255,255,0.08)', color: '#4B5563', padding: '3px 6px', borderRadius: '4px', fontSize: '9px', cursor: 'not-allowed', fontWeight: 'bold' }}>KUNCI 🔒</span>
                           )}

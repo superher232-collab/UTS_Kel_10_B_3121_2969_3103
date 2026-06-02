@@ -217,42 +217,42 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
           </span>
         </div>
 
-        <button
-          onClick={() => {
-            setEditItem(null)
-            setIsModalOpen(true)
-          }}
-          style={{
-            background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)',
-            border: 'none',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            fontFamily: 'monospace',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)',
-            transition: 'all 0.2s'
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          TAMBAH PENGIRIMAN CARGO
-        </button>
+        {role === 'ADMIN' && (
+          <button
+            onClick={() => {
+              setEditItem(null)
+              setIsModalOpen(true)
+            }}
+            style={{
+              background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)',
+              border: 'none',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '11px',
+              fontWeight: 'bold',
+              fontFamily: 'monospace',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)',
+              transition: 'all 0.2s'
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            TAMBAH PENGIRIMAN CARGO
+          </button>
+        )}
       </div>
 
       {/* Summary Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
         {[
           { label: 'TOTAL CARGO PRISMA', value: totalCargo, color: '#A855F7', border: 'rgba(168, 85, 247, 0.3)' },
-          { label: 'MODA DARAT', value: daratCargo, color: '#22C55E', border: 'rgba(34, 197, 94, 0.3)' },
-          { label: 'MODA UDARA', value: udaraCargo, color: '#06B6D4', border: 'rgba(6, 182, 212, 0.3)' },
           { label: 'MODA LAUT', value: lautCargo, color: '#F59E0B', border: 'rgba(245, 158, 11, 0.3)' },
           { label: 'PENGIRIMAN SELESAI', value: selesaiCargo, color: '#22C55E', border: 'rgba(34, 197, 94, 0.3)' }
         ].map(card => (

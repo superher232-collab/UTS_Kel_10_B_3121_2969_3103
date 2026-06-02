@@ -389,35 +389,6 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                       </>
                     ) : shipment.status_pengiriman === 'diproses' ? (
                       <>
-                        {/* Tombol Edit Customer */}
-                        <button
-                          onClick={() => onEdit(shipment)}
-                          style={{
-                            background: 'rgba(168, 85, 247, 0.1)',
-                            border: '1px solid rgba(168, 85, 247, 0.4)',
-                            borderRadius: '4px',
-                            padding: '6px 10px',
-                            color: '#C084FC',
-                            cursor: 'pointer',
-                            fontSize: '9px',
-                            fontWeight: 'bold',
-                            fontFamily: 'monospace',
-                            transition: 'all 0.2s'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#A855F7';
-                            e.currentTarget.style.color = 'white';
-                            e.currentTarget.style.boxShadow = '0 0 10px rgba(168, 85, 247, 0.4)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(168, 85, 247, 0.1)';
-                            e.currentTarget.style.color = '#C084FC';
-                            e.currentTarget.style.boxShadow = 'none';
-                          }}
-                        >
-                          EDIT
-                        </button>
-                        
                         {/* Tombol Batal Customer (BR-03) */}
                         <button
                           onClick={() => {

@@ -88,22 +88,7 @@ export function SearchBar({ onSearch }: SearchBarProps) {
         />
       </div>
 
-      {/* Transportation Mode Filter */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>MODA:</span>
-        <select
-          value={mode}
-          onChange={(e) => setMode(e.target.value)}
-          style={selectStyle}
-          onFocus={(e) => e.target.style.borderColor = '#A855F7'}
-          onBlur={(e) => e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)'}
-        >
-          <option value="all" style={{ background: '#0D0618' }}>🚚 SEMUA MODA</option>
-          <option value="darat" style={{ background: '#0D0618' }}>🚛 DARAT (TRUCK)</option>
-          <option value="udara" style={{ background: '#0D0618' }}>✈️ UDARA (PESAWAT)</option>
-          <option value="laut" style={{ background: '#0D0618' }}>🚢 LAUT (KAPAL)</option>
-        </select>
-      </div>
+
 
       {/* Shipment Status Filter */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

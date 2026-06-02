@@ -27,7 +27,7 @@ async function main() {
       name: 'Budi Customer',
       email: 'customer@test.com',
       password,
-      role: 'CUSTOMER',
+      role: 'OPERATOR',
       phone: '08123456789',
       address: 'Jl. Test No. 123'
     },
@@ -39,7 +39,7 @@ async function main() {
   console.log('Email:', admin.email)
   console.log('Password: password123')
   console.log('-----------------------------------')
-  console.log('CUSTOMER')
+  console.log('OPERATOR')
   console.log('Email:', customer.email)
   console.log('Password: password123')
   console.log('-----------------------------------')

@@ -183,7 +183,7 @@ export const createShipment = async (prevState: ActionState | null, formData: Fo
           shippingType: shippingType as ShippingType,
           status: ShipmentStatus.DIPROSES,
           paymentStatus: PaymentStatus.BELUM_BAYAR,
-          // paymentMethod: paymentMethod || 'TUNAI', // TODO: uncomment setelah prisma generate
+          paymentMethod: paymentMethod || 'TUNAI',
           vehicleId: role === Role.ADMIN ? vehicleId : null,
           notes,
           userId: assignedUserId

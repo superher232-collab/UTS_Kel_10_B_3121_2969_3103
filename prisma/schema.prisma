@@ -16,6 +16,7 @@ generator client {
 enum Role {
   ADMIN
   OPERATOR
+  CUSTOMER
 }
 
 enum VehicleType {

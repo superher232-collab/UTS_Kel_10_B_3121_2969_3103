@@ -118,7 +118,7 @@ export default async function DashboardCargoPage({ searchParams }: PageProps) {
     )
   }
 
-  const role = (session.user as any).role as 'ADMIN' | 'OPERATOR'
+  const role = (session.user as any).role as 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
   const userId = (session.user as any).id as string
 
   // 2. Parse Search Params (Next.js 15/16 App Router)

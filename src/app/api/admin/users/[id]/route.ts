@@ -8,7 +8,7 @@ import bcrypt from 'bcryptjs'
 import { logAudit } from '@/lib/audit'
 
 const UserMutationSchema = z.object({
-  role: z.enum([Role.ADMIN, Role.OPERATOR]).optional(),
+  role: z.enum([Role.ADMIN, Role.OPERATOR, Role.CUSTOMER]).optional(),
   password: z.string().min(6, 'Password minimal 6 karakter').optional(),
   softDelete: z.boolean().optional()
 })

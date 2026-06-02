@@ -18,7 +18,11 @@ export default function Login() {
     // Auto-generate dummy credentials if empty (Bypass Mode)
     const finalEmail = email.trim() !== '' 
       ? email 
-      : (role === 'admin' ? 'admin@bypassed.com' : 'customer@bypassed.com');
+      : (role === 'admin' 
+        ? 'admin@bypassed.com' 
+        : role === 'operator' 
+          ? 'operator@bypassed.com' 
+          : 'customer@bypassed.com');
       
     const finalPassword = password || 'bypassed';
 
@@ -32,7 +36,11 @@ export default function Login() {
       if (result?.error) {
         setErrorMsg('Kredensial salah. Silakan coba lagi.');
       } else {
-        localStorage.setItem('role', finalEmail.includes('admin') ? 'Admin' : 'User');
+        localStorage.setItem('role', finalEmail.includes('admin') 
+          ? 'Admin' 
+          : finalEmail.includes('operator') 
+            ? 'Operator' 
+            : 'Customer');
         localStorage.setItem('username', finalEmail.split('@')[0]);
         // Redirection check: Admin -> /admin, User -> /dashboard
         window.location.href = finalEmail.includes('admin') ? '/admin' : '/dashboard';
@@ -160,9 +168,12 @@ export default function Login() {
                   if (selectedRole === 'admin') {
                     setEmail('admin@primelog.com');
                     setPassword('admin123');
-                  } else {
+                  } else if (selectedRole === 'operator') {
                     setEmail('operator@primelog.com');
                     setPassword('operator123');
+                  } else if (selectedRole === 'customer') {
+                    setEmail('customer@primelog.com');
+                    setPassword('customer123');
                   }
                 }}
                 style={{
@@ -178,7 +189,8 @@ export default function Login() {
                 }}
               >
                 <option value="admin" style={{ background: '#140A24', color: 'white' }}>Administrator</option>
-                <option value="user" style={{ background: '#140A24', color: 'white' }}>Pengguna</option>
+                <option value="operator" style={{ background: '#140A24', color: 'white' }}>Operator (Cabang)</option>
+                <option value="customer" style={{ background: '#140A24', color: 'white' }}>Customer (Pelanggan)</option>
               </select>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted, #8B7BA8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
                 <polyline points="6 9 12 15 18 9"></polyline>

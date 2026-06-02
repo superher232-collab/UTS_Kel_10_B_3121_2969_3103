@@ -10,20 +10,20 @@ declare module 'next-auth' {
   interface Session {
     user: {
       id: string
-      role: 'ADMIN' | 'OPERATOR'
+      role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
     } & DefaultSession['user']
   }
 
   interface User {
     id?: string
-    role?: 'ADMIN' | 'OPERATOR'
+    role?: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string
-    role?: 'ADMIN' | 'OPERATOR'
+    role?: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
   }
 }
 
@@ -45,7 +45,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         
         if (!user) {
           // AUTO-REGISTER: Create account automatically if it does not exist
-          const role = email.toLowerCase().includes('admin') ? 'ADMIN' : 'OPERATOR'
+          const role = email.toLowerCase().includes('admin') 
+            ? 'ADMIN' 
+            : email.toLowerCase().includes('operator') 
+              ? 'OPERATOR' 
+              : 'CUSTOMER'
           const dummyHash = await bcrypt.hash(password || '123456', 10)
           
           user = await prisma.user.create({
@@ -62,7 +66,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role as 'ADMIN' | 'OPERATOR'
+          role: user.role as 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
         }
       }
     })
@@ -80,7 +84,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (session.user && token) {
         session.user.id = token.id || ''
-        session.user.role = token.role || 'OPERATOR'
+        session.user.role = token.role || 'CUSTOMER'
       }
       return session
     }

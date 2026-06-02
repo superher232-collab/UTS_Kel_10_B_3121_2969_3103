@@ -5,6 +5,7 @@ import Features from "@/components/Features";
 import Advantages from "@/components/Advantages";
 import Gallery from "@/components/Gallery";
 import CTA from "@/components/CTA";
+import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -58,6 +59,7 @@ export default function Home() {
           <Features />
           <Advantages />
           <Gallery />
+          <Contact />
           <CTA />
         </div>
         <Footer />

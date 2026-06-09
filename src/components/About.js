@@ -1,13 +1,23 @@
+"use client";
+import { motion } from "framer-motion";
+
 export default function About() {
   return (
-    <section id="tentang" style={{
-      padding: '80px 32px',
-      background: '#12101A',
-      borderLeft: '3px solid #7C3AED',
-      margin: '40px 0',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
+    <motion.section
+      id="tentang"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      style={{
+        padding: '80px 32px',
+        background: '#12101A',
+        borderLeft: '3px solid #7C3AED',
+        margin: '40px 0',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
 
       {/* Section Label */}
       <div style={{
@@ -52,6 +62,6 @@ export default function About() {
         perusahaan maritim meningkatkan efisiensi operasional, mengurangi biaya,
         dan memastikan keselamatan armada di seluruh dunia.
       </p>
-    </section>
+    </motion.section>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -107,28 +108,34 @@ export default function Navbar() {
               </li>
             ))}
             <li>
-              <a href="/login" className="nav-btn-primary" style={{
-                padding: '10px 24px',
-                background: '#7C3AED',
-                borderRadius: '6px',
-                color: '#F1F0F5',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-                fontSize: '11px',
-                letterSpacing: '1.5px',
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.3s ease'
-              }}>
+              <motion.a
+                href="/login"
+                className="nav-btn-primary"
+                whileHover={{ scale: 1.08 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                style={{
+                  padding: '10px 24px',
+                  background: '#7C3AED',
+                  borderRadius: '6px',
+                  color: '#F1F0F5',
+                  textDecoration: 'none',
+                  fontWeight: 'bold',
+                  fontSize: '11px',
+                  letterSpacing: '1.5px',
+                  fontFamily: 'system-ui, -apple-system, sans-serif',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'background 0.3s ease, box-shadow 0.3s ease'
+                }}
+              >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
                   <polyline points="10 17 15 12 10 7" />
                   <line x1="15" y1="12" x2="3" y2="12" />
                 </svg>
                 MASUK
-              </a>
+              </motion.a>
             </li>
           </ul>
 

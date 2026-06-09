@@ -75,7 +75,7 @@ export default function AnalyticsPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%', color: 'white', fontFamily: 'monospace' }}>
 
       {/* ── PUSAT ANALITIK (Harian / Mingguan / Bulanan / Keseluruhan) ── */}
-      <AnalyticsClient role="OPERATOR" />
+      <AnalyticsClient role="CUSTOMER" />
 
       {/* ── MONITORING ARMADA (Legacy telemetri) ── */}
       <div style={{ borderTop: '1px dashed rgba(168,85,247,0.2)', paddingTop: '24px' }}>

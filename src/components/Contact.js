@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { motion } from "framer-motion";
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -26,15 +27,22 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '80px 24px',
-      position: 'relative',
-      background: '#0D0B14',
-      margin: '40px 0'
-    }}>
+    <motion.section
+      id="contact"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '80px 24px',
+        position: 'relative',
+        background: '#0D0B14',
+        margin: '40px 0'
+      }}
+    >
       <h3 style={{
         fontFamily: 'system-ui, -apple-system, sans-serif',
         fontSize: '14px',
@@ -181,6 +189,6 @@ export default function Contact() {
           )}
         </form>
       </div>
-    </section>
+    </motion.section>
   );
 }

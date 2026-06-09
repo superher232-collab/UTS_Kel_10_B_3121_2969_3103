@@ -1,3 +1,25 @@
+"use client";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+      delayChildren: 0.1,
+      staggerChildren: 0.12
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+};
+
 export default function Advantages() {
   const items = [
     { text: 'Monitoring 24/7 untuk seluruh armada', icon: '🔄' },
@@ -9,14 +31,21 @@ export default function Advantages() {
   ];
 
   return (
-    <section id="keunggulan" style={{
-      padding: '80px 24px',
-      background: '#12101A',
-      borderLeft: '3px solid #7C3AED',
-      margin: '40px 0',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
+    <motion.section
+      id="keunggulan"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      style={{
+        padding: '80px 24px',
+        background: '#12101A',
+        borderLeft: '3px solid #7C3AED',
+        margin: '40px 0',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
       {/* Section Label */}
       <div style={{
         display: 'flex',
@@ -43,7 +72,7 @@ export default function Advantages() {
         gap: '14px'
       }}>
         {items.map((item, i) => (
-          <div key={i} style={{
+          <motion.div key={i} variants={itemVariants} style={{
             display: 'flex',
             alignItems: 'center',
             gap: '16px',
@@ -74,9 +103,9 @@ export default function Advantages() {
             }}>
               {item.text}
             </span>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -79,7 +79,7 @@ export async function PUT(req: Request) {
     })
   } catch (err: any) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Validasi gagal: ' + err.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: 'Validasi gagal: ' + err.issues[0].message }, { status: 400 })
     }
     return NextResponse.json({ error: err.message || 'Gagal memperbarui profil' }, { status: 500 })
   }

@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import Link from 'next/link';
 import { InteractiveMap } from '@/components/map/InteractiveMap';
+import { DashboardStatsGrid } from '@/components/dashboard/DashboardStatsGrid';
+import { DashboardMapWrapper } from '@/components/dashboard/DashboardMapWrapper';
 
 export const metadata = {
   title: 'Dashboard - PrimeLog',
@@ -117,46 +119,19 @@ export default async function CustomerDashboardPage() {
         </div>
 
         {/* 3 Metrics Dashboard Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-          {[
-            { label: 'KARGO AKTIF (SORTIR / PROSES)', value: aktifCount, desc: 'Kargo dalam tahap verifikasi & packing' },
-            { label: 'DALAM PERJALANAN / TRANSIT', value: perjalananCount, desc: 'Kargo sedang diangkut armada maritim' },
-            { label: 'PENGIRIMAN SELESAI / TIBA', value: selesaiCount, desc: 'Kargo sukses diterima di pelabuhan tujuan' }
-          ].map(card => (
-            <div key={card.label} style={{
-              background: '#12101A',
-              border: '1px solid #2A2740',
-              borderLeft: '3px solid #7C3AED',
-              borderRadius: '8px',
-              padding: '24px 20px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              transition: 'transform 0.2s'
-            }}>
-              <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '11px', color: '#9B99A8', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{card.label}</span>
-              <div style={{ fontSize: '3.5rem', fontWeight: 700, fontFamily: '"Roboto Mono", monospace', color: '#A855F7', lineHeight: 1 }}>{card.value}</div>
-              <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px', color: '#9B99A8' }}>{card.desc}</span>
-            </div>
-          ))}
-        </div>
+        <DashboardStatsGrid 
+          aktifCount={aktifCount} 
+          perjalananCount={perjalananCount} 
+          selesaiCount={selesaiCount} 
+        />
 
         {/* Integrated Real-time Maritime Map */}
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '12px',
-          padding: '20px',
-          background: '#12101A',
-          border: '1px solid #7C3AED',
-          borderRadius: '12px',
-          boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)'
-        }}>
+        <DashboardMapWrapper>
           <h2 style={{ fontSize: '14px', fontWeight: 'bold', color: '#F1F0F5', letterSpacing: '1px', margin: 0 }}>
             🛰️ SATELIT MONITORING ARMADA LIVE
           </h2>
           <InteractiveMap compact={true} />
-        </div>
+        </DashboardMapWrapper>
 
         {/* Shortcuts & Quick Actions Dashboard Hub */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>

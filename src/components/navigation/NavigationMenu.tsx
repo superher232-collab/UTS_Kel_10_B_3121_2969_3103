@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { useDashboard } from '@/context/DashboardContext';
+import { motion } from 'framer-motion';
 
 export default function NavigationMenu() {
   const pathname = usePathname();
@@ -113,18 +114,35 @@ export default function NavigationMenu() {
           
           {/* Link: Ruang Komando */}
           <Link href="/admin?tab=komando" style={{ textDecoration: 'none' }}>
-            <div style={{
-              background: 'transparent',
-              borderBottom: isAdminTabActive('komando') ? '2px solid #A855F7' : '2px solid transparent',
-              padding: '10px 16px',
-              color: isAdminTabActive('komando') ? '#A855F7' : '#9B99A8',
-              fontSize: '11px',
-              fontWeight: 'bold',
-              letterSpacing: '1px',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}>
+            <div
+              className="nav-link-item"
+              style={{
+                position: 'relative',
+                background: 'transparent',
+                padding: '10px 16px',
+                color: isAdminTabActive('komando') ? '#A855F7' : '#9B99A8',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
               🎛️ KOMANDO
+              {isAdminTabActive('komando') && (
+                <motion.div
+                  layoutId="adminActiveUnderline"
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    background: '#A855F7',
+                    boxShadow: '0 0 8px #A855F7'
+                  }}
+                />
+              )}
             </div>
           </Link>
 
@@ -132,9 +150,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/admin?tab=fleet" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: isAdminTabActive('fleet') ? '2px solid #A855F7' : '2px solid transparent',
                 color: isAdminTabActive('fleet') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -146,6 +164,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 🚢 FLEET <span style={{ fontSize: '8px' }}>▼</span>
+                {isAdminTabActive('fleet') && (
+                  <motion.div
+                    layoutId="adminActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -183,9 +215,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/admin?tab=map" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: isAdminTabActive('map') ? '2px solid #A855F7' : '2px solid transparent',
                 color: isAdminTabActive('map') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -197,6 +229,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 🗺️ MAP <span style={{ fontSize: '8px' }}>▼</span>
+                {isAdminTabActive('map') && (
+                  <motion.div
+                    layoutId="adminActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -252,9 +298,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/admin?tab=analytics" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: isAdminTabActive('analytics') ? '2px solid #A855F7' : '2px solid transparent',
                 color: isAdminTabActive('analytics') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -266,6 +312,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 📊 ANALYTICS <span style={{ fontSize: '8px' }}>▼</span>
+                {isAdminTabActive('analytics') && (
+                  <motion.div
+                    layoutId="adminActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -295,9 +355,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/admin?tab=cargo" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: isAdminTabActive('cargo') ? '2px solid #A855F7' : '2px solid transparent',
                 color: isAdminTabActive('cargo') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -309,6 +369,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 📦 CARGO <span style={{ fontSize: '8px' }}>▼</span>
+                {isAdminTabActive('cargo') && (
+                  <motion.div
+                    layoutId="adminActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -330,9 +404,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/admin?tab=settings" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: (isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) ? '2px solid #A855F7' : '2px solid transparent',
                 color: (isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -344,6 +418,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 ⚙️ CONTROLS <span style={{ fontSize: '8px' }}>▼</span>
+                {(isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) && (
+                  <motion.div
+                    layoutId="adminActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -371,18 +459,35 @@ export default function NavigationMenu() {
           
           {/* Link: Dashboard */}
           <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-            <div style={{
-              background: 'transparent',
-              borderBottom: pathname === '/dashboard' ? '2px solid #A855F7' : '2px solid transparent',
-              padding: '10px 16px',
-              color: pathname === '/dashboard' ? '#A855F7' : '#9B99A8',
-              fontSize: '11px',
-              fontWeight: 'bold',
-              letterSpacing: '1px',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}>
+            <div
+              className="nav-link-item"
+              style={{
+                position: 'relative',
+                background: 'transparent',
+                padding: '10px 16px',
+                color: pathname === '/dashboard' ? '#A855F7' : '#9B99A8',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
               🎛️ DASHBOARD
+              {pathname === '/dashboard' && (
+                <motion.div
+                  layoutId="customerActiveUnderline"
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    background: '#A855F7',
+                    boxShadow: '0 0 8px #A855F7'
+                  }}
+                />
+              )}
             </div>
           </Link>
 
@@ -390,9 +495,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/dashboard/map" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: pathname === '/dashboard/map' ? '2px solid #A855F7' : '2px solid transparent',
                 color: pathname === '/dashboard/map' ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -404,6 +509,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 🗺️ MAP & FLEET <span style={{ fontSize: '8px' }}>▼</span>
+                {pathname === '/dashboard/map' && (
+                  <motion.div
+                    layoutId="customerActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -437,9 +556,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/dashboard/cargo" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: pathname?.startsWith('/dashboard/cargo') ? '2px solid #A855F7' : '2px solid transparent',
                 color: pathname?.startsWith('/dashboard/cargo') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -451,6 +570,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 📦 CARGO <span style={{ fontSize: '8px' }}>▼</span>
+                {pathname?.startsWith('/dashboard/cargo') && (
+                  <motion.div
+                    layoutId="customerActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -472,9 +605,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/dashboard/analytics" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: pathname?.startsWith('/dashboard/analytics') ? '2px solid #A855F7' : '2px solid transparent',
                 color: pathname?.startsWith('/dashboard/analytics') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -486,6 +619,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 📊 ANALYTICS <span style={{ fontSize: '8px' }}>▼</span>
+                {pathname?.startsWith('/dashboard/analytics') && (
+                  <motion.div
+                    layoutId="customerActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -507,9 +654,9 @@ export default function NavigationMenu() {
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
             <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
+                position: 'relative',
                 padding: '10px 16px',
                 background: 'transparent',
-                borderBottom: pathname?.startsWith('/dashboard/settings') ? '2px solid #A855F7' : '2px solid transparent',
                 color: pathname?.startsWith('/dashboard/settings') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
@@ -521,6 +668,20 @@ export default function NavigationMenu() {
                 gap: '6px'
               }}>
                 ⚙️ SETTINGS <span style={{ fontSize: '8px' }}>▼</span>
+                {pathname?.startsWith('/dashboard/settings') && (
+                  <motion.div
+                    layoutId="customerActiveUnderline"
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#A855F7',
+                      boxShadow: '0 0 8px #A855F7'
+                    }}
+                  />
+                )}
               </div>
             </Link>
 
@@ -633,9 +794,9 @@ export default function NavigationMenu() {
           pointer-events: auto;
         }
 
+        .nav-link-item:hover,
         .megamenu-trigger:hover .megamenu-tab {
-          color: #F1F0F5 !important;
-          border-bottom-color: #A855F7 !important;
+          color: #A855F7 !important;
         }
 
         .radar-ping {

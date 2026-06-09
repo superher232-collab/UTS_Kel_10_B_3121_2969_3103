@@ -75,8 +75,10 @@ model User {
   updatedAt  DateTime   @updatedAt
   
   // Relations
-  shipments    Shipment[]
-  auditLogs    AuditLog[]
+  shipments      Shipment[]
+  auditLogs      AuditLog[]
+  supportTickets SupportTicket[]
+  chatMessages   ChatMessage[]
   
   @@index([email])
   @@index([role])
@@ -165,6 +167,7 @@ model Shipment {
   
   trackingHistory TrackingHistory[]
   invoice         Invoice?
+  supportTicket   SupportTicket?
   
   // Indexes untuk query cepat
   @@index([receiptNo])
@@ -250,4 +253,51 @@ model PasswordResetToken {
 
   @@index([email])
   @@index([token])
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  ESCALATED
+}
+
+enum TicketSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model SupportTicket {
+  id               String         @id @default(uuid())
+  ticketNo         String         @unique
+  userId           String
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shipmentId       String?        @unique
+  shipment         Shipment?      @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+  title            String
+  description      String
+  type             String
+  severity         TicketSeverity @default(MEDIUM)
+  status           TicketStatus   @default(OPEN)
+  resolution       String?
+  compensation     Float?
+  compensationType String?
+  createdAt        DateTime       @default(now())
+  resolvedAt       DateTime?
+
+  messages         ChatMessage[]
+}
+
+model ChatMessage {
+  id        String        @id @default(uuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  message   String
+  isRead    Boolean       @default(false)
+  createdAt DateTime      @default(now())
 }

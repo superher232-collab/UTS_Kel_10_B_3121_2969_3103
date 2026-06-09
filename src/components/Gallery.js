@@ -1,5 +1,25 @@
 "use client";
 import Image from "next/image";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+      delayChildren: 0.1,
+      staggerChildren: 0.12
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+};
 
 export default function Gallery() {
   const items = [
@@ -11,13 +31,19 @@ export default function Gallery() {
   ];
 
   return (
-    <section style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '32px',
-      padding: '80px 24px',
-      background: '#0D0B14'
-    }}>
+    <motion.section
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '32px',
+        padding: '80px 24px',
+        background: '#0D0B14'
+      }}
+    >
       {/* Section Label */}
       <div style={{
         display: 'flex',
@@ -43,8 +69,9 @@ export default function Gallery() {
         gap: '32px'
       }}>
         {items.map((item, i) => (
-          <div
+          <motion.div
             key={i}
+            variants={itemVariants}
             style={{
               position: 'relative',
               height: '200px',
@@ -109,9 +136,9 @@ export default function Gallery() {
                 {item.desc}
               </span>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }

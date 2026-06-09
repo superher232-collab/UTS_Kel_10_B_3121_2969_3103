@@ -1,16 +1,26 @@
+"use client";
+import { motion } from "framer-motion";
+
 export default function CTA() {
   return (
-    <section id="masuk" style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      textAlign: 'center',
-      padding: '80px 24px',
-      position: 'relative',
-      background: '#12101A',
-      borderLeft: '3px solid #7C3AED',
-      margin: '40px 0'
-    }}>
+    <motion.section
+      id="masuk"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+        padding: '80px 24px',
+        position: 'relative',
+        background: '#12101A',
+        borderLeft: '3px solid #7C3AED',
+        margin: '40px 0'
+      }}
+    >
       <h3 style={{
         fontFamily: 'system-ui, -apple-system, sans-serif',
         fontSize: '14px',
@@ -124,6 +134,6 @@ export default function CTA() {
           box-shadow: 0 0 20px rgba(168, 85, 247, 0.6) !important;
         }
       `}</style>
-    </section>
+    </motion.section>
   );
 }

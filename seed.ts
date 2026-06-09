@@ -27,7 +27,7 @@ async function main() {
       name: 'Budi Customer',
       email: 'customer@test.com',
       password,
-      role: 'OPERATOR',
+      role: 'CUSTOMER',
       phone: '08123456789',
       address: 'Jl. Test No. 123'
     },

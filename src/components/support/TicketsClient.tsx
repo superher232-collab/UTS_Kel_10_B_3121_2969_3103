@@ -27,7 +27,7 @@ export interface SerializedShipment {
 }
 
 interface TicketsClientProps {
-  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+  role: 'ADMIN' | 'CUSTOMER'
   userId: string
   initialTickets: SerializedTicket[]
   shipments: SerializedShipment[]

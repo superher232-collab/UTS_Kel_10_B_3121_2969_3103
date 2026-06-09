@@ -87,7 +87,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
   const handleRoleToggle = async (userId: string, currentRole: string) => {
     setUsersActionError('');
     setUsersActionSuccess('');
-    const targetRole = currentRole === 'ADMIN' ? 'OPERATOR' : 'ADMIN';
+    const targetRole = currentRole === 'ADMIN' ? 'CUSTOMER' : 'ADMIN';
     if (!confirm(`Ubah peran user ini menjadi ${targetRole}?`)) return;
     try {
       const res = await fetch(`/api/admin/users/${userId}`, {
@@ -182,7 +182,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
   const [settingsSuccess, setSettingsSuccess] = useState('');
   const [automationLogs, setAutomationLogs] = useState<string[]>([]);
   const [runningAutomation, setRunningAutomation] = useState(false);
-  const [tariffRules, setTariffRules] = useState<any>({ DARAT: 2000, LAUT: 1500, UDARA: 5000, baseFee: 25000 });
+  const [tariffRules, setTariffRules] = useState<any>({ LAUT: 1500, baseFee: 25000 });
   const [notifTemplates, setNotifTemplates] = useState<any>({ welcome: '', shipmentUpdate: '' });
   const [featureFlags, setFeatureFlags] = useState<any>({ autoAssignArmada: true, enableCompensation: true });
 
@@ -616,7 +616,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '10px', borderTop: '1px dashed rgba(255,255,255,0.05)', paddingTop: '8px' }}>
                         <div>
-                          <span style={{ color: '#8B7BA8' }}>OPERATOR: </span>
+                          <span style={{ color: '#8B7BA8' }}>USER: </span>
                           <span style={{ color: '#C084FC', fontWeight: 'bold' }}>{log.user?.name} ({log.user?.email})</span>
                         </div>
                         {log.metadata && (
@@ -664,29 +664,11 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                     <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>📊 MODIFIER TARIF KARGO</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Tarif Darat (per kg):</span>
-                        <input
-                          type="number"
-                          value={tariffRules.DARAT}
-                          onChange={(e) => setTariffRules({ ...tariffRules, DARAT: parseInt(e.target.value) || 0 })}
-                          style={{ width: '120px', background: '#07020E', border: '1px solid rgba(168,85,247,0.4)', borderRadius: '4px', padding: '6px 10px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
-                        />
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Tarif Laut (per kg):</span>
                         <input
                           type="number"
-                          value={tariffRules.LAUT}
+                          value={tariffRules.LAUT || 0}
                           onChange={(e) => setTariffRules({ ...tariffRules, LAUT: parseInt(e.target.value) || 0 })}
-                          style={{ width: '120px', background: '#07020E', border: '1px solid rgba(168,85,247,0.4)', borderRadius: '4px', padding: '6px 10px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
-                        />
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Tarif Udara (per kg):</span>
-                        <input
-                          type="number"
-                          value={tariffRules.UDARA}
-                          onChange={(e) => setTariffRules({ ...tariffRules, UDARA: parseInt(e.target.value) || 0 })}
                           style={{ width: '120px', background: '#07020E', border: '1px solid rgba(168,85,247,0.4)', borderRadius: '4px', padding: '6px 10px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
                         />
                       </div>
@@ -694,7 +676,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                         <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Biaya Dasar (Base Fee):</span>
                         <input
                           type="number"
-                          value={tariffRules.baseFee}
+                          value={tariffRules.baseFee || 0}
                           onChange={(e) => setTariffRules({ ...tariffRules, baseFee: parseInt(e.target.value) || 0 })}
                           style={{ width: '120px', background: '#07020E', border: '1px solid rgba(168,85,247,0.4)', borderRadius: '4px', padding: '6px 10px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
                         />

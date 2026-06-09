@@ -24,13 +24,13 @@ interface AnalyticsData {
   summary: AnalyticsSummary
   chartData: ChartPoint[]
   topRoutes: { route: string; count: number }[]
-  topOperators: { name: string; count: number; revenue: number }[]
-  modeDistribution: { LAUT: number; DARAT: number; UDARA: number }
+  topCustomers: { name: string; count: number; revenue: number }[]
+  modeDistribution: { LAUT: number }
   paymentMethodStats: { QRIS: number; TUNAI: number }
 }
 
 interface AnalyticsClientProps {
-  role: 'ADMIN' | 'OPERATOR'
+  role: 'ADMIN' | 'CUSTOMER'
 }
 
 const PERIOD_LABELS: Record<Period, string> = {
@@ -307,18 +307,6 @@ export function AnalyticsClient({ role }: AnalyticsClientProps) {
                   total={data.summary.totalShipments}
                   color="#06B6D4"
                 />
-                <HorizontalBar
-                  label="DARAT" icon="🚛"
-                  value={data.modeDistribution.DARAT}
-                  total={data.summary.totalShipments}
-                  color="#A855F7"
-                />
-                <HorizontalBar
-                  label="UDARA" icon="✈️"
-                  value={data.modeDistribution.UDARA}
-                  total={data.summary.totalShipments}
-                  color="#F59E0B"
-                />
               </div>
             </div>
 
@@ -389,18 +377,18 @@ export function AnalyticsClient({ role }: AnalyticsClientProps) {
               )}
             </div>
 
-            {/* Top Operators (Admin only) */}
+            {/* Top Customers (Admin only) */}
             {role === 'ADMIN' && (
               <div style={cardStyle}>
                 <div style={sectionTitle}>
                   <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#06B6D4', display: 'inline-block' }} />
-                  Top 5 Operator
+                  Top 5 Customer
                 </div>
-                {data.topOperators.length === 0 ? (
-                  <div style={{ padding: '24px', textAlign: 'center', color: '#6B5C83', fontFamily: 'monospace', fontSize: '11px' }}>Belum ada data operator</div>
+                {data.topCustomers.length === 0 ? (
+                  <div style={{ padding: '24px', textAlign: 'center', color: '#6B5C83', fontFamily: 'monospace', fontSize: '11px' }}>Belum ada data customer</div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {data.topOperators.map((op, i) => (
+                    {data.topCustomers.map((op, i) => (
                       <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: 'rgba(6,182,212,0.04)', border: '1px solid rgba(6,182,212,0.1)', borderRadius: '8px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#06B6D4', fontFamily: 'monospace', width: '20px' }}>#{i + 1}</span>

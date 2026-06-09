@@ -150,7 +150,7 @@ export default async function SupportDashboardPage() {
                 <span style={{ color: '#06B6D4', fontWeight: 'bold' }}>support@primelog-fleet.id</span>
               </div>
               <div>
-                <span style={{ color: '#8B7BA8', display: 'block' }}>OPERATOR CARE</span>
+                <span style={{ color: '#8B7BA8', display: 'block' }}>CUSTOMER CARE</span>
                 <span style={{ color: 'white', fontWeight: 'bold' }}>+62 (21) 8080-9090 (24/7)</span>
               </div>
             </div>
@@ -174,7 +174,7 @@ export default async function SupportDashboardPage() {
               Memiliki permasalahan kargo rusak, salah rute, atau mengajukan klaim kompensasi pengiriman? 
             </p>
             <p style={{ fontSize: '10px', color: '#C7B8EA', lineHeight: '1.4' }}>
-              Buka tiket baru untuk langsung terhubung dengan admin operator kami dalam live chat interaktif berbasis polling sinyal real-time.
+              Buka tiket baru untuk langsung terhubung dengan admin support kami dalam live chat interaktif berbasis polling sinyal real-time.
             </p>
             <Link 
               href="/dashboard/support/tickets"

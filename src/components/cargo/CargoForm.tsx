@@ -17,7 +17,7 @@ interface CargoFormProps {
   onSubmit: (data: Partial<CargoShipment>) => Promise<boolean>;
   editData?: CargoShipment | null;
   ships?: Ship[];
-  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER';
+  role: 'ADMIN' | 'CUSTOMER';
 }
 
 export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], role }: CargoFormProps) {
@@ -695,7 +695,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
                 display: 'flex',
                 alignItems: 'center'
               }}>
-                Dialokasikan oleh operator
+                Dialokasikan oleh admin
               </div>
             )}
             {errors.vehicleId && <span style={errorTextStyle}>{errors.vehicleId}</span>}
@@ -776,7 +776,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
 
               {/* Target User ID Klien */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>USER ID OPERATOR (KLIEN)</span>
+                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>USER ID ADMIN (KLIEN)</span>
                 <input
                   type="text"
                   placeholder="ID Akun Customer (Opsional)"

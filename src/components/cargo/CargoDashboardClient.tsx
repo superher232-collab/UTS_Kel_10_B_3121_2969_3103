@@ -9,13 +9,11 @@ import { createShipment, updateShipment, deleteShipment, cancelShipment } from '
 import { CargoShipment, VehicleOption } from '../../app/dashboard/cargo/page'
 
 interface CargoDashboardClientProps {
-  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+  role: 'ADMIN' | 'CUSTOMER'
   initialShipments: CargoShipment[]
   ships: VehicleOption[]
   stats: {
     total: number
-    darat: number
-    udara: number
     laut: number
     selesai: number
   }
@@ -164,8 +162,6 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
 
   // Summary counts based on database stats (Overall values)
   const totalCargo = stats.total
-  const daratCargo = stats.darat
-  const udaraCargo = stats.udara
   const lautCargo = stats.laut
   const selesaiCargo = stats.selesai
 
@@ -217,7 +213,7 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
           </span>
         </div>
 
-        {(role === 'ADMIN' || role === 'OPERATOR') && (
+        {role === 'ADMIN' && (
           <button
             onClick={() => {
               setEditItem(null)

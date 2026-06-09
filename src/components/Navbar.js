@@ -21,9 +21,9 @@ export default function Navbar() {
         top: 0,
         left: 0,
         zIndex: 9999,
-        background: 'rgba(7, 2, 14, 0.85)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(168, 85, 247, 0.15)',
+        background: 'rgba(18, 16, 26, 0.85)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(124, 58, 237, 0.2)',
         margin: 0,
         padding: 0,
         transition: 'all 0.3s ease'
@@ -53,7 +53,6 @@ export default function Navbar() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(168, 85, 247, 0.3)',
             overflow: 'hidden',
             flexShrink: 0
           }}>
@@ -61,18 +60,18 @@ export default function Navbar() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
             <span style={{
-              fontFamily: 'var(--font-body)',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
               fontWeight: 700,
-              color: 'white',
+              color: '#F1F0F5',
               fontSize: '15px',
               letterSpacing: '2px'
             }}>
               PRIMELOG
             </span>
             <span style={{
-              fontFamily: 'var(--font-body)',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
               fontSize: '9px',
-              color: '#A855F7',
+              color: '#9B99A8',
               letterSpacing: '1px',
               fontWeight: 'bold'
             }}>
@@ -91,15 +90,16 @@ export default function Navbar() {
                   onMouseEnter={() => setHoveredLink(link.href)}
                   onMouseLeave={() => setHoveredLink(null)}
                   style={{
-                    color: hoveredLink === link.href ? '#C084FC' : '#8B7BA8',
+                    color: hoveredLink === link.href ? '#A855F7' : '#9B99A8',
                     textDecoration: 'none',
                     fontSize: '12px',
                     fontWeight: 600,
                     letterSpacing: '1px',
-                    fontFamily: 'var(--font-body)',
-                    transition: 'color 0.3s ease',
+                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                    transition: 'all 0.3s ease',
                     textTransform: 'uppercase',
-                    position: 'relative'
+                    position: 'relative',
+                    textShadow: hoveredLink === link.href ? '0 0 10px rgba(168, 85, 247, 0.5)' : 'none'
                   }}
                 >
                   {link.label}
@@ -107,20 +107,19 @@ export default function Navbar() {
               </li>
             ))}
             <li>
-              <a href="/login" style={{
+              <a href="/login" className="nav-btn-primary" style={{
                 padding: '10px 24px',
-                background: 'linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)',
+                background: '#7C3AED',
                 borderRadius: '6px',
-                color: 'white',
+                color: '#F1F0F5',
                 textDecoration: 'none',
                 fontWeight: 'bold',
                 fontSize: '11px',
                 letterSpacing: '1.5px',
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: '0 0 20px rgba(168, 85, 247, 0.3)',
                 transition: 'all 0.3s ease'
               }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -152,6 +151,12 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+      <style>{`
+        .nav-btn-primary:hover {
+          background: #A855F7 !important;
+          box-shadow: 0 0 20px rgba(168, 85, 247, 0.6) !important;
+        }
+      `}</style>
     </nav>
   );
 }

@@ -14,9 +14,7 @@ const PORT_DISTANCES: Record<string, Record<string, number>> = {
 }
 
 const VEHICLE_COEFFICIENTS = {
-  DARAT: 2000,
-  LAUT: 1500,
-  UDARA: 5000
+  LAUT: 1500
 }
 
 function getDistance(origin: string, destination: string): number {

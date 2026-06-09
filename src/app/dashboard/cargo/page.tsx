@@ -118,7 +118,7 @@ export default async function DashboardCargoPage({ searchParams }: PageProps) {
     )
   }
 
-  const role = (session.user as any).role as 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+  const role = (session.user as any).role as 'ADMIN' | 'CUSTOMER'
   const userId = (session.user as any).id as string
 
   // 2. Parse Search Params (Next.js 15/16 App Router)
@@ -168,8 +168,6 @@ export default async function DashboardCargoPage({ searchParams }: PageProps) {
 
   // 4. Fetch Data dari Database
   let total = 0
-  let darat = 0
-  let udara = 0
   let laut = 0
   let selesai = 0
   let shipments: any[] = []
@@ -179,21 +177,15 @@ export default async function DashboardCargoPage({ searchParams }: PageProps) {
     // Count stats (untuk metrics panel) in parallel (respecting search and role parameters)
     const [
       totalCount,
-      daratCount,
-      udaraCount,
       lautCount,
       selesaiCount
     ] = await Promise.all([
       prisma.shipment.count({ where: whereClause }),
-      prisma.shipment.count({ where: { ...whereClause, shippingType: 'DARAT' } }),
-      prisma.shipment.count({ where: { ...whereClause, shippingType: 'UDARA' } }),
       prisma.shipment.count({ where: { ...whereClause, shippingType: 'LAUT' } }),
       prisma.shipment.count({ where: { ...whereClause, status: 'SELESAI' } })
     ])
 
     total = totalCount
-    darat = daratCount
-    udara = udaraCount
     laut = lautCount
     selesai = selesaiCount
 
@@ -256,8 +248,6 @@ export default async function DashboardCargoPage({ searchParams }: PageProps) {
       ships={serializedVehicles}
       stats={{
         total,
-        darat,
-        udara,
         laut,
         selesai
       }}

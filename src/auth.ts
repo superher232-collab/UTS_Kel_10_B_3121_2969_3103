@@ -10,20 +10,20 @@ declare module 'next-auth' {
   interface Session {
     user: {
       id: string
-      role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+      role: 'ADMIN' | 'CUSTOMER'
     } & DefaultSession['user']
   }
 
   interface User {
     id?: string
-    role?: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+    role?: 'ADMIN' | 'CUSTOMER'
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string
-    role?: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+    role?: 'ADMIN' | 'CUSTOMER'
   }
 }
 
@@ -44,29 +44,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         let user = await prisma.user.findUnique({ where: { email } })
         
         if (!user) {
-          // AUTO-REGISTER: Create account automatically if it does not exist
-          const role = email.toLowerCase().includes('admin') 
-            ? 'ADMIN' 
-            : email.toLowerCase().includes('operator') 
-              ? 'OPERATOR' 
-              : 'CUSTOMER'
-          const dummyHash = await bcrypt.hash(password || '123456', 10)
-          
-          user = await prisma.user.create({
-            data: {
-              name: email.split('@')[0],
-              email,
-              password: dummyHash,
-              role
-            }
-          })
+          throw new Error('Kredensial salah. Email tidak terdaftar.')
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+        
+        if (!isPasswordValid) {
+          throw new Error('Kredensial salah. Kata sandi tidak cocok.')
         }
 
         return {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role as 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+          role: user.role as 'ADMIN' | 'CUSTOMER'
         }
       }
     })

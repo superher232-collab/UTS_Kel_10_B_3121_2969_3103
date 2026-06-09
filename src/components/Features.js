@@ -41,70 +41,54 @@ export default function Features() {
       id="fitur"
       style={{
         width: '100%',
+        padding: '80px 24px',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '20px',
-        boxSizing: 'border-box'
+        gap: '32px',
+        boxSizing: 'border-box',
+        maxWidth: '1200px',
+        margin: '0 auto'
       }}
     >
       {features.map((f, i) => (
         <div
           key={i}
           style={{
-            background: 'rgba(20, 10, 36, 0.6)',
-            backdropFilter: 'blur(8px)',
-            padding: '28px',
-            borderRadius: '12px',
-            border: `1px solid ${f.borderColor}`,
+            background: '#12101A',
+            padding: '32px 28px',
+            borderLeft: '3px solid #7C3AED',
             transition: 'all 0.3s ease',
             cursor: 'default',
             position: 'relative',
-            overflow: 'hidden',
-            boxShadow: `0 4px 20px rgba(0,0,0,0.3), 0 0 15px ${f.glowColor}`
+            boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-4px)';
-            e.currentTarget.style.boxShadow = `0 8px 30px rgba(0,0,0,0.4), 0 0 25px ${f.glowColor}`;
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = `0 4px 20px rgba(0,0,0,0.3), 0 0 15px ${f.glowColor}`;
           }}
         >
-          {/* Subtle top border glow */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '20%',
-            right: '20%',
-            height: '2px',
-            background: `linear-gradient(90deg, transparent, ${f.color}, transparent)`,
-            opacity: 0.5,
-            borderRadius: '0 0 2px 2px'
-          }} />
-
           {/* Icon */}
           <div style={{
             width: '48px',
             height: '48px',
-            borderRadius: '10px',
-            background: f.glowColor,
-            border: `1px solid ${f.borderColor}`,
+            background: 'rgba(124, 58, 237, 0.1)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '22px',
-            marginBottom: '18px'
+            justifyContent: 'flex-start',
+            fontSize: '24px',
+            marginBottom: '20px'
           }}>
             {f.icon}
           </div>
 
           {/* Title */}
           <h3 style={{
-            fontFamily: 'var(--font-title)',
-            color: 'white',
-            fontSize: '16px',
-            marginBottom: '10px',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            color: '#F1F0F5',
+            fontSize: '18px',
+            marginBottom: '12px',
             letterSpacing: '0.5px'
           }}>
             {f.title}
@@ -112,9 +96,9 @@ export default function Features() {
 
           {/* Description */}
           <p style={{
-            fontFamily: 'var(--font-body)',
-            color: '#8B7BA8',
-            fontSize: '12px',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            color: '#9B99A8',
+            fontSize: '14px',
             lineHeight: '1.7',
             margin: 0
           }}>

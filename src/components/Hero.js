@@ -29,21 +29,7 @@ export default function Hero() {
         zIndex: 0
       }} />
 
-      {/* Radial glow behind logo */}
-      <div style={{
-        position: 'absolute',
-        width: '500px',
-        height: '500px',
-        borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%)',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -55%)',
-        zIndex: 0,
-        animation: 'heroGlow 4s ease-in-out infinite alternate'
-      }} />
-
-      {/* Logo Box with neon glow */}
+      {/* Logo Box without neon glow */}
       <div style={{
         position: 'relative',
         zIndex: 2,
@@ -55,7 +41,6 @@ export default function Hero() {
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: '32px',
-        boxShadow: '0 0 60px rgba(168, 85, 247, 0.5), 0 0 120px rgba(168, 85, 247, 0.2), inset 0 0 20px rgba(168, 85, 247, 0.1)',
         animation: 'logoFloat 6s ease-in-out infinite'
       }}>
         <Image src="/logo.png" alt="PRIMELOG Logo" width={88} height={88} priority style={{ objectFit: 'contain' }} />
@@ -65,14 +50,13 @@ export default function Hero() {
       <h1 style={{
         position: 'relative',
         zIndex: 2,
-        fontFamily: 'var(--font-title)',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
         fontSize: 'clamp(36px, 6vw, 56px)',
-        fontWeight: 400,
-        color: 'white',
-        letterSpacing: '6px',
+        fontWeight: 700,
+        color: '#F1F0F5',
+        letterSpacing: '4px',
         marginBottom: '12px',
-        textAlign: 'center',
-        textShadow: '0 0 40px rgba(168, 85, 247, 0.3)'
+        textAlign: 'center'
       }}>
         PRIMELOG
       </h1>
@@ -81,9 +65,9 @@ export default function Hero() {
       <p style={{
         position: 'relative',
         zIndex: 2,
-        fontFamily: 'var(--font-body)',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
         fontSize: 'clamp(14px, 2.5vw, 20px)',
-        color: '#C084FC',
+        color: '#9B99A8',
         letterSpacing: '3px',
         marginBottom: '8px',
         textAlign: 'center',
@@ -96,13 +80,13 @@ export default function Hero() {
       <p style={{
         position: 'relative',
         zIndex: 2,
-        fontFamily: 'var(--font-body)',
-        fontSize: 'clamp(11px, 1.5vw, 14px)',
-        color: '#8B7BA8',
-        letterSpacing: '1px',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        fontSize: 'clamp(12px, 1.5vw, 15px)',
+        color: '#9B99A8',
+        letterSpacing: '0.5px',
         marginBottom: '40px',
         textAlign: 'center',
-        maxWidth: '480px',
+        maxWidth: '540px',
         lineHeight: '1.6'
       }}>
         Platform terpadu untuk monitoring, manajemen, dan optimalisasi operasional armada kapal secara real-time
@@ -112,12 +96,11 @@ export default function Hero() {
       <div style={{
         position: 'relative',
         zIndex: 2,
-        width: '160px',
+        width: '80px',
         height: '3px',
-        background: 'linear-gradient(90deg, transparent 0%, #A855F7 50%, transparent 100%)',
+        background: '#7C3AED',
         marginBottom: '40px',
-        borderRadius: '2px',
-        boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)'
+        borderRadius: '2px'
       }} />
 
       {/* CTA Buttons */}
@@ -129,20 +112,19 @@ export default function Hero() {
         flexWrap: 'wrap',
         justifyContent: 'center'
       }}>
-        <a href="/login" style={{
+        <a href="/login" className="btn-primary" style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '10px',
-          background: 'linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)',
-          color: 'white',
+          background: '#7C3AED',
+          color: '#F1F0F5',
           padding: '14px 36px',
           borderRadius: '8px',
           textDecoration: 'none',
-          fontFamily: 'var(--font-body)',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: '13px',
           fontWeight: 'bold',
-          letterSpacing: '1.5px',
-          boxShadow: '0 0 30px rgba(168, 85, 247, 0.4), 0 4px 20px rgba(0,0,0,0.4)',
+          letterSpacing: '1px',
           transition: 'all 0.3s ease'
         }}>
           MASUK SISTEM
@@ -156,15 +138,15 @@ export default function Hero() {
           alignItems: 'center',
           gap: '10px',
           background: 'transparent',
-          color: '#C084FC',
+          color: '#F1F0F5',
           padding: '14px 36px',
           borderRadius: '8px',
           textDecoration: 'none',
-          fontFamily: 'var(--font-body)',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: '13px',
           fontWeight: 'bold',
-          letterSpacing: '1.5px',
-          border: '1px solid rgba(168, 85, 247, 0.4)',
+          letterSpacing: '1px',
+          border: '1px solid #7C3AED',
           transition: 'all 0.3s ease'
         }}>
           LACAK PAKET
@@ -180,14 +162,12 @@ export default function Hero() {
         position: 'relative',
         zIndex: 2,
         display: 'flex',
-        gap: '32px',
+        gap: '40px',
         marginTop: '60px',
-        padding: '20px 40px',
-        background: 'rgba(20, 10, 36, 0.6)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(168, 85, 247, 0.2)',
+        padding: '32px 48px',
+        background: '#12101A',
+        borderLeft: '3px solid #7C3AED',
         borderRadius: '12px',
-        boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
         flexWrap: 'wrap',
         justifyContent: 'center'
       }}>
@@ -197,17 +177,17 @@ export default function Hero() {
           { value: '99.9%', label: 'UPTIME' },
           { value: 'AES-256', label: 'ENKRIPSI' }
         ].map((stat) => (
-          <div key={stat.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: '18px', fontWeight: 'bold', color: '#C084FC', letterSpacing: '1px' }}>{stat.value}</span>
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: '9px', color: '#8B7BA8', letterSpacing: '1px' }}>{stat.label}</span>
+          <div key={stat.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: '#A855F7', letterSpacing: '2px' }}>{stat.value}</span>
+            <span style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px', color: '#9B99A8', letterSpacing: '1px' }}>{stat.label}</span>
           </div>
         ))}
       </div>
 
       <style>{`
-        @keyframes heroGlow {
-          from { opacity: 0.6; transform: translate(-50%, -55%) scale(0.95); }
-          to { opacity: 1; transform: translate(-50%, -55%) scale(1.05); }
+        .btn-primary:hover {
+          background: #A855F7 !important;
+          box-shadow: 0 0 20px rgba(168, 85, 247, 0.6) !important;
         }
         @keyframes logoFloat {
           0%, 100% { transform: translateY(0); }

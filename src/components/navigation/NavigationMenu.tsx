@@ -37,16 +37,16 @@ export default function NavigationMenu() {
       document.title = titles[activeTab] || 'Command Hub — PrimeLog Admin';
     } else {
       const titles: Record<string, string> = {
-        '/dashboard': 'Dashboard Portal — PrimeLog Operator',
-        '/dashboard/map': 'Radar Maritim — PrimeLog Operator',
-        '/dashboard/cargo': 'Pusat Kargo — PrimeLog Operator',
-        '/dashboard/analytics': 'Analitik Real-Time — PrimeLog Operator',
+        '/dashboard': 'Dashboard Portal — PrimeLog Customer',
+        '/dashboard/map': 'Radar Maritim — PrimeLog Customer',
+        '/dashboard/cargo': 'Pusat Kargo — PrimeLog Customer',
+        '/dashboard/analytics': 'Analitik Personal — PrimeLog Customer',
         '/dashboard/support': 'Pusat Dukungan Tiket — PrimeLog',
         '/dashboard/pemeliharaan': 'Pemeliharaan Armada — PrimeLog',
         '/dashboard/peringatan': 'Pusat Peringatan — PrimeLog',
         '/dashboard/stats': 'Statistik Pengiriman — PrimeLog'
       };
-      document.title = titles[pathname] || 'Portal Operator — PrimeLog';
+      document.title = titles[pathname] || 'Portal Customer — PrimeLog';
     }
   }, [pathname, activeTab]);
 
@@ -65,10 +65,10 @@ export default function NavigationMenu() {
       flexWrap: 'wrap',
       gap: '16px',
       padding: '16px 32px',
-      borderBottom: '1px solid rgba(168, 85, 247, 0.4)',
-      background: 'rgba(10, 4, 20, 0.95)',
-      backdropFilter: 'blur(15px)',
-      boxShadow: '0 4px 30px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.1)',
+      borderBottom: '1px solid rgba(124, 58, 237, 0.2)',
+      background: 'rgba(13, 11, 20, 0.9)',
+      backdropFilter: 'blur(8px)',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
       position: 'sticky',
       top: 0,
       zIndex: 100,
@@ -97,7 +97,7 @@ export default function NavigationMenu() {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontSize: '15px', fontWeight: 'bold', letterSpacing: '2px', color: 'white' }}>PRIMELOG</span>
           <span style={{ fontSize: '8px', color: '#C084FC', letterSpacing: '0.5px', fontWeight: 'bold' }}>
-            {isAdminView ? 'ADMIN COMMAND HUB' : 'OPERATOR PORTAL'}
+            {isAdminView ? 'ADMIN COMMAND HUB' : 'CUSTOMER PORTAL'}
           </span>
         </div>
       </div>
@@ -114,11 +114,10 @@ export default function NavigationMenu() {
           {/* Link: Ruang Komando */}
           <Link href="/admin?tab=komando" style={{ textDecoration: 'none' }}>
             <div style={{
-              background: isAdminTabActive('komando') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-              border: isAdminTabActive('komando') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
+              background: 'transparent',
+              borderBottom: isAdminTabActive('komando') ? '2px solid #A855F7' : '2px solid transparent',
               padding: '10px 16px',
-              borderRadius: '6px',
-              color: isAdminTabActive('komando') ? '#C084FC' : '#8B7BA8',
+              color: isAdminTabActive('komando') ? '#A855F7' : '#9B99A8',
               fontSize: '11px',
               fontWeight: 'bold',
               letterSpacing: '1px',
@@ -134,14 +133,13 @@ export default function NavigationMenu() {
             <Link href="/admin?tab=fleet" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: isAdminTabActive('fleet') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: isAdminTabActive('fleet') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: isAdminTabActive('fleet') ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: isAdminTabActive('fleet') ? '2px solid #A855F7' : '2px solid transparent',
+                color: isAdminTabActive('fleet') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -186,14 +184,13 @@ export default function NavigationMenu() {
             <Link href="/admin?tab=map" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: isAdminTabActive('map') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: isAdminTabActive('map') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: isAdminTabActive('map') ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: isAdminTabActive('map') ? '2px solid #A855F7' : '2px solid transparent',
+                color: isAdminTabActive('map') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -256,14 +253,13 @@ export default function NavigationMenu() {
             <Link href="/admin?tab=analytics" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: isAdminTabActive('analytics') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: isAdminTabActive('analytics') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: isAdminTabActive('analytics') ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: isAdminTabActive('analytics') ? '2px solid #A855F7' : '2px solid transparent',
+                color: isAdminTabActive('analytics') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -300,14 +296,13 @@ export default function NavigationMenu() {
             <Link href="/admin?tab=cargo" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: isAdminTabActive('cargo') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: isAdminTabActive('cargo') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: isAdminTabActive('cargo') ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: isAdminTabActive('cargo') ? '2px solid #A855F7' : '2px solid transparent',
+                color: isAdminTabActive('cargo') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -336,14 +331,13 @@ export default function NavigationMenu() {
             <Link href="/admin?tab=settings" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: (isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: (isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: (isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: (isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) ? '2px solid #A855F7' : '2px solid transparent',
+                color: (isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -368,38 +362,20 @@ export default function NavigationMenu() {
             </div>
           </div>
 
-          {/* Link: Support */}
-          <Link href="/dashboard/support" style={{ textDecoration: 'none' }}>
-            <div style={{
-              background: 'transparent',
-              border: '1px solid transparent',
-              padding: '10px 16px',
-              borderRadius: '6px',
-              color: '#8B7BA8',
-              fontSize: '11px',
-              fontWeight: 'bold',
-              letterSpacing: '1px',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}>
-              🎟️ SUPPORT
-            </div>
-          </Link>
         </div>
       ) : (
         // =============================================================
-        // 🚢 OPERATOR PORTAL NAVBAR LAYOUT (Pruned halu links, fully functional)
+        // 🚢 CUSTOMER PORTAL NAVBAR LAYOUT
         // =============================================================
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           
           {/* Link: Dashboard */}
           <Link href="/dashboard" style={{ textDecoration: 'none' }}>
             <div style={{
-              background: pathname === '/dashboard' ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-              border: pathname === '/dashboard' ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
+              background: 'transparent',
+              borderBottom: pathname === '/dashboard' ? '2px solid #A855F7' : '2px solid transparent',
               padding: '10px 16px',
-              borderRadius: '6px',
-              color: pathname === '/dashboard' ? '#C084FC' : '#8B7BA8',
+              color: pathname === '/dashboard' ? '#A855F7' : '#9B99A8',
               fontSize: '11px',
               fontWeight: 'bold',
               letterSpacing: '1px',
@@ -415,14 +391,13 @@ export default function NavigationMenu() {
             <Link href="/dashboard/map" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: pathname === '/dashboard/map' ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: pathname === '/dashboard/map' ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: pathname === '/dashboard/map' ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: pathname === '/dashboard/map' ? '2px solid #A855F7' : '2px solid transparent',
+                color: pathname === '/dashboard/map' ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -463,14 +438,13 @@ export default function NavigationMenu() {
             <Link href="/dashboard/cargo" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: pathname?.startsWith('/dashboard/cargo') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: pathname?.startsWith('/dashboard/cargo') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: pathname?.startsWith('/dashboard/cargo') ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: pathname?.startsWith('/dashboard/cargo') ? '2px solid #A855F7' : '2px solid transparent',
+                color: pathname?.startsWith('/dashboard/cargo') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -499,14 +473,13 @@ export default function NavigationMenu() {
             <Link href="/dashboard/analytics" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: pathname?.startsWith('/dashboard/analytics') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: pathname?.startsWith('/dashboard/analytics') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: pathname?.startsWith('/dashboard/analytics') ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: pathname?.startsWith('/dashboard/analytics') ? '2px solid #A855F7' : '2px solid transparent',
+                color: pathname?.startsWith('/dashboard/analytics') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
@@ -530,41 +503,41 @@ export default function NavigationMenu() {
             </div>
           </div>
 
-          {/* Megamenu Category: Support */}
+          {/* Megamenu Category: Profile Settings */}
           <div className="megamenu-trigger" style={{ position: 'relative', display: 'inline-block' }}>
-            <Link href="/dashboard/support" style={{ textDecoration: 'none' }}>
+            <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
               <div className="megamenu-tab" style={{
                 padding: '10px 16px',
-                background: pathname?.startsWith('/dashboard/support') ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
-                border: pathname?.startsWith('/dashboard/support') ? '1px solid rgba(168, 85, 247, 0.5)' : '1px solid transparent',
-                color: pathname?.startsWith('/dashboard/support') ? '#C084FC' : '#8B7BA8',
+                background: 'transparent',
+                borderBottom: pathname?.startsWith('/dashboard/settings') ? '2px solid #A855F7' : '2px solid transparent',
+                color: pathname?.startsWith('/dashboard/settings') ? '#A855F7' : '#9B99A8',
                 fontSize: '11px',
                 fontWeight: 'bold',
                 letterSpacing: '1px',
                 cursor: 'pointer',
-                borderRadius: '6px',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                🎟️ SUPPORT <span style={{ fontSize: '8px' }}>▼</span>
+                ⚙️ SETTINGS <span style={{ fontSize: '8px' }}>▼</span>
               </div>
             </Link>
 
             <div className="megamenu-content">
               <div style={{ borderRight: '1px solid rgba(168, 85, 247, 0.2)', paddingRight: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#C084FC', letterSpacing: '1px' }}>SUPPORT CENTER</span>
-                <span style={{ fontSize: '8px', color: '#8B7BA8', lineHeight: '1.4' }}>Ajukan complaint tiket support baru atau lakukan chat interaktif real-time dengan Admin operator PrimeLog.</span>
+                <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#C084FC', letterSpacing: '1px' }}>PROFIL PERSONAL</span>
+                <span style={{ fontSize: '8px', color: '#8B7BA8', lineHeight: '1.4' }}>Atur data personal, alamat pengiriman default, dan preferensi notifikasi Anda.</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '9px' }}>
                 <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#8B7BA8', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>AKSES CEPAT</span>
-                <Link href="/dashboard/support" style={{ textDecoration: 'none', color: '#06B6D4', fontWeight: 'bold' }}>
-                  ➔ PUSAT DUKUNGAN TIKET
+                <Link href="/dashboard/settings" style={{ textDecoration: 'none', color: '#06B6D4', fontWeight: 'bold' }}>
+                  ➔ PENGATURAN PROFIL
                 </Link>
               </div>
             </div>
           </div>
+
 
           {/* Link: Ruang Komando Admin (Only visible if Admin role) */}
           {isAdmin && (
@@ -661,9 +634,8 @@ export default function NavigationMenu() {
         }
 
         .megamenu-trigger:hover .megamenu-tab {
-          background: rgba(168, 85, 247, 0.1);
-          color: white;
-          border-color: rgba(168, 85, 247, 0.3);
+          color: #F1F0F5 !important;
+          border-bottom-color: #A855F7 !important;
         }
 
         .radar-ping {

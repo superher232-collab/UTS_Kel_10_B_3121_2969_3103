@@ -15,16 +15,15 @@ export default function Login() {
     setLoading(true);
     setErrorMsg('');
     
-    // Auto-generate dummy credentials if empty (Bypass Mode)
-    const finalEmail = email.trim() !== '' 
-      ? email 
-      : (role === 'admin' 
-        ? 'admin@bypassed.com' 
-        : role === 'operator' 
-          ? 'operator@bypassed.com' 
-          : 'customer@bypassed.com');
-      
-    const finalPassword = password || 'bypassed';
+    // No bypass mode. Require actual input
+    const finalEmail = email.trim();
+    const finalPassword = password;
+
+    if (!finalEmail || !finalPassword) {
+      setErrorMsg('Email dan Password tidak boleh kosong.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const result = await signIn('credentials', {
@@ -38,9 +37,7 @@ export default function Login() {
       } else {
         localStorage.setItem('role', finalEmail.includes('admin') 
           ? 'Admin' 
-          : finalEmail.includes('operator') 
-            ? 'Operator' 
-            : 'Customer');
+          : 'Customer');
         localStorage.setItem('username', finalEmail.split('@')[0]);
         // Redirection check: Admin -> /admin, User -> /dashboard
         window.location.href = finalEmail.includes('admin') ? '/admin' : '/dashboard';
@@ -63,13 +60,8 @@ export default function Login() {
       justifyContent: 'center',
       position: 'relative',
       overflow: 'hidden',
-      background: 'var(--bg-page)'
+      background: '#0D0B14'
     }}>
-      {/* Background orbs */}
-      <div className="ambient-orbs" aria-hidden="true">
-        <div className="orb orb--1"></div>
-        <div className="orb orb--2"></div>
-      </div>
 
       {/* Header / Logo Area */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10, marginBottom: '40px' }}>
@@ -81,18 +73,17 @@ export default function Login() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 0 30px rgba(168, 85, 247, 0.4)',
           marginBottom: '20px'
         }}>
           <Image src="/logo.png" alt="Logo" width={60} height={60} style={{ objectFit: 'contain' }} priority />
         </div>
         <h1 style={{
-          fontFamily: 'var(--font-body)',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: '24px',
-          color: 'white',
+          color: '#F1F0F5',
           letterSpacing: '2px',
           margin: '0 0 8px 0',
-          fontWeight: '600'
+          fontWeight: '700'
         }}>PRIMELOG</h1>
         <p style={{
           fontFamily: 'var(--font-body)',
@@ -105,29 +96,27 @@ export default function Login() {
 
       {/* Login Card */}
       <div style={{
-        background: 'var(--bg-card, rgba(20, 10, 36, 0.7))',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid var(--border-purple, rgba(168, 85, 247, 0.3))',
+        background: '#12101A',
+        border: '1px solid #2A2740',
         borderRadius: '8px',
         padding: '40px',
         width: '90%',
         maxWidth: '440px',
         zIndex: 10,
         display: 'flex',
-        flexDirection: 'column',
-        boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+        flexDirection: 'column'
       }}>
         <h2 style={{
-          color: 'white',
-          fontFamily: 'var(--font-body)',
+          color: '#F1F0F5',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: '18px',
-          letterSpacing: '2px',
+          letterSpacing: '1px',
           margin: '0 0 10px 0',
           fontWeight: '600'
         }}>AKSES SISTEM</h2>
         <p style={{
-          color: 'var(--text-muted, #8B7BA8)',
-          fontFamily: 'var(--font-body)',
+          color: '#9B99A8',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: '14px',
           margin: '0 0 30px 0'
         }}>Masukkan kredensial Anda untuk melanjutkan</p>
@@ -136,25 +125,32 @@ export default function Login() {
           {/* Role Selection */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: 'var(--text-white, white)',
-              fontFamily: 'var(--font-body)',
+              color: '#9B99A8',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
               fontSize: '12px',
-              letterSpacing: '1px'
+              letterSpacing: '1px',
+              fontWeight: 500
             }}>PERAN</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(0,0,0,0.4)',
-              border: '1px solid var(--border-purple, rgba(168, 85, 247, 0.2))',
+              background: '#1A1825',
+              border: '1px solid #3D3A52',
               borderRadius: '4px',
               padding: '12px 16px',
               gap: '12px',
-              transition: 'border-color 0.3s ease'
+              transition: 'all 0.3s ease'
             }}
-            onFocus={(e) => e.currentTarget.style.border = '1px solid #A855F7'}
-            onBlur={(e) => e.currentTarget.style.border = '1px solid var(--border-purple, rgba(168, 85, 247, 0.2))'}
+            onFocus={(e) => {
+              e.currentTarget.style.border = '1px solid #7C3AED';
+              e.currentTarget.style.boxShadow = '0 0 5px rgba(124, 58, 237, 0.3)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.border = '1px solid #3D3A52';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted, #8B7BA8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -163,18 +159,9 @@ export default function Login() {
               <select id="roleSelect"
                 value={role}
                 onChange={(e) => {
-                  const selectedRole = e.target.value;
-                  setRole(selectedRole);
-                  if (selectedRole === 'admin') {
-                    setEmail('admin@primelog.com');
-                    setPassword('admin123');
-                  } else if (selectedRole === 'operator') {
-                    setEmail('operator@primelog.com');
-                    setPassword('operator123');
-                  } else if (selectedRole === 'customer') {
-                    setEmail('customer@primelog.com');
-                    setPassword('customer123');
-                  }
+                  setRole(e.target.value);
+                  setEmail('');
+                  setPassword('');
                 }}
                 style={{
                   background: 'transparent',
@@ -188,11 +175,10 @@ export default function Login() {
                   cursor: 'pointer'
                 }}
               >
-                <option value="admin" style={{ background: '#140A24', color: 'white' }}>Administrator</option>
-                <option value="operator" style={{ background: '#140A24', color: 'white' }}>Operator (Cabang)</option>
-                <option value="customer" style={{ background: '#140A24', color: 'white' }}>Customer (Pelanggan)</option>
+                <option value="admin" style={{ background: '#12101A', color: '#F1F0F5' }}>Administrator</option>
+                <option value="customer" style={{ background: '#12101A', color: '#F1F0F5' }}>Customer (Pelanggan)</option>
               </select>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted, #8B7BA8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </div>
@@ -201,25 +187,32 @@ export default function Login() {
           {/* Username */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: 'var(--text-white, white)',
-              fontFamily: 'var(--font-body)',
+              color: '#9B99A8',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
               fontSize: '12px',
-              letterSpacing: '1px'
+              letterSpacing: '1px',
+              fontWeight: 500
             }}>{role === 'admin' ? 'EMAIL ADMINISTRATOR' : 'EMAIL PENGGUNA'}</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(0,0,0,0.4)',
-              border: '1px solid var(--border-purple, rgba(168, 85, 247, 0.2))',
+              background: '#1A1825',
+              border: '1px solid #3D3A52',
               borderRadius: '4px',
               padding: '12px 16px',
               gap: '12px',
-              transition: 'border-color 0.3s ease'
+              transition: 'all 0.3s ease'
             }}
-            onFocus={(e) => e.currentTarget.style.border = '1px solid #A855F7'}
-            onBlur={(e) => e.currentTarget.style.border = '1px solid var(--border-purple, rgba(168, 85, 247, 0.2))'}
+            onFocus={(e) => {
+              e.currentTarget.style.border = '1px solid #7C3AED';
+              e.currentTarget.style.boxShadow = '0 0 5px rgba(124, 58, 237, 0.3)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.border = '1px solid #3D3A52';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted, #8B7BA8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
@@ -245,25 +238,32 @@ export default function Login() {
           {/* Password */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: 'var(--text-white, white)',
-              fontFamily: 'var(--font-body)',
+              color: '#9B99A8',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
               fontSize: '12px',
-              letterSpacing: '1px'
+              letterSpacing: '1px',
+              fontWeight: 500
             }}>KATA SANDI</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(0,0,0,0.4)',
-              border: '1px solid var(--border-purple, rgba(168, 85, 247, 0.2))',
+              background: '#1A1825',
+              border: '1px solid #3D3A52',
               borderRadius: '4px',
               padding: '12px 16px',
               gap: '12px',
-              transition: 'border-color 0.3s ease'
+              transition: 'all 0.3s ease'
             }}
-            onFocus={(e) => e.currentTarget.style.border = '1px solid #A855F7'}
-            onBlur={(e) => e.currentTarget.style.border = '1px solid var(--border-purple, rgba(168, 85, 247, 0.2))'}
+            onFocus={(e) => {
+              e.currentTarget.style.border = '1px solid #7C3AED';
+              e.currentTarget.style.boxShadow = '0 0 5px rgba(124, 58, 237, 0.3)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.border = '1px solid #3D3A52';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted, #8B7BA8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
@@ -291,8 +291,8 @@ export default function Login() {
               <div style={{
                 width: '16px',
                 height: '16px',
-                background: 'rgba(0,0,0,0.4)',
-                border: '1px solid var(--text-muted, #8B7BA8)',
+                background: '#1A1825',
+                border: '1px solid #3D3A52',
                 borderRadius: '2px',
                 display: 'flex',
                 alignItems: 'center',
@@ -311,12 +311,12 @@ export default function Login() {
                   const checkmark = e.target.nextElementSibling;
                   if (e.target.checked) {
                     checkmark.style.opacity = '1';
-                    e.target.parentElement.style.background = '#A855F7';
-                    e.target.parentElement.style.borderColor = '#A855F7';
+                    e.target.parentElement.style.background = '#7C3AED';
+                    e.target.parentElement.style.borderColor = '#7C3AED';
                   } else {
                     checkmark.style.opacity = '0';
-                    e.target.parentElement.style.background = 'rgba(0,0,0,0.4)';
-                    e.target.parentElement.style.borderColor = 'var(--text-muted, #8B7BA8)';
+                    e.target.parentElement.style.background = '#1A1825';
+                    e.target.parentElement.style.borderColor = '#3D3A52';
                   }
                 }}
                 />
@@ -324,9 +324,9 @@ export default function Login() {
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
-              <span style={{ color: 'var(--text-light, #C7B8EA)', fontFamily: 'var(--font-body)', fontSize: '13px' }}>Ingat saya</span>
+              <span style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '13px' }}>Ingat saya</span>
             </label>
-            <Link href="/forgot-password" style={{ color: 'var(--purple-logo, #C084FC)', fontFamily: 'var(--font-body)', fontSize: '13px', textDecoration: 'none' }}>Lupa kata sandi?</Link>
+            <Link href="/forgot-password" style={{ color: '#7C3AED', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '13px', textDecoration: 'none' }}>Lupa kata sandi?</Link>
           </div>
 
           {errorMsg && (
@@ -348,13 +348,13 @@ export default function Login() {
           {/* Submit Button */}
           <button type="button" onClick={handleLogin} disabled={loading} style={{
             background: loading 
-              ? 'rgba(168, 85, 247, 0.5)' 
-              : 'linear-gradient(90deg, #A855F7 0%, #9249F2 50%, #7C3AED 100%)',
+              ? 'rgba(124, 58, 237, 0.5)' 
+              : '#7C3AED',
             border: 'none',
             borderRadius: '4px',
             color: 'white',
-            fontFamily: 'var(--font-body)',
-            fontWeight: '500',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontWeight: '600',
             fontSize: '14px',
             padding: '14px',
             cursor: loading ? 'not-allowed' : 'pointer',
@@ -366,20 +366,17 @@ export default function Login() {
             justifyContent: 'center',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)',
-            transition: 'all 0.3s ease',
+            transition: 'all 0.2s ease',
             opacity: loading ? 0.7 : 1
           }}
           onMouseEnter={(e) => {
             if (!loading) {
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(168, 85, 247, 0.6)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.background = '#A855F7';
             }
           }}
           onMouseLeave={(e) => {
             if (!loading) {
-              e.currentTarget.style.boxShadow = '0 4px 15px rgba(168, 85, 247, 0.3)';
-              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.background = '#7C3AED';
             }
           }}
           >
@@ -390,19 +387,19 @@ export default function Login() {
           </button>
         </form>
 
-        <p style={{ marginTop: '20px', marginBottom: '10px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body, monospace)' }}>
-          Belum punya akun? <Link href="/register" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Daftar di sini</Link>
+        <p style={{ marginTop: '20px', marginBottom: '10px', textAlign: 'center', fontSize: '13px', color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+          Belum punya akun? <Link href="/register" style={{ color: '#7C3AED', textDecoration: 'none' }}>Daftar di sini</Link>
         </p>
 
         {/* Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '40px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--green, #22C55E)', boxShadow: '0 0 8px var(--green, #22C55E)' }}></div>
-          <span style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body)', fontSize: '12px' }}>Status Sistem: Online</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }}></div>
+          <span style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px' }}>Status Sistem: Online</span>
         </div>
       </div>
 
       <div style={{ zIndex: 10, marginTop: '30px' }}>
-        <p style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body)', fontSize: '12px', textAlign: 'center' }}>Akses aman diperlukan. Semua aktivitas dipantau.</p>
+        <p style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px', textAlign: 'center' }}>Akses aman diperlukan. Semua aktivitas dipantau.</p>
       </div>
     </div>
   );

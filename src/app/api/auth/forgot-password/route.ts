@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       const lowerEmail = email.trim().toLowerCase()
       // Auto-create for default dev credentials if they don't exist yet
       if (lowerEmail === 'admin@primelog.com' || lowerEmail === 'operator@primelog.com') {
-        const role = lowerEmail.includes('admin') ? 'ADMIN' : 'OPERATOR'
+        const role = lowerEmail.includes('admin') ? 'ADMIN' : 'CUSTOMER'
         const defaultPassword = lowerEmail.includes('admin') ? 'admin123' : 'operator123'
         const hashedPassword = await bcrypt.hash(defaultPassword, 10)
         user = await prisma.user.create({

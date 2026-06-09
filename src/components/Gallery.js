@@ -14,7 +14,9 @@ export default function Gallery() {
     <section style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: '20px'
+      gap: '32px',
+      padding: '80px 24px',
+      background: '#0D0B14'
     }}>
       {/* Section Label */}
       <div style={{
@@ -22,18 +24,11 @@ export default function Gallery() {
         alignItems: 'center',
         gap: '12px'
       }}>
-        <div style={{
-          width: '4px',
-          height: '24px',
-          background: 'linear-gradient(180deg, #06B6D4 0%, #0891B2 100%)',
-          borderRadius: '2px',
-          boxShadow: '0 0 10px rgba(6, 182, 212, 0.4)'
-        }} />
         <h2 style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: '18px',
-          fontWeight: 600,
-          color: 'white',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontSize: '24px',
+          fontWeight: 700,
+          color: '#F1F0F5',
           letterSpacing: '1.5px',
           margin: 0
         }}>
@@ -45,7 +40,7 @@ export default function Gallery() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '12px'
+        gap: '32px'
       }}>
         {items.map((item, i) => (
           <div
@@ -54,21 +49,23 @@ export default function Gallery() {
               position: 'relative',
               height: '200px',
               overflow: 'hidden',
-              borderRadius: '10px',
-              border: '1px solid rgba(168, 85, 247, 0.15)',
+              borderRadius: '8px',
+              border: '1px solid rgba(124, 58, 237, 0.2)',
+              borderLeft: '3px solid #7C3AED',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              background: '#12101A'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.02)';
-              e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.4)';
-              e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.5), 0 0 15px rgba(168, 85, 247, 0.15)';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.borderColor = 'rgba(124, 58, 237, 0.4)';
+              e.currentTarget.style.borderLeft = '3px solid #7C3AED';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.15)';
-              e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.borderColor = 'rgba(124, 58, 237, 0.2)';
+              e.currentTarget.style.borderLeft = '3px solid #7C3AED';
             }}
           >
             <Image
@@ -88,26 +85,26 @@ export default function Gallery() {
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(0deg, rgba(7, 2, 14, 0.9) 0%, rgba(7, 2, 14, 0.3) 40%, transparent 100%)',
+              background: 'linear-gradient(0deg, rgba(13, 11, 20, 0.95) 0%, rgba(13, 11, 20, 0.4) 50%, transparent 100%)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'flex-end',
-              padding: '16px'
+              padding: '20px'
             }}>
               <span style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '11px',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+                fontSize: '12px',
                 fontWeight: 'bold',
-                color: 'white',
+                color: '#F1F0F5',
                 letterSpacing: '1px'
               }}>
                 {item.label}
               </span>
               <span style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '9px',
-                color: '#8B7BA8',
-                marginTop: '2px'
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+                fontSize: '11px',
+                color: '#9B99A8',
+                marginTop: '4px'
               }}>
                 {item.desc}
               </span>

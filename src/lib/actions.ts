@@ -520,14 +520,14 @@ export const cancelShipment = async (id: string, reason: string): Promise<Action
       }
     }
 
-    const isOperator = role !== Role.ADMIN
-    const targetStatus = isOperator ? ShipmentStatus.MENUNGGU_PEMBATALAN : ShipmentStatus.DIBATALKAN
-    const prefix = isOperator ? 'MENUNGGU BATAL' : 'BATAL'
+    const isCustomer = role === Role.CUSTOMER
+    const targetStatus = isCustomer ? ShipmentStatus.MENUNGGU_PEMBATALAN : ShipmentStatus.DIBATALKAN
+    const prefix = isCustomer ? 'MENUNGGU BATAL' : 'BATAL'
     const cancelNotes = `[${prefix}: ${reason.trim()}] ${shipment.notes || ''}`
 
     const updated = await prisma.$transaction(async (tx) => {
       // Release vehicle if cancel active allocation AND it is fully cancelled by Admin
-      if (!isOperator && shipment.vehicleId) {
+      if (!isCustomer && shipment.vehicleId) {
         await tx.vehicle.update({
           where: { id: shipment.vehicleId },
           data: { status: 'TERSEDIA' }
@@ -547,8 +547,8 @@ export const cancelShipment = async (id: string, reason: string): Promise<Action
           shipmentId: id,
           previousStatus: shipment.status,
           newStatus: targetStatus,
-          notes: isOperator 
-            ? `Pengajuan pembatalan diajukan oleh Operator. Alasan: ${reason.trim()}`
+          notes: isCustomer 
+            ? `Pengajuan pembatalan diajukan oleh Customer. Alasan: ${reason.trim()}`
             : `Pengiriman dibatalkan oleh Admin. Alasan: ${reason.trim()}`,
           changedBy: currentUserId
         }
@@ -558,7 +558,7 @@ export const cancelShipment = async (id: string, reason: string): Promise<Action
     })
 
     revalidatePath('/dashboard/cargo')
-    const successMsg = isOperator 
+    const successMsg = isCustomer 
       ? `Pengajuan pembatalan cargo ${shipment.receiptNo} berhasil dikirim.` 
       : `Sukses membatalkan pengiriman cargo ${shipment.receiptNo}`
     return { success: true, message: successMsg, data: updated }

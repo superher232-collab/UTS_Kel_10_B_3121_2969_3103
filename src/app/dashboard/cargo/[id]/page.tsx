@@ -117,7 +117,7 @@ export default async function ShipmentDetailPage({ params }: PageProps) {
   }
 
   const { id } = await params
-  const role = (session.user as any).role as 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+  const role = (session.user as any).role as 'ADMIN' | 'CUSTOMER'
   const userId = (session.user as any).id as string
 
   // Fetch shipment from DB including relations
@@ -270,7 +270,7 @@ export default async function ShipmentDetailPage({ params }: PageProps) {
                 fontWeight: 'bold',
                 boxShadow: '0 0 10px rgba(6, 182, 212, 0.15)'
               }}>
-                {shipment.shippingType === 'LAUT' ? '🚢 LAUT' : shipment.shippingType === 'DARAT' ? '🚛 DARAT' : '✈️ UDARA'}
+                {shipment.shippingType === 'LAUT' ? '🚢 LAUT' : shipment.shippingType}
               </span>
             </div>
           </div>
@@ -444,7 +444,7 @@ export default async function ShipmentDetailPage({ params }: PageProps) {
                 </div>
               ) : (
                 <div style={{ padding: '16px 0', color: '#8B7BA8', fontSize: '10px', textAlign: 'center', border: '1px dashed rgba(168, 85, 247, 0.2)', borderRadius: '6px' }}>
-                  Armada pengangkut belum dialokasikan oleh operator admin.
+                  Armada pengangkut belum dialokasikan oleh admin.
                 </div>
               )}
             </div>
@@ -470,7 +470,7 @@ export default async function ShipmentDetailPage({ params }: PageProps) {
                   </span>
                 </div>
                 <div style={{ fontSize: '9px', color: '#8B7BA8', lineHeight: '1.4' }}>
-                  Posisi diperbarui manual oleh kru operator kargo demi ketepatan data. Telemetri koordinat GPS ditiadakan atas dasar isolasi keamanan.
+                  Posisi diperbarui manual oleh kru admin kargo demi ketepatan data. Telemetri koordinat GPS ditiadakan atas dasar isolasi keamanan.
                 </div>
               </div>
             </div>
@@ -645,7 +645,7 @@ export default async function ShipmentDetailPage({ params }: PageProps) {
                     )}
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ fontSize: '8px', color: '#A855F7', fontWeight: 'bold', fontFamily: 'monospace' }}>OPERATOR ID:</span>
+                      <span style={{ fontSize: '8px', color: '#A855F7', fontWeight: 'bold', fontFamily: 'monospace' }}>ADMIN ID:</span>
                       <span style={{ fontSize: '8px', color: '#8B7BA8', fontFamily: 'monospace' }}>
                         {history.changedBy || 'SYSTEM'}
                       </span>

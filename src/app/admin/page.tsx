@@ -189,16 +189,12 @@ export default async function AdminUnifiedDashboardPage({ searchParams }: PagePr
     try {
       const [
         total,
-        darat,
-        udara,
         laut,
         selesai,
         shipments,
         vehicles
       ] = await Promise.all([
         prisma.shipment.count({ where: whereClause }),
-        prisma.shipment.count({ where: { ...whereClause, shippingType: 'DARAT' } }),
-        prisma.shipment.count({ where: { ...whereClause, shippingType: 'UDARA' } }),
         prisma.shipment.count({ where: { ...whereClause, shippingType: 'LAUT' } }),
         prisma.shipment.count({ where: { ...whereClause, status: 'SELESAI' } }),
         prisma.shipment.findMany({
@@ -221,7 +217,7 @@ export default async function AdminUnifiedDashboardPage({ searchParams }: PagePr
       cargoProps = {
         initialShipments: shipments.map(mapShipmentToCargo),
         ships: vehicles.map(mapVehicleToOption),
-        stats: { total, darat, udara, laut, selesai },
+        stats: { total, laut, selesai },
         pagination: {
           total,
           page: pageNum,

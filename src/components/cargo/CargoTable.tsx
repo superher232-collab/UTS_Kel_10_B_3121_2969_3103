@@ -17,7 +17,7 @@ interface CargoTableProps {
   onEdit: (cargo: CargoShipment) => void;
   onDelete: (id: string) => Promise<boolean>;
   onCancel: (id: string, reason: string) => Promise<boolean>;
-  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER';
+  role: 'ADMIN' | 'CUSTOMER';
 }
 
 export function CargoTable({ data, loading, pagination, onPageChange, onEdit, onDelete, onCancel, role }: CargoTableProps) {
@@ -334,8 +334,6 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
 
   const getModaIcon = (mode: string) => {
     const text = (mode || '').toLowerCase();
-    if (text === 'darat') return '🚛 DARAT';
-    if (text === 'udara') return '✈️ UDARA';
     if (text === 'laut') return '🚢 LAUT';
     return '📦 LAINNYA';
   };
@@ -718,7 +716,7 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                             ✅ LUNAS
                           </span>
                         )}
-                        {/* Tombol Batal Operator (BR-03) */}
+                        {/* Tombol Batal Customer (BR-03) */}
                         <button
                           onClick={() => {
                             setCancelId(shipment.id);
@@ -1122,7 +1120,7 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                   <div style={{ fontSize: '11px', color: '#C7B8EA', fontFamily: 'monospace', lineHeight: '1.6' }}>
                     Pastikan Anda telah menerima uang tunai<br/>
                     sebesar nominal di atas dari pelanggan.<br/>
-                    <span style={{ color: '#22C55E', fontWeight: 'bold' }}>Kembalian dihitung oleh Operator.</span>
+                    <span style={{ color: '#22C55E', fontWeight: 'bold' }}>Kembalian dihitung oleh Admin.</span>
                   </div>
                 </div>
               </div>

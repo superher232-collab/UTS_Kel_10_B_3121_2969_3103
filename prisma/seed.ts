@@ -16,19 +16,28 @@ const main = async (): Promise<void> => {
   // Seed Users
   const admin = await prisma.user.create({
     data: {
-      name: 'PrimeLog Admin',
+      name: 'Super Admin',
       email: 'admin@primelog.com',
       password: adminPasswordHash,
       role: Role.ADMIN
     }
   })
 
-  await prisma.user.create({
+  const cust1 = await prisma.user.create({
     data: {
-      name: 'John Doe',
-      email: 'customer@primelog.com',
+      name: 'Budi Santoso',
+      email: 'budi@customer.com',
       password: customerPasswordHash,
-      role: Role.OPERATOR
+      role: Role.CUSTOMER
+    }
+  })
+
+  const cust2 = await prisma.user.create({
+    data: {
+      name: 'Siti Aminah',
+      email: 'siti@customer.com',
+      password: customerPasswordHash,
+      role: Role.CUSTOMER
     }
   })
 
@@ -78,7 +87,7 @@ const main = async (): Promise<void> => {
       shippingType: 'LAUT',
       status: 'DIPROSES',
       notes: 'Harap muat dengan hati-hati.',
-      userId: admin.id,
+      userId: cust1.id,
       vehicleId: v1.id
     }
   })

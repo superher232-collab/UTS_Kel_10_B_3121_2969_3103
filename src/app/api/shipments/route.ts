@@ -16,9 +16,7 @@ const PORT_DISTANCES: Record<string, Record<string, number>> = {
 }
 
 const VEHICLE_COEFFICIENTS = {
-  DARAT: 2000,
-  LAUT: 1500,
-  UDARA: 5000
+  LAUT: 1500
 }
 
 function getDistance(origin: string, destination: string): number {
@@ -45,7 +43,7 @@ const CreateShipmentSchema = z.object({
   weight: z.number().refine(w => w >= 0.1, {
     message: 'VAL-001: Berat minimal kargo adalah 0.1 kg'
   }),
-  shippingType: z.enum(['LAUT', 'DARAT', 'UDARA']),
+  shippingType: z.enum(['LAUT']),
   notes: z.string().optional().nullable()
 }).refine((data) => data.origin.trim().toLowerCase() !== data.destination.trim().toLowerCase(), {
   message: 'Kota asal dan tujuan tidak boleh sama',

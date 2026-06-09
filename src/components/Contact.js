@@ -32,16 +32,14 @@ export default function Contact() {
       alignItems: 'center',
       padding: '80px 24px',
       position: 'relative',
-      background: 'rgba(20, 10, 36, 0.4)',
-      borderTop: '1px solid rgba(168, 85, 247, 0.1)',
-      borderBottom: '1px solid rgba(168, 85, 247, 0.1)',
+      background: '#0D0B14',
       margin: '40px 0'
     }}>
       <h3 style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: '12px',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        fontSize: '14px',
         fontWeight: 600,
-        color: '#8B7BA8',
+        color: '#9B99A8',
         letterSpacing: '3px',
         marginBottom: '12px'
       }}>
@@ -49,29 +47,30 @@ export default function Contact() {
       </h3>
       
       <h2 style={{
-        fontFamily: 'var(--font-title)',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
         fontSize: 'clamp(24px, 5vw, 36px)',
-        color: 'white',
+        fontWeight: 700,
+        color: '#F1F0F5',
         letterSpacing: '1px',
         marginBottom: '40px',
         textAlign: 'center'
       }}>
-        Butuh Bantuan <span style={{ color: '#A855F7' }}>Atau Informasi?</span>
+        Butuh Bantuan Atau Informasi?
       </h2>
 
       <div style={{
         width: '100%',
         maxWidth: '500px',
-        background: '#0D0618',
-        border: '1px solid rgba(168, 85, 247, 0.3)',
+        background: '#12101A',
+        border: '1px solid rgba(124, 58, 237, 0.3)',
         borderRadius: '12px',
         padding: '32px',
-        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)'
+        boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
       }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="name" style={{ color: '#8B7BA8', fontSize: '11px', fontFamily: 'monospace', fontWeight: 'bold' }}>NAMA LENGKAP *</label>
+            <label htmlFor="name" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>NAMA LENGKAP *</label>
             <input 
               type="text" 
               id="name" 
@@ -81,23 +80,23 @@ export default function Contact() {
               required
               placeholder="Masukkan nama Anda..."
               style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
+                background: '#0D0B14',
+                border: '1px solid rgba(124, 58, 237, 0.3)',
                 borderRadius: '6px',
                 padding: '12px',
-                color: 'white',
-                fontSize: '12px',
+                color: '#F1F0F5',
+                fontSize: '14px',
                 outline: 'none',
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
                 transition: 'border-color 0.3s'
               }}
-              onFocus={(e) => e.target.style.borderColor = '#A855F7'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(168, 85, 247, 0.3)'}
+              onFocus={(e) => e.target.style.borderColor = '#7C3AED'}
+              onBlur={(e) => e.target.style.borderColor = 'rgba(124, 58, 237, 0.3)'}
             />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="email" style={{ color: '#8B7BA8', fontSize: '11px', fontFamily: 'monospace', fontWeight: 'bold' }}>ALAMAT EMAIL *</label>
+            <label htmlFor="email" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>ALAMAT EMAIL *</label>
             <input 
               type="email" 
               id="email" 
@@ -107,23 +106,23 @@ export default function Contact() {
               required
               placeholder="contoh@email.com"
               style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
+                background: '#0D0B14',
+                border: '1px solid rgba(124, 58, 237, 0.3)',
                 borderRadius: '6px',
                 padding: '12px',
-                color: 'white',
-                fontSize: '12px',
+                color: '#F1F0F5',
+                fontSize: '14px',
                 outline: 'none',
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
                 transition: 'border-color 0.3s'
               }}
-              onFocus={(e) => e.target.style.borderColor = '#A855F7'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(168, 85, 247, 0.3)'}
+              onFocus={(e) => e.target.style.borderColor = '#7C3AED'}
+              onBlur={(e) => e.target.style.borderColor = 'rgba(124, 58, 237, 0.3)'}
             />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="message" style={{ color: '#8B7BA8', fontSize: '11px', fontFamily: 'monospace', fontWeight: 'bold' }}>ISI PESAN *</label>
+            <label htmlFor="message" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>ISI PESAN *</label>
             <textarea 
               id="message" 
               name="message" 
@@ -133,19 +132,19 @@ export default function Contact() {
               rows={4}
               placeholder="Tulis pesan atau pertanyaan Anda di sini..."
               style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
+                background: '#0D0B14',
+                border: '1px solid rgba(124, 58, 237, 0.3)',
                 borderRadius: '6px',
                 padding: '12px',
-                color: 'white',
-                fontSize: '12px',
+                color: '#F1F0F5',
+                fontSize: '14px',
                 outline: 'none',
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
                 resize: 'vertical',
                 transition: 'border-color 0.3s'
               }}
-              onFocus={(e) => e.target.style.borderColor = '#A855F7'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(168, 85, 247, 0.3)'}
+              onFocus={(e) => e.target.style.borderColor = '#7C3AED'}
+              onBlur={(e) => e.target.style.borderColor = 'rgba(124, 58, 237, 0.3)'}
             />
           </div>
 
@@ -153,14 +152,14 @@ export default function Contact() {
             type="submit" 
             disabled={status === 'loading' || status === 'success'}
             style={{
-              background: status === 'success' ? '#22C55E' : 'linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)',
-              color: 'white',
+              background: status === 'success' ? '#22C55E' : '#7C3AED',
+              color: '#F1F0F5',
               border: 'none',
-              padding: '14px',
+              padding: '16px',
               borderRadius: '6px',
-              fontSize: '12px',
+              fontSize: '14px',
               fontWeight: 'bold',
-              fontFamily: 'monospace',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
               cursor: (status === 'loading' || status === 'success') ? 'not-allowed' : 'pointer',
               marginTop: '10px',
               transition: 'all 0.3s',
@@ -176,7 +175,7 @@ export default function Contact() {
           </button>
           
           {status === 'success' && (
-             <p style={{ textAlign: 'center', fontSize: '10px', color: '#22C55E', margin: 0, fontFamily: 'monospace' }}>
+             <p style={{ textAlign: 'center', fontSize: '12px', color: '#22C55E', margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
                Terima kasih! Tim Admin kami akan segera merespon via Email.
              </p>
           )}

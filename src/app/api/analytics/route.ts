@@ -138,11 +138,11 @@ export async function GET(req: NextRequest) {
 
   const { start, end } = getDateRange(period)
 
-  // Base where clause — operator only sees own data
+  // Base where clause — customer only sees own data
   const baseWhere: any = {
     createdAt: { gte: start, lte: end }
   }
-  if (role === 'OPERATOR') {
+  if (role !== 'ADMIN') {
     baseWhere.userId = userId
   }
 
@@ -159,6 +159,13 @@ export async function GET(req: NextRequest) {
           origin: true,
           destination: true,
           paymentMethod: true,
+          receiptNo: true,
+          itemName: true,
+          senderName: true,
+          receiverName: true,
+          weight: true,
+          quantity: true,
+          notes: true,
           user: { select: { name: true } }
         },
         orderBy: { createdAt: 'asc' }
@@ -175,12 +182,12 @@ export async function GET(req: NextRequest) {
     // Chart data
     const chartData = groupByPeriod(allShipments, period)
 
-    // Mode distribution
-    const modeDistribution = { LAUT: 0, DARAT: 0, UDARA: 0 }
+    // Mode & Status distribution
+    const modeDistribution = { LAUT: 0 }
+    const statusDistribution: Record<string, number> = {}
     allShipments.forEach(s => {
       if (s.shippingType === 'LAUT') modeDistribution.LAUT++
-      else if (s.shippingType === 'DARAT') modeDistribution.DARAT++
-      else if (s.shippingType === 'UDARA') modeDistribution.UDARA++
+      statusDistribution[s.status] = (statusDistribution[s.status] || 0) + 1
     })
 
     // Payment method stats
@@ -202,18 +209,18 @@ export async function GET(req: NextRequest) {
       .slice(0, 5)
       .map(([route, count]) => ({ route, count }))
 
-    // Top operators (admin only)
-    let topOperators: any[] = []
+    // Top customers (admin only)
+    let topCustomers: any[] = []
     if (role === 'ADMIN') {
-      const operatorMap: Record<string, { name: string; count: number; revenue: number }> = {}
+      const customerMap: Record<string, { name: string; count: number; revenue: number }> = {}
       allShipments.forEach(s => {
         const name = s.user?.name || 'Unknown'
-        if (!operatorMap[name]) operatorMap[name] = { name, count: 0, revenue: 0 }
-        operatorMap[name].count++
-        operatorMap[name].revenue += s.tariff || 0
+        if (!customerMap[name]) customerMap[name] = { name, count: 0, revenue: 0 }
+        customerMap[name].count++
+        customerMap[name].revenue += s.tariff || 0
       })
-      topOperators = Object.values(operatorMap)
-        .sort((a, b) => b.count - a.count)
+      topCustomers = Object.values(customerMap)
+        .sort((a, b) => b.revenue - a.revenue)
         .slice(0, 5)
     }
 
@@ -229,9 +236,11 @@ export async function GET(req: NextRequest) {
       },
       chartData,
       topRoutes,
-      topOperators,
+      topCustomers,
       modeDistribution,
-      paymentMethodStats
+      statusDistribution,
+      paymentMethodStats,
+      recentShipments: allShipments.slice(-20).reverse() // send up to 20 recent shipments
     })
   } catch (error: any) {
     console.error('Analytics fetch error:', error)

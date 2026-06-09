@@ -5,27 +5,17 @@ export default function CTA() {
       flexDirection: 'column',
       alignItems: 'center',
       textAlign: 'center',
-      padding: '60px 24px',
-      position: 'relative'
+      padding: '80px 24px',
+      position: 'relative',
+      background: '#12101A',
+      borderLeft: '3px solid #7C3AED',
+      margin: '40px 0'
     }}>
-      {/* Background glow */}
-      <div style={{
-        position: 'absolute',
-        width: '300px',
-        height: '300px',
-        borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%)',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        pointerEvents: 'none'
-      }} />
-
       <h3 style={{
-        fontFamily: 'var(--font-body)',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
         fontSize: '14px',
         fontWeight: 600,
-        color: '#8B7BA8',
+        color: '#9B99A8',
         letterSpacing: '3px',
         marginBottom: '12px',
         position: 'relative',
@@ -35,9 +25,10 @@ export default function CTA() {
       </h3>
 
       <h2 style={{
-        fontFamily: 'var(--font-title)',
-        fontSize: 'clamp(20px, 4vw, 28px)',
-        color: 'white',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        fontSize: 'clamp(24px, 4vw, 36px)',
+        fontWeight: 700,
+        color: '#F1F0F5',
         letterSpacing: '1px',
         marginBottom: '16px',
         position: 'relative',
@@ -47,12 +38,12 @@ export default function CTA() {
       </h2>
 
       <p style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: '12px',
-        color: '#8B7BA8',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        fontSize: '15px',
+        color: '#9B99A8',
         lineHeight: '1.6',
-        maxWidth: '400px',
-        marginBottom: '32px',
+        maxWidth: '480px',
+        marginBottom: '40px',
         position: 'relative',
         zIndex: 1
       }}>
@@ -67,14 +58,13 @@ export default function CTA() {
         position: 'relative',
         zIndex: 1
       }}>
-        <a href="/login" style={{
+        <a href="/login" className="btn-cta-primary" style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '10px',
-          background: 'linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)',
-          boxShadow: '0 0 30px rgba(168, 85, 247, 0.4)',
-          color: 'white',
-          fontFamily: 'var(--font-body)',
+          background: '#7C3AED',
+          color: '#F1F0F5',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: '14px',
           fontWeight: 'bold',
           letterSpacing: '1.5px',
@@ -96,13 +86,13 @@ export default function CTA() {
           alignItems: 'center',
           gap: '10px',
           background: 'transparent',
-          color: '#C084FC',
-          fontFamily: 'var(--font-body)',
+          color: '#F1F0F5',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: '14px',
           fontWeight: 'bold',
           letterSpacing: '1.5px',
           padding: '16px 40px',
-          border: '1px solid rgba(168, 85, 247, 0.4)',
+          border: '1px solid #7C3AED',
           borderRadius: '8px',
           cursor: 'pointer',
           textDecoration: 'none',
@@ -117,16 +107,23 @@ export default function CTA() {
       </div>
 
       <p style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: '10px',
-        color: '#8B7BA8',
-        marginTop: '20px',
+        fontFamily: '"Roboto Mono", monospace',
+        fontSize: '12px',
+        color: '#9B99A8',
+        marginTop: '24px',
         letterSpacing: '0.5px',
         position: 'relative',
         zIndex: 1
       }}>
         🔐 Akses terenkripsi AES-256 · Autentikasi multi-faktor
       </p>
+
+      <style>{`
+        .btn-cta-primary:hover {
+          background: #A855F7 !important;
+          box-shadow: 0 0 20px rgba(168, 85, 247, 0.6) !important;
+        }
+      `}</style>
     </section>
   );
 }

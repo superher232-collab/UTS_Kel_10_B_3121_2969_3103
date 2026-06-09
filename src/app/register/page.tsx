@@ -383,8 +383,7 @@ export default function RegisterPage() {
                 }}
               >
                 <option value="CUSTOMER" style={{ background: '#140A24', color: 'white' }}>Customer (Pelanggan)</option>
-                <option value="OPERATOR" style={{ background: '#140A24', color: 'white' }}>Operator (Cabang)</option>
-                <option value="ADMIN" style={{ background: '#140A24', color: 'white' }}>Admin (Operator)</option>
+                <option value="ADMIN" style={{ background: '#140A24', color: 'white' }}>Admin</option>
               </select>
             </div>
           </div>

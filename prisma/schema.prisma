@@ -15,7 +15,6 @@ generator client {
 
 enum Role {
   ADMIN
-  OPERATOR
   CUSTOMER
 }
 
@@ -43,8 +42,6 @@ enum ShipmentStatus {
 }
 
 enum ShippingType {
-  DARAT
-  UDARA
   LAUT
 }
 
@@ -63,7 +60,7 @@ model User {
   name       String
   email      String     @unique
   password   String
-  role       Role       @default(OPERATOR)
+  role       Role       @default(CUSTOMER)
   
   // Profile tambahan untuk customer
   phone      String?
@@ -79,8 +76,6 @@ model User {
   
   // Relations
   shipments    Shipment[]
-  tickets      SupportTicket[]
-  chatMessages ChatMessage[]
   auditLogs    AuditLog[]
   
   @@index([email])
@@ -169,7 +164,6 @@ model Shipment {
   vehicle         Vehicle?        @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
   
   trackingHistory TrackingHistory[]
-  ticket          SupportTicket?
   invoice         Invoice?
   
   // Indexes untuk query cepat
@@ -212,60 +206,13 @@ model TrackingHistory {
   @@index([shipmentId, changedAt])
 }
 
-enum TicketStatus {
-  OPEN
-  IN_PROGRESS
-  RESOLVED
-  CLOSED
-  ESCALATED
-}
-
-enum TicketSeverity {
-  LOW
-  MEDIUM
-  HIGH
-  CRITICAL
-}
-
-model SupportTicket {
-  id               String        @id @default(uuid())
-  ticketNo         String        @unique // TKT-XXXXXX
-  userId           String
-  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shipmentId       String?       @unique
-  shipment         Shipment?     @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
-  title            String
-  description      String
-  type             String        // COMPLAINT | INQUIRY | FEEDBACK
-  severity         TicketSeverity @default(MEDIUM)
-  status           TicketStatus  @default(OPEN)
-  resolution       String?
-  compensation     Float?
-  compensationType String?       // REFUND | DISCOUNT | RESHIP | NONE
-  createdAt        DateTime      @default(now())
-  resolvedAt       DateTime?
-  messages         ChatMessage[]
-  @@index([userId, status])
-}
-
-model ChatMessage {
-  id        String   @id @default(uuid())
-  ticketId  String
-  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  senderId  String
-  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  message   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
-  @@index([ticketId, createdAt])
-}
 
 model AuditLog {
   id           String   @id @default(uuid())
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   action       String   // e.g., "SHIPMENT_STATUS_UPDATE"
-  resourceType String   // "Shipment" | "User" | "Ticket"
+  resourceType String   // "Shipment" | "User"
   resourceId   String
   metadata     String?  // JSON string
   createdAt    DateTime @default(now())

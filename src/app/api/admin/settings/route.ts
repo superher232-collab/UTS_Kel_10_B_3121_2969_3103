@@ -15,7 +15,7 @@ const UpdateSettingsSchema = z.object({
 const DEFAULT_SETTINGS = [
   {
     key: 'tariffRules',
-    value: JSON.stringify({ DARAT: 2000, LAUT: 1500, UDARA: 5000, baseFee: 25000 }),
+    value: JSON.stringify({ LAUT: 1500, baseFee: 25000 }),
     category: 'TARIFF'
   },
   {

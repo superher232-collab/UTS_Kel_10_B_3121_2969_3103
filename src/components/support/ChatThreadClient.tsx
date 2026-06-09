@@ -10,7 +10,7 @@ export interface SerializedMessage {
   message: string
   senderId: string
   senderName: string
-  senderRole: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+  senderRole: 'ADMIN' | 'CUSTOMER'
   createdAt: string
 }
 
@@ -32,7 +32,7 @@ export interface TicketDetails {
 }
 
 interface ChatThreadClientProps {
-  role: 'ADMIN' | 'OPERATOR' | 'CUSTOMER'
+  role: 'ADMIN' | 'CUSTOMER'
   userId: string
   ticket: TicketDetails
   initialMessages: SerializedMessage[]
@@ -251,7 +251,7 @@ export function ChatThreadClient({ role, userId, ticket, initialMessages }: Chat
             </h1>
           </div>
           <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>
-            INTERAKSI DUKUNGAN OPERATOR DENGAN POLLING TRANSMISI TELEMETRI ({role === 'ADMIN' ? '5s' : '10s'})
+            INTERAKSI DUKUNGAN ADMIN DENGAN POLLING TRANSMISI TELEMETRI ({role === 'ADMIN' ? '5s' : '10s'})
           </span>
         </div>
 
@@ -289,7 +289,7 @@ export function ChatThreadClient({ role, userId, ticket, initialMessages }: Chat
         alignItems: 'start'
       }}>
         
-        {/* Left Side: Ticket Metadata & Operator panel */}
+        {/* Left Side: Ticket Metadata & Admin panel */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
           {/* Ticket Info Card */}
@@ -385,7 +385,7 @@ export function ChatThreadClient({ role, userId, ticket, initialMessages }: Chat
             }}>
               <span style={{ fontSize: '10px', color: '#C084FC', fontWeight: 'bold' }}>⚙️ KONTROL TIKET ANDA</span>
               <p style={{ fontSize: '9px', color: '#8B7BA8', lineHeight: '1.4', margin: 0 }}>
-                Jika permasalahan Anda sudah diselesaikan oleh operator support, silakan tutup tiket ini secara manual.
+                Jika permasalahan Anda sudah diselesaikan oleh admin support, silakan tutup tiket ini secara manual.
               </p>
               <button
                 onClick={() => handleUpdateTicketProps('CLOSED')}

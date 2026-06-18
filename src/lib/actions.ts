@@ -146,7 +146,11 @@ export const createShipment = async (prevState: ActionState | null, formData: Fo
 
     let assignedUserId = currentUserId
     if (role === Role.ADMIN && targetUserId) {
-      assignedUserId = targetUserId
+      const customer = await prisma.user.findUnique({ where: { id: targetUserId } })
+      if (!customer || customer.role !== Role.CUSTOMER) {
+        return { success: false, message: 'VAL-CUST: Customer ID tidak valid atau tidak ditemukan.' }
+      }
+      assignedUserId = customer.id
     }
 
     let finalTariff = inputTariff
@@ -243,7 +247,8 @@ export const updateShipment = async (
     shipmentDate: formData.get('shipmentDate') as string,
     vehicleId: (formData.get('vehicleId') as string) || null,
     notes: formData.get('notes') as string,
-    paymentMethod: formData.get('paymentMethod') as string
+    paymentMethod: formData.get('paymentMethod') as string,
+    targetUserId: formData.get('targetUserId') as string
   }
 
   const validatedFields = ShipmentSchema.safeParse(rawData)
@@ -256,6 +261,23 @@ export const updateShipment = async (
     }
   }
 
+  const {
+    senderName,
+    receiverName,
+    receiverTelp,
+    origin,
+    destination,
+    itemName,
+    weight,
+    tariff: inputTariff,
+    shippingType,
+    shipmentDate,
+    vehicleId,
+    notes,
+    paymentMethod,
+    targetUserId
+  } = validatedFields.data
+
   const nextStatus = formData.get('status') as ShipmentStatus
 
   try {
@@ -267,7 +289,7 @@ export const updateShipment = async (
       notFound()
     }
 
-    // Role-based isolation checks (BR-01, BR-02)
+    // Protect against non-admin editing other user's cargo
     if (role !== Role.ADMIN) {
       if (currentShipment.userId !== currentUserId) {
         return {
@@ -282,6 +304,15 @@ export const updateShipment = async (
           errors: { status: ['Kargo sudah dikirim atau selesai. Tidak dapat diedit.'] }
         }
       }
+    }
+
+    let updatedUserId = currentShipment.userId;
+    if (role === Role.ADMIN && targetUserId && targetUserId !== currentShipment.userId) {
+      const customer = await prisma.user.findUnique({ where: { id: targetUserId } })
+      if (!customer || customer.role !== Role.CUSTOMER) {
+        return { success: false, message: 'VAL-CUST: Customer ID tidak valid atau tidak ditemukan.' }
+      }
+      updatedUserId = customer.id;
     }
 
     // State Machine validation
@@ -302,29 +333,24 @@ export const updateShipment = async (
       }
     }
 
-    const {
-      senderName,
-      receiverName,
-      receiverTelp,
-      origin,
-      destination,
-      itemName,
-      weight,
-      tariff: inputTariff,
-      shippingType,
-      shipmentDate,
-      vehicleId,
-      notes,
-      paymentMethod
-    } = validatedFields.data
 
     const [year, month, day] = shipmentDate.split('-').map(Number)
     const shipmentDateObj = new Date(year, month - 1, day)
 
-    let finalTariff = inputTariff
-    if (finalTariff <= 0) {
-      const distance = getDistance(origin, destination)
-      finalTariff = await calculateTariff(weight, distance, shippingType as ShippingType)
+    let finalTariff = currentShipment.tariff;
+    if (currentShipment.status === ShipmentStatus.DIPROSES) {
+      finalTariff = inputTariff;
+      if (finalTariff <= 0) {
+        const distance = getDistance(origin, destination)
+        finalTariff = await calculateTariff(weight, distance, shippingType as ShippingType)
+      }
+    } else if (inputTariff !== currentShipment.tariff && inputTariff > 0) {
+      // If user passed a different tariff but status is not DIPROSES, reject it (unless they passed 0/empty, which means default)
+      return {
+        success: false,
+        message: 'Tarif harga tidak dapat diubah karena status kargo sudah tidak Diproses.',
+        errors: { tariff: ['Tarif terkunci'] }
+      }
     }
 
     const updatedShipment = await prisma.$transaction(async (tx) => {
@@ -358,6 +384,7 @@ export const updateShipment = async (
       const shipmentAfterUpdate = await tx.shipment.update({
         where: { id },
         data: {
+          userId: updatedUserId,
           senderName,
           receiverName,
           receiverTelp,

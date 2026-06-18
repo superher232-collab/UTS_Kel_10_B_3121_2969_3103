@@ -1,27 +1,38 @@
 "use client";
 import Image from "next/image";
-import { motion } from "framer-motion";
-
-const containerVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: 'easeOut',
-      delayChildren: 0.1,
-      staggerChildren: 0.12
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
-};
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Gallery() {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 85%",
+        }
+      });
+
+      // Animate the section container
+      tl.fromTo(sectionRef.current,
+        { opacity: 0, y: 60 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+      )
+      // Stagger the gallery items
+      .fromTo(".gallery-item",
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power2.out" },
+        "-=0.4"
+      );
+    }, sectionRef);
+    
+    return () => ctx.revert();
+  }, []);
   const items = [
     { src: '/ship1.png', label: 'OPERASIONAL MARITIM', desc: 'Pengawasan armada aktif' },
     { src: '/ship2.png', label: 'MANAJEMEN ARMADA', desc: 'Koordinasi antar kapal' },
@@ -31,11 +42,8 @@ export default function Gallery() {
   ];
 
   return (
-    <motion.section
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+    <section
+      ref={sectionRef}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -69,9 +77,9 @@ export default function Gallery() {
         gap: '32px'
       }}>
         {items.map((item, i) => (
-          <motion.div
+          <div
             key={i}
-            variants={itemVariants}
+            className="gallery-item"
             style={{
               position: 'relative',
               height: '200px',
@@ -136,9 +144,9 @@ export default function Gallery() {
                 {item.desc}
               </span>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
-    </motion.section>
+    </section>
   );
 }

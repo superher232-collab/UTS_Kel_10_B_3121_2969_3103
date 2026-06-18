@@ -1,5 +1,6 @@
 import { Roboto_Mono, Mochiy_Pop_One } from "next/font/google";
 import "./globals.css";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 
 const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
@@ -22,7 +23,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id" className={`${robotoMono.variable} ${mochiyPopOne.variable}`}>
-      <body>{children}</body>
+      <body>
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+      </body>
     </html>
   );
 }

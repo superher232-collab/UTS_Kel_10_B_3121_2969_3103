@@ -286,25 +286,7 @@ export function FleetManagerClient({ initialVehicles, pendingShipments }: FleetM
           </span>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          style={{
-            background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)',
-            border: 'none',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)'
-          }}
-        >
-          ➕ REGISTRASI ARMADA BARU
-        </button>
+
       </div>
 
       {/* Main Grid: CRUD List & Bulk Assign Panel */}

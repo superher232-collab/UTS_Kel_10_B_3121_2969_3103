@@ -9,7 +9,8 @@ import { logAudit } from '@/lib/audit'
 const UpdateShipmentSchema = z.object({
   receiverName: z.string().min(1, 'Nama penerima wajib diisi').optional(),
   receiverTelp: z.string().regex(/^\+?[0-9\s-]{6,16}$/, 'Format nomor telepon tidak valid').optional(),
-  notes: z.string().optional().nullable()
+  notes: z.string().optional().nullable(),
+  tariff: z.number().optional()
 })
 
 // GET shipment detail (fully secured via role-based data isolation, BR-01)
@@ -74,6 +75,16 @@ export async function PATCH(
       return NextResponse.json({ error: 'Shipment not found' }, { status: 404 })
     }
 
+    const body: unknown = await request.json()
+    const validated = UpdateShipmentSchema.safeParse(body)
+
+    if (!validated.success) {
+      return NextResponse.json({
+        error: 'Validation failed',
+        details: validated.error.flatten().fieldErrors
+      }, { status: 400 })
+    }
+
     // Role check and Data Isolation check
     if (session.user.role !== 'ADMIN') {
       if (shipment.userId !== session.user.id) {
@@ -89,13 +100,11 @@ export async function PATCH(
       }
     }
 
-    const body: unknown = await request.json()
-    const validated = UpdateShipmentSchema.safeParse(body)
-
-    if (!validated.success) {
+    // Price Lock Validation (Berlaku untuk semua, termasuk ADMIN)
+    if (validated.data.tariff !== undefined && shipment.status !== ShipmentStatus.DIPROSES) {
       return NextResponse.json({
-        error: 'Validation failed',
-        details: validated.error.flatten().fieldErrors
+        error: 'Price Lock Active',
+        message: 'Tarif harga tidak dapat diubah karena status kargo sudah tidak Diproses.'
       }, { status: 400 })
     }
 

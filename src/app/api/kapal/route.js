@@ -2,38 +2,16 @@
 import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { Role, VehicleStatus, VehicleType } from '@prisma/client';
+import { auth } from '@/auth';
 
 export async function GET(request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const username = searchParams.get('username');
-
-    if (!username || username.trim() === '') {
-      return NextResponse.json(
-        { error: 'Username diperlukan' },
-        { status: 400 }
-      );
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 });
     }
 
-    // Match user by name or email dynamically
-    const user = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: { equals: username, mode: 'insensitive' } },
-          { name: { equals: username, mode: 'insensitive' } }
-        ],
-        deletedAt: null
-      }
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Akun tidak ditemukan' },
-        { status: 404 }
-      );
-    }
-
-    const role = user.role === Role.ADMIN ? 'Admin' : 'User';
+    const role = session.user.role === 'ADMIN' ? 'Admin' : 'User';
 
     // Retrieve vehicles from PostgreSQL via Prisma
     const vehicles = await prisma.vehicle.findMany({
@@ -96,32 +74,13 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const username = searchParams.get('username');
-
-    if (!username || username.trim() === '') {
-      return NextResponse.json(
-        { error: 'Username diperlukan' },
-        { status: 400 }
-      );
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 });
     }
 
-    const user = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: { equals: username, mode: 'insensitive' } },
-          { name: { equals: username, mode: 'insensitive' } }
-        ],
-        deletedAt: null
-      }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'Akun tidak ditemukan' }, { status: 404 });
-    }
-
-    if (user.role !== Role.ADMIN) {
-      return NextResponse.json({ error: 'Hanya Admin yang bisa menambah kapal' }, { status: 403 });
+    if (session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden: Hanya Admin yang bisa menambah kapal' }, { status: 403 });
     }
 
     const body = await request.json();
@@ -187,34 +146,20 @@ export async function POST(request) {
 
 export async function DELETE(request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const id       = searchParams.get('id');
-    const username = searchParams.get('username');
-
-    if (!username || username.trim() === '') {
-      return NextResponse.json({ error: 'Username diperlukan' }, { status: 400 });
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 });
     }
+
+    if (session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden: Hanya Admin yang bisa menghapus armada' }, { status: 403 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
     if (!id) {
       return NextResponse.json({ error: 'ID armada diperlukan' }, { status: 400 });
-    }
-
-    const user = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: { equals: username, mode: 'insensitive' } },
-          { name: { equals: username, mode: 'insensitive' } }
-        ],
-        deletedAt: null
-      }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'Akun tidak ditemukan' }, { status: 404 });
-    }
-
-    if (user.role !== Role.ADMIN) {
-      return NextResponse.json({ error: 'Hanya Admin yang bisa menghapus armada' }, { status: 403 });
     }
 
     const deleted = await prisma.vehicle.delete({
@@ -240,31 +185,17 @@ export async function DELETE(request) {
 
 export async function PUT(request) {
   try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized: Please login' }, { status: 401 });
+    }
+
+    if (session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden: Hanya Admin yang bisa memperbarui armada' }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
-    const id       = searchParams.get('id');
-    const username = searchParams.get('username');
-
-    if (!username || username.trim() === '') {
-      return NextResponse.json({ error: 'Username diperlukan' }, { status: 400 });
-    }
-
-    const user = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: { equals: username, mode: 'insensitive' } },
-          { name: { equals: username, mode: 'insensitive' } }
-        ],
-        deletedAt: null
-      }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'Akun tidak ditemukan' }, { status: 404 });
-    }
-
-    if (user.role !== Role.ADMIN) {
-      return NextResponse.json({ error: 'Hanya Admin yang bisa memperbarui armada' }, { status: 403 });
-    }
+    const id = searchParams.get('id');
 
     const body = await request.json();
     const finalId = id || body.id;

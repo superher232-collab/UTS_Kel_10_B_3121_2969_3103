@@ -30,7 +30,8 @@ function mapShipmentToCargo(s: any) {
     metode_pembayaran: s.paymentMethod || 'TUNAI',
     deskripsi: s.notes || null,
     eta: s.eta?.toISOString() || null,
-    currentLocation: s.currentLocation || null
+    currentLocation: s.currentLocation || null,
+    targetUserId: s.userId
   };
 }
 

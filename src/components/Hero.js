@@ -1,11 +1,86 @@
 "use client";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Particles, { ParticlesProvider } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Hero() {
+  const heroRef = useRef(null);
+  const bgRef = useRef(null);
+  const headingRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const statsRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Parallax Background
+      gsap.fromTo(bgRef.current,
+        { y: 0 },
+        {
+          y: -150,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          }
+        }
+      );
+
+      // Parallax Heading
+      gsap.fromTo(headingRef.current,
+        { y: 0 },
+        {
+          y: -80,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          }
+        }
+      );
+
+      // Parallax Subtitle
+      gsap.fromTo(subtitleRef.current,
+        { y: 0 },
+        {
+          y: -50,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          }
+        }
+      );
+
+      // Fade Out Stats Bar
+      gsap.fromTo(statsRef.current,
+        { opacity: 1 },
+        {
+          opacity: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "30% top",
+            end: "bottom top",
+            scrub: true,
+          }
+        }
+      );
+    }, heroRef); // scope to heroRef
+
+    return () => ctx.revert(); // cleanup
+  }, []);
   const initFn = useCallback(async (engine) => {
     await loadSlim(engine);
   }, []);
@@ -67,6 +142,7 @@ export default function Hero() {
   return (
     <section
       id="beranda"
+      ref={heroRef}
       style={{
         position: 'relative',
         minHeight: '100vh',
@@ -79,31 +155,32 @@ export default function Hero() {
         boxSizing: 'border-box'
       }}
     >
-      {/* Animated Grid Lines Background */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        backgroundImage: `
-          linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px)
-        `,
-        backgroundSize: '60px 60px',
-        zIndex: 0
-      }} />
+      {/* Background Wrapper */}
+      <div ref={bgRef} style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        {/* Animated Grid Lines Background */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `
+            linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px',
+        }} />
 
-      {/* tsParticles Background */}
-      <ParticlesProvider init={initFn}>
-        <Particles
-          id="hero-particles"
-          particlesLoaded={particlesLoaded}
-          options={particleOptions}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 1
-          }}
-        />
-      </ParticlesProvider>
+        {/* tsParticles Background */}
+        <ParticlesProvider init={initFn}>
+          <Particles
+            id="hero-particles"
+            particlesLoaded={particlesLoaded}
+            options={particleOptions}
+            style={{
+              position: 'absolute',
+              inset: 0,
+            }}
+          />
+        </ParticlesProvider>
+      </div>
 
       {/* Hero Content with fade-in-up */}
       <motion.div
@@ -135,7 +212,7 @@ export default function Hero() {
         </div>
 
         {/* Title */}
-        <h1 style={{
+        <h1 ref={headingRef} style={{
           fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: 'clamp(36px, 6vw, 56px)',
           fontWeight: 700,
@@ -148,7 +225,7 @@ export default function Hero() {
         </h1>
 
         {/* Subtitle */}
-        <p style={{
+        <p ref={subtitleRef} style={{
           fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: 'clamp(14px, 2.5vw, 20px)',
           color: '#9B99A8',
@@ -236,7 +313,7 @@ export default function Hero() {
         </div>
 
         {/* Floating Stats Bar */}
-        <div style={{
+        <div ref={statsRef} style={{
           display: 'flex',
           gap: '40px',
           marginTop: '60px',

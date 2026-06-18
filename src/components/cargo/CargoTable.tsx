@@ -64,7 +64,20 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
     }
   }
 
-  const handlePrintReceipt = (shipment: CargoShipment) => {
+  const handlePrintReceipt = async (shipment: CargoShipment) => {
+    // Validasi ke backend sebelum print
+    try {
+      const res = await fetch(`/api/cargo/${shipment.id}/print`);
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(`Gagal mencetak resi: ${errorData.error}`);
+        return;
+      }
+    } catch (e) {
+      alert('Terjadi kesalahan koneksi saat memvalidasi cetak resi.');
+      return;
+    }
+
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
       alert('Mohon izinkan pop-up untuk mencetak resi.');
@@ -553,30 +566,37 @@ export function CargoTable({ data, loading, pagination, onPageChange, onEdit, on
                     </Link>
                     <button
                       onClick={() => handlePrintReceipt(shipment)}
+                      disabled={shipment.status_pengiriman !== 'selesai'}
+                      title={shipment.status_pengiriman !== 'selesai' ? 'Resi resmi dapat dicetak setelah kargo tiba (Status Selesai).' : 'Cetak Resi Pengiriman'}
                       style={{
-                        background: 'rgba(34, 197, 94, 0.1)',
-                        border: '1px solid rgba(34, 197, 94, 0.4)',
+                        background: shipment.status_pengiriman === 'selesai' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(156, 163, 175, 0.1)',
+                        border: shipment.status_pengiriman === 'selesai' ? '1px solid rgba(34, 197, 94, 0.4)' : '1px solid rgba(156, 163, 175, 0.4)',
                         borderRadius: '4px',
                         padding: '6px 10px',
-                        color: '#22C55E',
-                        cursor: 'pointer',
+                        color: shipment.status_pengiriman === 'selesai' ? '#22C55E' : '#9CA3AF',
+                        cursor: shipment.status_pengiriman === 'selesai' ? 'pointer' : 'not-allowed',
                         fontSize: '9px',
                         fontWeight: 'bold',
                         fontFamily: 'monospace',
                         transition: 'all 0.2s',
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '4px'
+                        gap: '4px',
+                        opacity: shipment.status_pengiriman === 'selesai' ? 1 : 0.6
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#22C55E';
-                        e.currentTarget.style.color = 'white';
-                        e.currentTarget.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.4)';
+                        if (shipment.status_pengiriman === 'selesai') {
+                          e.currentTarget.style.background = '#22C55E';
+                          e.currentTarget.style.color = 'white';
+                          e.currentTarget.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.4)';
+                        }
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)';
-                        e.currentTarget.style.color = '#22C55E';
-                        e.currentTarget.style.boxShadow = 'none';
+                        if (shipment.status_pengiriman === 'selesai') {
+                          e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)';
+                          e.currentTarget.style.color = '#22C55E';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }
                       }}
                     >
                       🖨️ CETAK

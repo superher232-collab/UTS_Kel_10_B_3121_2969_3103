@@ -1,14 +1,36 @@
 "use client";
-import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function About() {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    const ctx = gsap.context(() => {
+      gsap.fromTo(sectionRef.current,
+        { opacity: 0, y: 60 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+          }
+        }
+      );
+    }, sectionRef);
+    
+    return () => ctx.revert();
+  }, []);
   return (
-    <motion.section
+    <section
       id="tentang"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+      ref={sectionRef}
       style={{
         padding: '80px 32px',
         background: '#12101A',
@@ -62,6 +84,6 @@ export default function About() {
         perusahaan maritim meningkatkan efisiensi operasional, mengurangi biaya,
         dan memastikan keselamatan armada di seluruh dunia.
       </p>
-    </motion.section>
+    </section>
   );
 }

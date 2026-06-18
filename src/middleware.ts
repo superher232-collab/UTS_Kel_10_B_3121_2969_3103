@@ -6,15 +6,14 @@ export default auth((req) => {
   const session = req.auth
   const { pathname } = req.nextUrl
 
-  // Cek login untuk route protected
-  const isProtected = pathname.startsWith('/dashboard') || pathname.startsWith('/admin')
-  if (isProtected && !session?.user) {
+  // Jika user belum login, lempar ke /login
+  if (!session?.user) {
     return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
 
   // Cek role ADMIN khusus untuk route /admin/*
   if (pathname.startsWith('/admin')) {
-    if (session?.user?.role !== 'ADMIN') {
+    if (session.user.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
     }
   }
@@ -23,5 +22,6 @@ export default auth((req) => {
 })
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*']
+  // Melindungi seluruh route aplikasi KECUALI route auth, aset publik, dan file Next.js internal
+  matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico|login|register|forgot-password|reset-password).*)']
 }

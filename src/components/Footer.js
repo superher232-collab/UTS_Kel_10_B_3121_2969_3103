@@ -1,13 +1,36 @@
 "use client";
-import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Footer() {
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    const ctx = gsap.context(() => {
+      gsap.fromTo(footerRef.current.children,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.1, // Slight stagger for a nicer effect
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top bottom",
+            end: "bottom bottom",
+            scrub: true,
+          }
+        }
+      );
+    }, footerRef);
+    
+    return () => ctx.revert();
+  }, []);
   return (
-    <motion.footer
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+    <footer
+      ref={footerRef}
       style={{
         width: '100%',
         padding: '80px 24px 40px',
@@ -37,6 +60,6 @@ export default function Footer() {
       }}>
         © 2026 PrimeLog. All systems operational.
       </span>
-    </motion.footer>
+    </footer>
   );
 }

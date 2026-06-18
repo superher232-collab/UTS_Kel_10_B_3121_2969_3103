@@ -1,23 +1,34 @@
 "use client";
-import { motion } from "framer-motion";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      delayChildren: 0.1,
-      staggerChildren: 0.12
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
-};
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Features() {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    const ctx = gsap.context(() => {
+      // Entrance animation for container and stagger for cards
+      gsap.fromTo(sectionRef.current.children,
+        { opacity: 0, y: 60 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+          }
+        }
+      );
+    }, sectionRef);
+    
+    return () => ctx.revert();
+  }, []);
   const features = [
     {
       color: '#22C55E',
@@ -54,12 +65,9 @@ export default function Features() {
   ];
 
   return (
-    <motion.section
+    <section
       id="fitur"
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      ref={sectionRef}
       style={{
         width: '100%',
         padding: '80px 24px',
@@ -72,9 +80,8 @@ export default function Features() {
       }}
     >
       {features.map((f, i) => (
-        <motion.div
+        <div
           key={i}
-          variants={itemVariants}
           style={{
             background: '#12101A',
             padding: '32px 28px',
@@ -126,8 +133,8 @@ export default function Features() {
           }}>
             {f.desc}
           </p>
-        </motion.div>
+        </div>
       ))}
-    </motion.section>
+    </section>
   );
 }

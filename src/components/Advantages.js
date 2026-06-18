@@ -1,26 +1,37 @@
 "use client";
-import { motion } from "framer-motion";
-
-const containerVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: 'easeOut',
-      delayChildren: 0.1,
-      staggerChildren: 0.12
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
-};
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Advantages() {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 85%",
+        }
+      });
+
+      // Animate the section container
+      tl.fromTo(sectionRef.current,
+        { opacity: 0, y: 60 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+      )
+      // Stagger the grid items
+      .fromTo(".advantage-item",
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power2.out" },
+        "-=0.4"
+      );
+    }, sectionRef);
+    
+    return () => ctx.revert();
+  }, []);
   const items = [
     { text: 'Monitoring 24/7 untuk seluruh armada', icon: '🔄' },
     { text: 'Dashboard interaktif dengan data real-time', icon: '📡' },
@@ -31,12 +42,9 @@ export default function Advantages() {
   ];
 
   return (
-    <motion.section
+    <section
       id="keunggulan"
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      ref={sectionRef}
       style={{
         padding: '80px 24px',
         background: '#12101A',
@@ -72,7 +80,7 @@ export default function Advantages() {
         gap: '14px'
       }}>
         {items.map((item, i) => (
-          <motion.div key={i} variants={itemVariants} style={{
+          <div key={i} className="advantage-item" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '16px',
@@ -103,9 +111,9 @@ export default function Advantages() {
             }}>
               {item.text}
             </span>
-          </motion.div>
+          </div>
         ))}
       </div>
-    </motion.section>
+    </section>
   );
 }

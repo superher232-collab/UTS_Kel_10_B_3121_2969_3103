@@ -61,6 +61,29 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
     targetUserId: ''
   });
 
+  const [customers, setCustomers] = useState<{ id: string; name: string; email: string }[]>([]);
+  const [loadingCustomers, setLoadingCustomers] = useState(false);
+
+  useEffect(() => {
+    if (role === 'ADMIN') {
+      const fetchCustomers = async () => {
+        setLoadingCustomers(true);
+        try {
+          const res = await fetch('/api/customers');
+          if (res.ok) {
+            const data = await res.json();
+            setCustomers(data);
+          }
+        } catch (error) {
+          console.error('Failed to fetch customers:', error);
+        } finally {
+          setLoadingCustomers(false);
+        }
+      };
+      fetchCustomers();
+    }
+  }, [role]);
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -197,7 +220,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
       const selectedDate = new Date(year, month - 1, day);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      if (selectedDate < today) {
+      if (selectedDate < today && !editData) {
         newErrors.tanggal_kirim = 'Tanggal kirim tidak boleh di masa lalu';
       }
     }
@@ -351,7 +374,7 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
             <input
               type="date"
               value={form.tanggal_kirim}
-              min={todayStr}
+              min={!editData ? todayStr : undefined}
               onChange={(e) => setForm(prev => ({ ...prev, tanggal_kirim: e.target.value }))}
               style={{
                 ...inputStyle,
@@ -381,18 +404,46 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
           {/* Nama Pengirim */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold', fontFamily: 'monospace' }}>PENGIRIM *</span>
-            <input
-              type="text"
-              placeholder="Nama Pengirim"
-              value={form.nama_pengirim}
-              onChange={(e) => setForm(prev => ({ ...prev, nama_pengirim: e.target.value }))}
-              style={{
-                ...inputStyle,
-                borderColor: errors.nama_pengirim ? '#EF4444' : 'rgba(168, 85, 247, 0.35)'
-              }}
-              onFocus={(e) => !errors.nama_pengirim && (e.target.style.borderColor = '#A855F7')}
-              onBlur={(e) => !errors.nama_pengirim && (e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)')}
-            />
+            {role === 'ADMIN' ? (
+              <select
+                value={form.targetUserId}
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const selectedCustomer = customers.find(c => c.id === selectedId);
+                  setForm(prev => ({
+                    ...prev,
+                    targetUserId: selectedId,
+                    nama_pengirim: selectedCustomer ? selectedCustomer.name : ''
+                  }));
+                }}
+                disabled={loadingCustomers}
+                style={{
+                  ...inputStyle,
+                  borderColor: errors.nama_pengirim ? '#EF4444' : 'rgba(168, 85, 247, 0.35)',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="">-- Pilih Customer --</option>
+                {customers.map(c => (
+                  <option key={c.id} value={c.id} style={{ background: '#0D0618' }}>
+                    {c.name} ({c.email})
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                placeholder="Nama Pengirim"
+                value={form.nama_pengirim}
+                readOnly
+                style={{
+                  ...inputStyle,
+                  borderColor: errors.nama_pengirim ? '#EF4444' : 'rgba(168, 85, 247, 0.35)',
+                  background: 'rgba(168, 85, 247, 0.05)',
+                  color: '#8B7BA8'
+                }}
+              />
+            )}
             {errors.nama_pengirim && <span style={errorTextStyle}>{errors.nama_pengirim}</span>}
           </div>
 
@@ -615,12 +666,16 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
                 placeholder="e.g. 150000"
                 value={form.harga_tarif}
                 onChange={(e) => setForm(prev => ({ ...prev, harga_tarif: e.target.value }))}
+                readOnly={!!editData && editData.status_pengiriman !== 'diproses'}
                 style={{
                   ...inputStyle,
-                  borderColor: errors.harga_tarif ? '#EF4444' : 'rgba(168, 85, 247, 0.35)'
+                  borderColor: errors.harga_tarif ? '#EF4444' : 'rgba(168, 85, 247, 0.35)',
+                  background: (!!editData && editData.status_pengiriman !== 'diproses') ? 'rgba(255, 255, 255, 0.05)' : '#07020E',
+                  color: (!!editData && editData.status_pengiriman !== 'diproses') ? '#8B7BA8' : 'white',
+                  cursor: (!!editData && editData.status_pengiriman !== 'diproses') ? 'not-allowed' : 'text'
                 }}
-                onFocus={(e) => !errors.harga_tarif && (e.target.style.borderColor = '#A855F7')}
-                onBlur={(e) => !errors.harga_tarif && (e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)')}
+                onFocus={(e) => { if (!errors.harga_tarif && !(!!editData && editData.status_pengiriman !== 'diproses')) e.target.style.borderColor = '#A855F7'; }}
+                onBlur={(e) => { if (!errors.harga_tarif && !(!!editData && editData.status_pengiriman !== 'diproses')) e.target.style.borderColor = 'rgba(168, 85, 247, 0.35)'; }}
               />
             ) : (
               <div style={{
@@ -757,7 +812,6 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
                 >
                   <option value="aman" style={{ background: '#0D0618' }}>🛡️ AMAN (SEMPURNA)</option>
                   <option value="rusak" style={{ background: '#0D0618' }}>⚠️ RUSAK (DAMAGE)</option>
-                  <option value="hilang" style={{ background: '#0D0618' }}>❌ HILANG (LOST)</option>
                 </select>
               </div>
 

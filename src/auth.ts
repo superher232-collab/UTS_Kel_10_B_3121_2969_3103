@@ -4,6 +4,7 @@ import { type JWT } from 'next-auth/jwt'
 import Credentials from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/db'
 import bcrypt from 'bcryptjs'
+import { authConfig } from './auth.config'
 
 // Strict type augmentations for next-auth (no any)
 declare module 'next-auth' {
@@ -28,8 +29,7 @@ declare module 'next-auth/jwt' {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: process.env.AUTH_SECRET,
-  
+  ...authConfig,
   providers: [
     Credentials({
       name: 'Credentials',
@@ -61,31 +61,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
     })
-  ],
-
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.role = user.role
-      }
-      return token
-    },
-
-    async session({ session, token }) {
-      if (session.user && token) {
-        session.user.id = token.id || ''
-        session.user.role = token.role || 'CUSTOMER'
-      }
-      return session
-    }
-  },
-
-  pages: {
-    signIn: '/login'
-  },
-
-  session: {
-    strategy: 'jwt'
-  }
+  ]
 })

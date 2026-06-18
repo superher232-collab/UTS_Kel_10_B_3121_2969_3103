@@ -1,6 +1,9 @@
 // middleware.ts
+import NextAuth from 'next-auth'
 import { NextResponse } from 'next/server'
-import { auth } from './auth'
+import { authConfig } from './auth.config'
+
+const { auth } = NextAuth(authConfig)
 
 export default auth((req) => {
   const session = req.auth
@@ -11,10 +14,17 @@ export default auth((req) => {
     return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
 
-  // Cek role ADMIN khusus untuk route /admin/*
+  // Proteksi /admin: Hanya role ADMIN yang boleh masuk
   if (pathname.startsWith('/admin')) {
     if (session.user.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+    }
+  }
+
+  // Proteksi /dashboard: ADMIN tidak boleh masuk ke /dashboard customer
+  if (pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
+    if (session.user.role === 'ADMIN') {
+      return NextResponse.redirect(new URL('/admin', req.nextUrl))
     }
   }
 

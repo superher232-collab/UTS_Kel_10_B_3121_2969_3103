@@ -40,10 +40,10 @@ export default function RegisterPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.error || 'Terjadi kesalahan saat registrasi')
+        throw new Error(data.error || 'An error occurred during registration')
       }
 
-      setSuccess('Pendaftaran berhasil! Mengarahkan ke halaman login...')
+      setSuccess('Registration successful! Redirecting to login...')
       setTimeout(() => {
         router.push('/login')
       }, 2000)
@@ -126,13 +126,13 @@ export default function RegisterPage() {
           letterSpacing: '2px',
           margin: '0 0 8px 0',
           fontWeight: '600'
-        }}>PENDAFTARAN AKUN</h2>
+        }}>ACCOUNT REGISTRATION</h2>
         <p style={{
           color: 'var(--text-muted, #8B7BA8)',
           fontFamily: 'var(--font-body, monospace)',
           fontSize: '13px',
           margin: '0 0 24px 0'
-        }}>Silakan buat akun baru untuk mengakses platform</p>
+        }}>Create a new account to access the platform</p>
 
         {error && (
           <div style={{
@@ -174,7 +174,7 @@ export default function RegisterPage() {
               fontFamily: 'var(--font-body, monospace)',
               fontSize: '11px',
               letterSpacing: '1px'
-            }}>NAMA LENGKAP</label>
+            }}>FULL NAME</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -187,7 +187,7 @@ export default function RegisterPage() {
               <input 
                 type="text" 
                 name="name" 
-                placeholder="Masukkan nama lengkap Anda"
+                placeholder="Enter your full name"
                 value={formData.name} 
                 onChange={handleChange} 
                 required 
@@ -224,7 +224,7 @@ export default function RegisterPage() {
               <input 
                 type="email" 
                 name="email" 
-                placeholder="Masukkan email Anda"
+                placeholder="Enter your email"
                 value={formData.email} 
                 onChange={handleChange} 
                 required 
@@ -248,7 +248,7 @@ export default function RegisterPage() {
               fontFamily: 'var(--font-body, monospace)',
               fontSize: '11px',
               letterSpacing: '1px'
-            }}>KATA SANDI</label>
+            }}>PASSWORD</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -261,7 +261,7 @@ export default function RegisterPage() {
               <input 
                 type="password" 
                 name="password" 
-                placeholder="Buat kata sandi minimal 6 karakter"
+                placeholder="Create a password (min 6 characters)"
                 value={formData.password} 
                 onChange={handleChange} 
                 required 
@@ -285,7 +285,7 @@ export default function RegisterPage() {
               fontFamily: 'var(--font-body, monospace)',
               fontSize: '11px',
               letterSpacing: '1px'
-            }}>NOMOR TELEPON (OPSIONAL)</label>
+            }}>PHONE NUMBER (OPTIONAL)</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -298,7 +298,7 @@ export default function RegisterPage() {
               <input 
                 type="text" 
                 name="phone" 
-                placeholder="Masukkan nomor telepon"
+                placeholder="Enter phone number"
                 value={formData.phone} 
                 onChange={handleChange} 
                 style={{
@@ -321,7 +321,7 @@ export default function RegisterPage() {
               fontFamily: 'var(--font-body, monospace)',
               fontSize: '11px',
               letterSpacing: '1px'
-            }}>ALAMAT (OPSIONAL)</label>
+            }}>ADDRESS (OPTIONAL)</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -334,7 +334,7 @@ export default function RegisterPage() {
               <input 
                 type="text" 
                 name="address" 
-                placeholder="Masukkan alamat lengkap"
+                placeholder="Enter your address"
                 value={formData.address} 
                 onChange={handleChange} 
                 style={{
@@ -357,7 +357,7 @@ export default function RegisterPage() {
               fontFamily: 'var(--font-body, monospace)',
               fontSize: '11px',
               letterSpacing: '1px'
-            }}>DAFTAR SEBAGAI</label>
+            }}>REGISTER AS</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -382,7 +382,7 @@ export default function RegisterPage() {
                   cursor: 'pointer'
                 }}
               >
-                <option value="CUSTOMER" style={{ background: '#140A24', color: 'white' }}>Customer (Pelanggan)</option>
+                <option value="CUSTOMER" style={{ background: '#140A24', color: 'white' }}>Customer</option>
                 <option value="ADMIN" style={{ background: '#140A24', color: 'white' }}>Admin</option>
               </select>
             </div>
@@ -412,23 +412,23 @@ export default function RegisterPage() {
               opacity: loading ? 0.7 : 1
             }}
           >
-            {loading ? 'MENDAFTARKAN...' : 'DAFTAR SEKARANG'}
+            {loading ? 'REGISTERING...' : 'REGISTER NOW'}
           </button>
         </form>
 
         <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body, monospace)' }}>
-          Sudah punya akun? <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login di sini</a>
+          Already have an account? <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login here</a>
         </p>
 
         {/* Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '30px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--green, #22C55E)', boxShadow: '0 0 8px var(--green, #22C55E)' }}></div>
-          <span style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px' }}>Status Sistem: Online</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success, #22C55E)', boxShadow: '0 0 8px var(--success, #22C55E)' }}></div>
+          <span style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px' }}>System Status: Online</span>
         </div>
       </div>
 
       <div style={{ zIndex: 10, marginTop: '24px' }}>
-        <p style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px', textAlign: 'center' }}>Akses aman diperlukan. Semua aktivitas dipantau.</p>
+        <p style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px', textAlign: 'center' }}>Secure access required. All activities are monitored.</p>
       </div>
 
       <style>{`

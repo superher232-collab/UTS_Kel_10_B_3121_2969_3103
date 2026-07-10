@@ -20,7 +20,7 @@ export default function Login() {
     const finalPassword = password;
 
     if (!finalEmail || !finalPassword) {
-      setErrorMsg('Email dan Password tidak boleh kosong.');
+      setErrorMsg('Email and password cannot be empty.');
       setLoading(false);
       return;
     }
@@ -33,7 +33,7 @@ export default function Login() {
       });
 
       if (result?.error) {
-        setErrorMsg('Kredensial salah. Silakan coba lagi.');
+        setErrorMsg('Invalid credentials. Please try again.');
       } else {
         localStorage.setItem('role', finalEmail.includes('admin') 
           ? 'Admin' 
@@ -44,7 +44,7 @@ export default function Login() {
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg('Terjadi kesalahan koneksi sistem.');
+      setErrorMsg('A system connection error occurred.');
     } finally {
       setLoading(false);
     }
@@ -113,13 +113,13 @@ export default function Login() {
           letterSpacing: '1px',
           margin: '0 0 10px 0',
           fontWeight: '600'
-        }}>AKSES SISTEM</h2>
+        }}>SYSTEM ACCESS</h2>
         <p style={{
           color: '#9B99A8',
           fontFamily: 'system-ui, -apple-system, sans-serif',
           fontSize: '14px',
           margin: '0 0 30px 0'
-        }}>Masukkan kredensial Anda untuk melanjutkan</p>
+        }}>Enter your credentials to continue</p>
 
         <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }} onSubmit={(e) => e.preventDefault()}>
           {/* Role Selection */}
@@ -130,7 +130,7 @@ export default function Login() {
               fontSize: '12px',
               letterSpacing: '1px',
               fontWeight: 500
-            }}>PERAN</label>
+            }}>ROLE</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -176,7 +176,7 @@ export default function Login() {
                 }}
               >
                 <option value="admin" style={{ background: '#12101A', color: '#F1F0F5' }}>Administrator</option>
-                <option value="customer" style={{ background: '#12101A', color: '#F1F0F5' }}>Customer (Pelanggan)</option>
+                <option value="customer" style={{ background: '#12101A', color: '#F1F0F5' }}>Customer</option>
               </select>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
                 <polyline points="6 9 12 15 18 9"></polyline>
@@ -192,7 +192,7 @@ export default function Login() {
               fontSize: '12px',
               letterSpacing: '1px',
               fontWeight: 500
-            }}>{role === 'admin' ? 'EMAIL ADMINISTRATOR' : 'EMAIL PENGGUNA'}</label>
+            }}>{role === 'admin' ? 'ADMIN EMAIL' : 'USER EMAIL'}</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -219,7 +219,7 @@ export default function Login() {
               <input 
                 id="usernameInput"
                 type="email" 
-                placeholder={role === 'admin' ? 'Masukkan email admin' : 'Masukkan email pengguna'} 
+                placeholder={role === 'admin' ? 'Enter admin email' : 'Enter user email'} 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{
@@ -243,7 +243,7 @@ export default function Login() {
               fontSize: '12px',
               letterSpacing: '1px',
               fontWeight: 500
-            }}>KATA SANDI</label>
+            }}>PASSWORD</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -269,7 +269,7 @@ export default function Login() {
               </svg>
               <input 
                 type="password" 
-                placeholder="Masukkan kata sandi" 
+                placeholder="Enter your password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={{
@@ -324,9 +324,9 @@ export default function Login() {
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
-              <span style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '13px' }}>Ingat saya</span>
+              <span style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '13px' }}>Remember me</span>
             </label>
-            <Link href="/forgot-password" style={{ color: '#7C3AED', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '13px', textDecoration: 'none' }}>Lupa kata sandi?</Link>
+            <Link href="/forgot-password" style={{ color: '#7C3AED', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '13px', textDecoration: 'none' }}>Forgot password?</Link>
           </div>
 
           {errorMsg && (
@@ -380,7 +380,7 @@ export default function Login() {
             }
           }}
           >
-            {loading ? 'MEMVERIFIKASI...' : 'AKSES SISTEM'}
+            {loading ? 'VERIFYING...' : 'ACCESS SYSTEM'}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ width: '16px', height: '16px' }}>
               <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </svg>
@@ -388,18 +388,18 @@ export default function Login() {
         </form>
 
         <p style={{ marginTop: '20px', marginBottom: '10px', textAlign: 'center', fontSize: '13px', color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-          Belum punya akun? <Link href="/register" style={{ color: '#7C3AED', textDecoration: 'none' }}>Daftar di sini</Link>
+          Don't have an account? <Link href="/register" style={{ color: '#7C3AED', textDecoration: 'none' }}>Register here</Link>
         </p>
 
         {/* Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '40px' }}>
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }}></div>
-          <span style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px' }}>Status Sistem: Online</span>
+          <span style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px' }}>System Status: Online</span>
         </div>
       </div>
 
       <div style={{ zIndex: 10, marginTop: '30px' }}>
-        <p style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px', textAlign: 'center' }}>Akses aman diperlukan. Semua aktivitas dipantau.</p>
+        <p style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px', textAlign: 'center' }}>Secure access required. All activities are monitored.</p>
       </div>
 
       <style>{`

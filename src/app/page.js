@@ -4,13 +4,14 @@ import About from "@/components/About";
 import Features from "@/components/Features";
 import Advantages from "@/components/Advantages";
 import Gallery from "@/components/Gallery";
+import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: 'PrimeLog - Fleet Command System',
-  description: 'Sistem komando armada maritim modern dan logistik pintar Indonesia. Lacak pengiriman kargo laut secara real-time, pantau armada dengan peta live satelit, dan optimalkan layanan kargo Anda.'
+  title: 'PRIMELOG — Fleet Command System | Maritime Fleet Management',
+  description: 'PRIMELOG is a next-generation fleet command system for real-time vessel tracking, cargo management, and maritime operational optimization across Indonesian waters.'
 }
 
 export default function Home() {
@@ -64,6 +65,7 @@ export default function Home() {
           <Features />
           <Advantages />
           <Gallery />
+          <Testimonials />
           <Contact />
           <CTA />
         </div>

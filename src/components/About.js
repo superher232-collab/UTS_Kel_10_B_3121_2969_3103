@@ -29,7 +29,7 @@ export default function About() {
   }, []);
   return (
     <section
-      id="tentang"
+      id="about"
       ref={sectionRef}
       style={{
         padding: '80px 32px',
@@ -40,6 +40,8 @@ export default function About() {
         overflow: 'hidden'
       }}
     >
+      {/* Scan-line overlay */}
+      <div className="scan-line" aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}></div>
 
       {/* Section Label */}
       <div style={{
@@ -56,7 +58,7 @@ export default function About() {
           letterSpacing: '1px',
           margin: 0
         }}>
-          Tentang Sistem
+          About PRIMELOG
         </h2>
       </div>
 
@@ -67,11 +69,10 @@ export default function About() {
         lineHeight: '1.8',
         margin: '0 0 20px 0'
       }}>
-        PrimeLog adalah platform terpadu yang dirancang untuk memantau,
-        mengelola, dan mengoptimalkan operasional armada kapal secara real-time
-        di seluruh perairan Indonesia. Sistem kami menyediakan visibilitas penuh terhadap
-        seluruh aspek operasional, mulai dari pelacakan lokasi, manajemen kargo,
-        hingga jadwal pemeliharaan.
+        PRIMELOG is a next-generation fleet command platform designed to monitor,
+        manage, and optimize vessel operations in real-time across Indonesian waters. Our system provides
+        full visibility into every operational aspect — from location tracking and cargo management
+        to predictive maintenance scheduling.
       </p>
       <p style={{
         fontFamily: 'system-ui, -apple-system, sans-serif',
@@ -80,9 +81,9 @@ export default function About() {
         lineHeight: '1.8',
         margin: 0
       }}>
-        Dengan teknologi monitoring canggih dan analitik prediktif, kami membantu
-        perusahaan maritim meningkatkan efisiensi operasional, mengurangi biaya,
-        dan memastikan keselamatan armada di seluruh dunia.
+        Powered by advanced monitoring technology and predictive analytics, we help
+        maritime companies increase operational efficiency, reduce costs,
+        and ensure fleet safety worldwide.
       </p>
     </section>
   );

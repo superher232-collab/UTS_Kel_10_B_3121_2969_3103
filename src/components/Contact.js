@@ -51,7 +51,7 @@ export default function Contact() {
         letterSpacing: '3px',
         marginBottom: '12px'
       }}>
-        HUBUNGI KAMI
+        CONTACT US
       </h3>
       
       <h2 style={{
@@ -63,7 +63,7 @@ export default function Contact() {
         marginBottom: '40px',
         textAlign: 'center'
       }}>
-        Butuh Bantuan Atau Informasi?
+        Need Help or More Information?
       </h2>
 
       <div style={{
@@ -78,7 +78,7 @@ export default function Contact() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="name" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>NAMA LENGKAP *</label>
+            <label htmlFor="name" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>FULL NAME *</label>
             <input 
               type="text" 
               id="name" 
@@ -86,7 +86,7 @@ export default function Contact() {
               value={formData.name}
               onChange={handleChange}
               required
-              placeholder="Masukkan nama Anda..."
+              placeholder="Enter your name..."
               style={{
                 background: '#0D0B14',
                 border: '1px solid rgba(124, 58, 237, 0.3)',
@@ -104,7 +104,7 @@ export default function Contact() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="email" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>ALAMAT EMAIL *</label>
+            <label htmlFor="email" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>EMAIL ADDRESS *</label>
             <input 
               type="email" 
               id="email" 
@@ -112,7 +112,7 @@ export default function Contact() {
               value={formData.email}
               onChange={handleChange}
               required
-              placeholder="contoh@email.com"
+              placeholder="your@email.com"
               style={{
                 background: '#0D0B14',
                 border: '1px solid rgba(124, 58, 237, 0.3)',
@@ -130,7 +130,7 @@ export default function Contact() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="message" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>ISI PESAN *</label>
+            <label htmlFor="message" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>MESSAGE *</label>
             <textarea 
               id="message" 
               name="message" 
@@ -138,7 +138,7 @@ export default function Contact() {
               onChange={handleChange}
               required
               rows={4}
-              placeholder="Tulis pesan atau pertanyaan Anda di sini..."
+              placeholder="Write your message or question here..."
               style={{
                 background: '#0D0B14',
                 border: '1px solid rgba(124, 58, 237, 0.3)',
@@ -177,16 +177,16 @@ export default function Contact() {
               gap: '8px'
             }}
           >
-            {status === 'idle' && 'KIRIM PESAN SEKARANG'}
-            {status === 'loading' && 'MENGIRIM...'}
+            {status === 'idle' && 'SEND MESSAGE'}
+            {status === 'loading' && 'SENDING...'}
             {status === 'success' && (
-              <>PESAN BERHASIL DIKIRIM</>
+              <>MESSAGE SENT</>
             )}
           </button>
           
           {status === 'success' && (
              <p style={{ textAlign: 'center', fontSize: '12px', color: '#22C55E', margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-               Terima kasih! Tim Admin kami akan segera merespon via Email.
+               Thank you! Our admin team will respond via Email shortly.
              </p>
           )}
         </form>

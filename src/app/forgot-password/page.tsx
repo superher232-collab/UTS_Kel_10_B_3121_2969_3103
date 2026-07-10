@@ -28,10 +28,10 @@ export default function ForgotPasswordPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.error || 'Terjadi kesalahan saat meminta reset password')
+        throw new Error(data.error || 'An error occurred while requesting password reset')
       }
 
-      setSuccess(data.message || 'Permintaan berhasil! Cek terminal server untuk melihat link reset.')
+      setSuccess(data.message || 'Request successful! Check server terminal for the reset link.')
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -111,7 +111,7 @@ export default function ForgotPasswordPage() {
           letterSpacing: '2px',
           margin: '0 0 8px 0',
           fontWeight: '600'
-        }}>LUPA KATA SANDI</h2>
+        }}>FORGOT PASSWORD</h2>
         <p style={{
           color: 'var(--text-muted, #8B7BA8)',
           fontFamily: 'var(--font-body, monospace)',
@@ -119,7 +119,7 @@ export default function ForgotPasswordPage() {
           margin: '0 0 24px 0',
           lineHeight: '1.4'
         }}>
-          Masukkan alamat email akun Anda. Kami akan mengirimkan tautan untuk menyetel ulang kata sandi Anda.
+          Enter your account email address. We'll send a link to reset your password.
         </p>
 
         {error && (
@@ -162,7 +162,7 @@ export default function ForgotPasswordPage() {
               fontFamily: 'var(--font-body, monospace)',
               fontSize: '11px',
               letterSpacing: '1px'
-            }}>EMAIL AKUN</label>
+            }}>ACCOUNT EMAIL</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -174,7 +174,7 @@ export default function ForgotPasswordPage() {
             }}>
               <input 
                 type="email" 
-                placeholder="Masukkan email terdaftar"
+                placeholder="Enter registered email"
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
@@ -215,24 +215,24 @@ export default function ForgotPasswordPage() {
               opacity: loading ? 0.7 : 1
             }}
           >
-            {loading ? 'MEMPROSES...' : 'KIRIM LINK RESET'}
+            {loading ? 'PROCESSING...' : 'SEND RESET LINK'}
           </button>
         </form>
 
         <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body, monospace)' }}>
-          Kembali ke halaman <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login</a>
+          Back to <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login</a> page
         </p>
 
         {/* System Online Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '30px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--green, #22C55E)', boxShadow: '0 0 8px var(--green, #22C55E)' }}></div>
-          <span style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px' }}>Akses Terenkripsi Aktif</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success, #22C55E)', boxShadow: '0 0 8px var(--success, #22C55E)' }}></div>
+          <span style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px' }}>Encrypted Access Active</span>
         </div>
       </div>
 
       <div style={{ zIndex: 10, marginTop: '24px' }}>
         <p style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px', textAlign: 'center' }}>
-          Semua aktivitas sistem dipantau demi keamanan.
+          All system activities are monitored for security.
         </p>
       </div>
 

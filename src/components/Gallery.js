@@ -34,11 +34,11 @@ export default function Gallery() {
     return () => ctx.revert();
   }, []);
   const items = [
-    { src: '/ship1.png', label: 'OPERASIONAL MARITIM', desc: 'Pengawasan armada aktif' },
-    { src: '/ship2.png', label: 'MANAJEMEN ARMADA', desc: 'Koordinasi antar kapal' },
-    { src: '/ship3.png', label: 'JANGKAUAN GLOBAL', desc: 'Rute lintas perairan' },
-    { src: '/ship4.png', label: 'LOGISTIK KARGO', desc: 'Distribusi multi-moda' },
-    { src: '/ship5.png', label: 'PELABUHAN STRATEGIS', desc: 'Titik transit utama' }
+    { src: '/ship1.png', label: 'MARITIME OPERATIONS', desc: 'Active fleet surveillance' },
+    { src: '/ship2.png', label: 'FLEET MANAGEMENT', desc: 'Cross-vessel coordination' },
+    { src: '/ship3.png', label: 'GLOBAL REACH', desc: 'International sea routes' },
+    { src: '/ship4.png', label: 'CARGO LOGISTICS', desc: 'Multi-modal distribution' },
+    { src: '/ship5.png', label: 'STRATEGIC PORTS', desc: 'Key transit hubs' }
   ];
 
   return (
@@ -66,7 +66,7 @@ export default function Gallery() {
           letterSpacing: '1.5px',
           margin: 0
         }}>
-          GALERI ARMADA
+          FLEET GALLERY
         </h2>
       </div>
 

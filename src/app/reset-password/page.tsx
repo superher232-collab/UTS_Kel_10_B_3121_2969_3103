@@ -19,7 +19,7 @@ function ResetPasswordForm() {
   useEffect(() => {
     if (!token) {
       startTransition(() => {
-        setError('Token reset password tidak ditemukan di URL. Silakan minta tautan baru.')
+        setError('Reset token not found in URL. Please request a new link.')
       })
     }
   }, [token])
@@ -27,17 +27,17 @@ function ResetPasswordForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!token) {
-      setError('Token tidak valid.')
+      setError('Invalid token.')
       return
     }
 
     if (password.length < 6) {
-      setError('Password minimal harus 6 karakter.')
+      setError('Password must be at least 6 characters.')
       return
     }
 
     if (password !== confirmPassword) {
-      setError('Konfirmasi password tidak cocok.')
+      setError('Passwords do not match.')
       return
     }
 
@@ -57,10 +57,10 @@ function ResetPasswordForm() {
       const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.error || 'Terjadi kesalahan saat mereset password')
+        throw new Error(data.error || 'An error occurred while resetting password')
       }
 
-      setSuccess('Password berhasil diubah! Mengarahkan Anda ke halaman login...')
+      setSuccess('Password changed successfully! Redirecting to login...')
       setTimeout(() => {
         router.push('/login')
       }, 3000)
@@ -143,13 +143,13 @@ function ResetPasswordForm() {
           letterSpacing: '2px',
           margin: '0 0 8px 0',
           fontWeight: '600'
-        }}>SETEL ULANG SANDI</h2>
+        }}>RESET PASSWORD</h2>
         <p style={{
           color: 'var(--text-muted, #8B7BA8)',
           fontFamily: 'var(--font-body, monospace)',
           fontSize: '13px',
           margin: '0 0 24px 0'
-        }}>Silakan masukkan kata sandi baru untuk akun Anda</p>
+        }}>Enter your new password for your account</p>
 
         {error && (
           <div style={{
@@ -192,7 +192,7 @@ function ResetPasswordForm() {
               fontFamily: 'var(--font-body, monospace)',
               fontSize: '11px',
               letterSpacing: '1px'
-            }}>PASSWORD BARU</label>
+            }}>NEW PASSWORD</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -204,7 +204,7 @@ function ResetPasswordForm() {
             }}>
               <input 
                 type="password" 
-                placeholder="Minimal 6 karakter"
+                placeholder="Minimum 6 characters"
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
@@ -229,7 +229,7 @@ function ResetPasswordForm() {
               fontFamily: 'var(--font-body, monospace)',
               fontSize: '11px',
               letterSpacing: '1px'
-            }}>KONFIRMASI PASSWORD</label>
+            }}>CONFIRM PASSWORD</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -241,7 +241,7 @@ function ResetPasswordForm() {
             }}>
               <input 
                 type="password" 
-                placeholder="Ulangi password baru"
+                placeholder="Repeat new password"
                 value={confirmPassword} 
                 onChange={(e) => setConfirmPassword(e.target.value)} 
                 required 
@@ -283,12 +283,12 @@ function ResetPasswordForm() {
               opacity: (loading || !token) ? 0.7 : 1
             }}
           >
-            {loading ? 'MENYIMPAN...' : 'SIMPAN PASSWORD BARU'}
+            {loading ? 'SAVING...' : 'SAVE NEW PASSWORD'}
           </button>
         </form>
 
         <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body, monospace)' }}>
-          Kembali ke halaman <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login</a>
+          Back to <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login</a> page
         </p>
       </div>
 
@@ -314,7 +314,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#07020E', color: 'white', fontFamily: 'monospace' }}>
-        Memuat Halaman Reset Password...
+        Loading Reset Password Page...
       </div>
     }>
       <ResetPasswordForm />

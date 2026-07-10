@@ -29,7 +29,7 @@ export default function CTA() {
   }, []);
   return (
     <section
-      id="masuk"
+      id="get-started"
       ref={sectionRef}
       style={{
         display: 'flex',
@@ -43,6 +43,9 @@ export default function CTA() {
         margin: '40px 0'
       }}
     >
+      {/* Scan-line overlay */}
+      <div className="scan-line" aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}></div>
+
       <h3 style={{
         fontFamily: 'system-ui, -apple-system, sans-serif',
         fontSize: '14px',
@@ -53,7 +56,7 @@ export default function CTA() {
         position: 'relative',
         zIndex: 1
       }}>
-        SIAP UNTUK MEMULAI?
+        READY TO GET STARTED?
       </h3>
 
       <h2 style={{
@@ -66,7 +69,7 @@ export default function CTA() {
         position: 'relative',
         zIndex: 1
       }}>
-        Kelola Armada Anda Sekarang
+        Manage Your Fleet Today
       </h2>
 
       <p style={{
@@ -79,7 +82,7 @@ export default function CTA() {
         position: 'relative',
         zIndex: 1
       }}>
-        Akses dashboard komando untuk monitoring real-time, manajemen kargo, dan analitik performa armada
+        Access the command dashboard for real-time monitoring, cargo management, and fleet performance analytics
       </p>
 
       <div style={{
@@ -107,7 +110,7 @@ export default function CTA() {
           textDecoration: 'none',
           transition: 'all 0.3s ease'
         }}>
-          MASUK KE SISTEM
+          ACCESS SYSTEM
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
@@ -130,7 +133,7 @@ export default function CTA() {
           textDecoration: 'none',
           transition: 'all 0.3s ease'
         }}>
-          LACAK PAKET
+          TRACK CARGO
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -147,7 +150,7 @@ export default function CTA() {
         position: 'relative',
         zIndex: 1
       }}>
-        Akses terenkripsi AES-256 · Autentikasi multi-faktor
+        AES-256 Encrypted Access &middot; Multi-factor Authentication
       </p>
 
       <style>{`

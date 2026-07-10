@@ -141,7 +141,7 @@ export default function Hero() {
 
   return (
     <section
-      id="beranda"
+      id="home"
       ref={heroRef}
       style={{
         position: 'relative',
@@ -234,7 +234,7 @@ export default function Hero() {
           textAlign: 'center',
           fontWeight: 500
         }}>
-          FLEET COMMAND SYSTEM
+          ENTERPRISE FLEET COMMAND
         </p>
 
         {/* Tagline */}
@@ -248,7 +248,7 @@ export default function Hero() {
           maxWidth: '540px',
           lineHeight: '1.6'
         }}>
-          Platform terpadu untuk monitoring, manajemen, dan optimalisasi operasional armada kapal secara real-time
+          Integrated platform for real-time fleet monitoring, cargo management, and maritime operational optimization
         </p>
 
         {/* Gradient Divider */}
@@ -282,7 +282,7 @@ export default function Hero() {
             letterSpacing: '1px',
             transition: 'all 0.3s ease'
           }}>
-            MASUK SISTEM
+            ACCESS SYSTEM
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
@@ -304,7 +304,7 @@ export default function Hero() {
             border: '1px solid #7C3AED',
             transition: 'all 0.3s ease'
           }}>
-            LACAK PAKET
+            TRACK CARGO
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -326,9 +326,9 @@ export default function Hero() {
         }}>
           {[
             { value: '24/7', label: 'MONITORING' },
-            { value: '14+', label: 'PELABUHAN' },
+            { value: '14+', label: 'PORTS' },
             { value: '99.9%', label: 'UPTIME' },
-            { value: 'AES-256', label: 'ENKRIPSI' }
+            { value: 'AES-256', label: 'ENCRYPTION' }
           ].map((stat) => (
             <div key={stat.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: '#A855F7', letterSpacing: '2px' }}>{stat.value}</span>

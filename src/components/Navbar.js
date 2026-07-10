@@ -8,10 +8,10 @@ export default function Navbar() {
   const [hoveredLink, setHoveredLink] = useState(null);
 
   const links = [
-    { href: '#tentang', label: 'Tentang' },
-    { href: '#fitur', label: 'Fitur' },
-    { href: '#keunggulan', label: 'Keunggulan' },
-    { href: '/tracking', label: 'Tracking' }
+    { href: '#about', label: 'About' },
+    { href: '#features', label: 'Features' },
+    { href: '#advantages', label: 'Advantages' },
+    { href: '/tracking', label: 'Live Track' }
   ];
 
   return (
@@ -44,8 +44,8 @@ export default function Navbar() {
           boxSizing: 'border-box'
         }}
       >
-        {/* SISI KIRI: LOGO */}
-        <a href="#beranda" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+        {/* Logo */}
+        <a href="#home" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
           <div style={{
             width: '40px',
             height: '40px',
@@ -76,12 +76,12 @@ export default function Navbar() {
               letterSpacing: '1px',
               fontWeight: 'bold'
             }}>
-              FLEET COMMAND SYSTEM
+              NEXT-GEN FLEET TECH
             </span>
           </div>
         </a>
 
-        {/* SISI KANAN: NAVIGASI */}
+        {/* Navigation */}
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <ul className={`navbar-nav ${mobileOpen ? 'open' : ''}`}>
             {links.map((link) => (
@@ -134,7 +134,7 @@ export default function Navbar() {
                   <polyline points="10 17 15 12 10 7" />
                   <line x1="15" y1="12" x2="3" y2="12" />
                 </svg>
-                MASUK
+                SIGN IN
               </motion.a>
             </li>
           </ul>

@@ -38,170 +38,178 @@ export default function Contact() {
       <div style={{ marginBottom: '40px', textAlign: 'center' }}>
         <span style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          color: 'rgba(168,85,247,0.7)',
-          letterSpacing: '3px',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--accent)',
+          letterSpacing: '2px',
           textTransform: 'uppercase',
           display: 'block',
-          marginBottom: '12px'
+          marginBottom: '12px',
+          fontWeight: 600
         }}>
-          Contact Us
+          Hubungi Kami
         </span>
         <h2 style={{
           fontFamily: 'var(--font-heading)',
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
-          color: '#F1F0F5',
+          color: 'var(--text-primary)',
           letterSpacing: '-0.02em',
           lineHeight: '1.1',
           margin: 0
         }}>
-          Need Help or More Information?
+          Butuh Bantuan atau Informasi?
         </h2>
       </div>
 
-      {/* Glass card form */}
-      <div className="double-bezel">
-        <div className="double-bezel-inner" style={{ padding: 'clamp(24px, 3vw, 40px)' }}>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '11px',
-                color: 'rgba(241,240,245,0.5)',
-                letterSpacing: '1px',
-                textTransform: 'uppercase'
-              }}>Full Name *</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Enter your name"
-                style={{
-                  background: 'rgba(0,0,0,0.3)',
-                  border: '1px solid rgba(168,85,247,0.15)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  color: '#F1F0F5',
-                  fontSize: '14px',
-                  fontFamily: 'var(--font-body)',
-                  outline: 'none',
-                  transition: 'all 0.3s var(--cubic-premium)'
-                }}
-                onFocus={e => { e.target.style.borderColor = 'rgba(168,85,247,0.5)'; e.target.style.boxShadow = '0 0 16px rgba(168,85,247,0.1)'; }}
-                onBlur={e => { e.target.style.borderColor = 'rgba(168,85,247,0.15)'; e.target.style.boxShadow = 'none'; }}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '11px',
-                color: 'rgba(241,240,245,0.5)',
-                letterSpacing: '1px',
-                textTransform: 'uppercase'
-              }}>Email Address *</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="your@email.com"
-                style={{
-                  background: 'rgba(0,0,0,0.3)',
-                  border: '1px solid rgba(168,85,247,0.15)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  color: '#F1F0F5',
-                  fontSize: '14px',
-                  fontFamily: 'var(--font-body)',
-                  outline: 'none',
-                  transition: 'all 0.3s var(--cubic-premium)'
-                }}
-                onFocus={e => { e.target.style.borderColor = 'rgba(168,85,247,0.5)'; e.target.style.boxShadow = '0 0 16px rgba(168,85,247,0.1)'; }}
-                onBlur={e => { e.target.style.borderColor = 'rgba(168,85,247,0.15)'; e.target.style.boxShadow = 'none'; }}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '11px',
-                color: 'rgba(241,240,245,0.5)',
-                letterSpacing: '1px',
-                textTransform: 'uppercase'
-              }}>Message *</label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows={4}
-                placeholder="Write your message or question here"
-                style={{
-                  background: 'rgba(0,0,0,0.3)',
-                  border: '1px solid rgba(168,85,247,0.15)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  color: '#F1F0F5',
-                  fontSize: '14px',
-                  fontFamily: 'var(--font-body)',
-                  outline: 'none',
-                  resize: 'vertical',
-                  transition: 'all 0.3s var(--cubic-premium)'
-                }}
-                onFocus={e => { e.target.style.borderColor = 'rgba(168,85,247,0.5)'; e.target.style.boxShadow = '0 0 16px rgba(168,85,247,0.1)'; }}
-                onBlur={e => { e.target.style.borderColor = 'rgba(168,85,247,0.15)'; e.target.style.boxShadow = 'none'; }}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={status === 'loading' || status === 'success'}
-              className="btn-inner"
+      {/* Form card */}
+      <div style={{
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-lg)',
+        padding: 'clamp(24px, 3vw, 40px)'
+      }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--text-tertiary)',
+              fontWeight: 500
+            }}>Nama Lengkap *</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="Masukkan nama Anda"
               style={{
-                justifyContent: 'center',
-                width: '100%',
-                textDecoration: 'none',
-                border: 'none',
-                cursor: (status === 'loading' || status === 'success') ? 'not-allowed' : 'pointer',
-                opacity: (status === 'loading' || status === 'success') ? 0.7 : 1
+                background: 'var(--bg-input)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '12px 16px',
+                color: 'var(--text-primary)',
+                fontSize: 'var(--text-base)',
+                fontFamily: 'var(--font-body)',
+                outline: 'none',
+                transition: 'all 0.3s var(--ease)'
               }}
-            >
-              {status === 'idle' && (
-                <>Send Message <span className="icon-wrap"><PaperPlaneTilt size={14} weight="bold" /></span></>
-              )}
-              {status === 'loading' && (
-                <>Sending... <span className="icon-wrap"><Spinner size={14} weight="bold" className="spin" /></span></>
-              )}
-              {status === 'success' && (
-                <>Message Sent <span className="icon-wrap"><CheckCircle size={14} weight="bold" /></span></>
-              )}
-            </button>
+              onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 12px var(--accent-dim)'; }}
+              onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
+            />
+          </div>
 
-            {status === 'success' && (
-              <p style={{
-                textAlign: 'center',
-                fontSize: '12px',
-                color: '#22C55E',
-                margin: 0,
-                fontFamily: 'var(--font-body)'
-              }}>
-                Thank you! Our admin team will respond via Email shortly.
-              </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--text-tertiary)',
+              fontWeight: 500
+            }}>Alamat Email *</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="email@anda.com"
+              style={{
+                background: 'var(--bg-input)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '12px 16px',
+                color: 'var(--text-primary)',
+                fontSize: 'var(--text-base)',
+                fontFamily: 'var(--font-body)',
+                outline: 'none',
+                transition: 'all 0.3s var(--ease)'
+              }}
+              onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 12px var(--accent-dim)'; }}
+              onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--text-tertiary)',
+              fontWeight: 500
+            }}>Pesan *</label>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+              rows={4}
+              placeholder="Tulis pesan atau pertanyaan Anda di sini"
+              style={{
+                background: 'var(--bg-input)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '12px 16px',
+                color: 'var(--text-primary)',
+                fontSize: 'var(--text-base)',
+                fontFamily: 'var(--font-body)',
+                outline: 'none',
+                resize: 'vertical',
+                transition: 'all 0.3s var(--ease)'
+              }}
+              onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 12px var(--accent-dim)'; }}
+              onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={status === 'loading' || status === 'success'}
+            style={{
+              background: 'var(--accent)',
+              color: '#060608',
+              fontWeight: 600,
+              fontSize: 'var(--text-base)',
+              padding: '12px 24px',
+              borderRadius: 'var(--radius-md)',
+              border: 'none',
+              cursor: (status === 'loading' || status === 'success') ? 'not-allowed' : 'pointer',
+              opacity: (status === 'loading' || status === 'success') ? 0.7 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.3s var(--ease)'
+            }}
+          >
+            {status === 'idle' && (
+              <>Kirim Pesan <PaperPlaneTilt size={14} weight="bold" /></>
             )}
-          </form>
-        </div>
+            {status === 'loading' && (
+              <>Mengirim... <Spinner size={14} weight="bold" className="spin" /></>
+            )}
+            {status === 'success' && (
+              <>Terkirim <CheckCircle size={14} weight="bold" /></>
+            )}
+          </button>
+
+          {status === 'success' && (
+            <p style={{
+              textAlign: 'center',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--success)',
+              margin: 0,
+              fontFamily: 'var(--font-body)'
+            }}>
+              Terima kasih! Tim kami akan merespons melalui email.
+            </p>
+          )}
+        </form>
       </div>
 
       <style>{`
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         input:focus-visible, textarea:focus-visible {
-          outline: 2px solid rgba(168,85,247,0.5) !important;
+          outline: 2px solid var(--accent) !important;
           outline-offset: 2px !important;
         }
         @media (prefers-reduced-motion: reduce) {

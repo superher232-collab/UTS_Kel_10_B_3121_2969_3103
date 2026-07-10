@@ -174,23 +174,22 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
           position: 'fixed',
           top: '90px',
           right: '24px',
-          background: toast.type === 'success' ? 'rgba(34, 197, 94, 0.95)' : 'rgba(239, 68, 68, 0.95)',
-          border: `1px solid ${toast.type === 'success' ? '#22C55E' : '#EF4444'}`,
-          borderRadius: '6px',
+          background: toast.type === 'success' ? 'rgba(0, 230, 118, 0.95)' : 'rgba(255, 23, 68, 0.95)',
+          border: `1px solid ${toast.type === 'success' ? 'var(--success)' : 'var(--danger)'}`,
+          borderRadius: 'var(--radius-md)',
           padding: '14px 24px',
           color: 'white',
-          fontSize: '11px',
-          fontWeight: 'bold',
-          fontFamily: 'monospace',
+          fontSize: 'var(--text-sm)',
+          fontWeight: 600,
+          fontFamily: 'var(--font-body)',
           zIndex: 1000,
-          boxShadow: '0 10px 30px rgba(0,0,0,0.6), 0 0 15px rgba(255,255,255,0.1)',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
           animation: 'slideIn 0.3s ease-out'
         }}>
-          <span>{toast.type === 'success' ? '✅' : '❌'}</span>
-          <span>{toast.message.toUpperCase()}</span>
+          <span>{toast.message}</span>
         </div>
       )}
 
@@ -201,15 +200,15 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
         alignItems: 'center',
         flexWrap: 'wrap',
         gap: '16px',
-        borderBottom: '1px dashed rgba(168, 85, 247, 0.25)',
+        borderBottom: '1px solid var(--border)',
         paddingBottom: '16px'
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <h1 style={{ fontSize: '18px', fontWeight: 'bold', letterSpacing: '2px', color: 'white', margin: 0, fontFamily: 'monospace' }}>
-            PUSAT KONTROL CARGO PRISMA
+          <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+            Pusat Kargo
           </h1>
-          <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px', fontFamily: 'monospace' }}>
-            RUANG KENDALI DASHBOARD BERBASIS SERVER ACTIONS & PRISMA ORM
+          <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>
+            Kelola pengiriman kargo Anda.
           </span>
         </div>
 
@@ -219,28 +218,20 @@ export function CargoDashboardClient({ role, initialShipments, ships, stats, pag
               setEditItem(null)
               setIsModalOpen(true)
             }}
+            className="btn-primary"
             style={{
-              background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)',
-              border: 'none',
-              color: 'white',
               padding: '12px 24px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '11px',
-              fontWeight: 'bold',
-              fontFamily: 'monospace',
+              fontSize: 'var(--text-sm)',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)',
-              transition: 'all 0.2s'
+              gap: '8px'
             }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
-            TAMBAH PENGIRIMAN CARGO
+            Tambah Kiriman
           </button>
         )}
       </div>

@@ -116,101 +116,96 @@ export function InteractiveMap({ compact = false }: InteractiveMapProps) {
   const heightVal = compact ? '320px' : '500px';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', color: 'white', fontFamily: 'monospace' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', color: 'white', fontFamily: 'var(--font-body)' }}>
       
       {/* SWR warning info */}
       {errorSignal && (
         <div style={{
-          background: 'rgba(239, 68, 68, 0.1)',
-          border: '1px solid #EF4444',
+          background: 'rgba(255, 23, 68, 0.1)',
+          border: '1px solid var(--danger)',
           padding: '12px 18px',
-          borderRadius: '6px',
-          fontSize: '11px',
+          borderRadius: 'var(--radius-md)',
+          fontSize: 'var(--text-sm)',
           color: '#FCA5A5',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          marginBottom: '16px',
-          boxShadow: '0 0 10px rgba(239,68,68,0.15)'
+          marginBottom: '16px'
         }}>
-          <span>⚠️</span>
-          <span><strong>TELEMETRI SATELIT GAGAL:</strong> Menampilkan telemetri terakhir yang tersimpan di cache. Pergerakan real-time dinonaktifkan sementara hingga sinyal kembali pulih.</span>
+          <span><strong>TELEMETRI SATELIT GAGAL:</strong> Menampilkan data terakhir yang tersimpan. Sinyal kembali normal secara otomatis.</span>
         </div>
       )}
 
       {/* Main Map Container */}
       <div style={{ 
-        background: '#130a24', 
-        border: '1px solid rgba(168, 85, 247, 0.25)', 
-        borderRadius: '8px', 
+        background: 'var(--bg-surface)', 
+        border: '1px solid var(--border)', 
+        borderRadius: 'var(--radius-lg)', 
         padding: compact ? '16px' : '24px', 
         display: 'flex', 
         flexDirection: 'column', 
         gap: '16px', 
-        position: 'relative',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+        position: 'relative'
       }}>
         
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: '11px', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ color: '#A855F7' }}>⚓</span> PELACAKAN ARMADA GLOBAL ─ STATUS CUACA: 
+          <div style={{ fontSize: 'var(--text-sm)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: 'var(--accent)' }}>Pelacakan Armada</span> &mdash; Status Cuaca: 
             <span style={{ 
-              color: isStorm ? '#EF4444' : isWindy ? '#F59E0B' : '#22C55E', 
-              textShadow: `0 0 8px ${isStorm ? '#EF4444' : isWindy ? '#F59E0B' : '#22C55E'}` 
+              color: isStorm ? 'var(--danger)' : isWindy ? 'var(--warning)' : 'var(--success)', 
             }}>
-              [{cuaca?.toUpperCase() || 'NORMAL'}]
+              {cuaca?.toUpperCase() || 'NORMAL'}
             </span>
           </div>
           
           {isStorm && (
             <div style={{
-              background: 'rgba(239, 68, 68, 0.2)',
-              border: '1px solid #EF4444',
-              borderRadius: '4px',
+              background: 'rgba(255, 23, 68, 0.2)',
+              border: '1px solid var(--danger)',
+              borderRadius: 'var(--radius-md)',
               padding: '4px 8px',
               color: '#FCA5A5',
-              fontSize: '9px',
-              fontWeight: 'bold',
-              animation: 'pulse 1s infinite',
-              letterSpacing: '0.5px'
+              fontSize: 'var(--text-xs)',
+              fontWeight: 700,
+              animation: 'pulse 1s infinite'
             }}>
-              ⚠️ ANOMALI BADAI AKTIF
+              BADAI AKTIF
             </div>
           )}
         </div>
 
         {/* Map Area */}
         <div style={{ 
-          background: '#040207', 
-          border: '1px solid rgba(168, 85, 247, 0.15)', 
-          borderRadius: '6px', 
+          background: 'var(--bg-void)', 
+          border: '1px solid var(--border)', 
+          borderRadius: 'var(--radius-md)', 
           height: heightVal, 
           position: 'relative', 
           overflow: 'hidden' 
         }}>
           
-          {/* Live Tracking Label (Animasi kedip) */}
-          <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(7, 2, 14, 0.85)', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '6px 12px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 10 }}>
-            <div style={{ width: '6px', height: '6px', background: '#22C55E', borderRadius: '50%', boxShadow: '0 0 8px #22C55E', animation: 'pulse 1.5s infinite' }}></div>
-            <span style={{ fontSize: '9px', color: '#22C55E', fontWeight: 'bold', letterSpacing: '0.5px' }}>LIVE MONITOR</span>
+          {/* Live Tracking Label */}
+          <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(6,6,8,0.85)', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 10 }}>
+            <div style={{ width: '6px', height: '6px', background: 'var(--success)', borderRadius: '50%', boxShadow: '0 0 8px var(--success)', animation: 'pulse 1.5s infinite' }}></div>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--success)', fontWeight: 700 }}>LIVE MONITOR</span>
           </div>
 
           {/* Legend */}
           {!compact && (
-            <div style={{ position: 'absolute', bottom: '16px', left: '16px', background: 'rgba(7, 2, 14, 0.85)', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '12px', borderRadius: '4px', display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 10 }}>
-              <div style={{ fontSize: '8px', fontWeight: 'bold', color: '#8B7BA8', letterSpacing: '0.5px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px', marginBottom: '2px' }}>LEGENDA ARMADA</div>
+            <div style={{ position: 'absolute', bottom: '16px', left: '16px', background: 'rgba(6,6,8,0.85)', border: '1px solid var(--border)', padding: '12px', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 10 }}>
+              <div style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border)', paddingBottom: '4px', marginBottom: '2px' }}>LEGENDA</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '8px', height: '8px', background: '#22C55E', borderRadius: '50%', boxShadow: '0 0 8px #22C55E' }}></div>
-                <span style={{ fontSize: '10px', color: '#C7B8EA' }}>Berlayar</span>
+                <div style={{ width: '8px', height: '8px', background: 'var(--success)', borderRadius: '50%', boxShadow: '0 0 8px var(--success)' }}></div>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>Berlayar</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '8px', height: '8px', background: '#3B82F6', borderRadius: '50%', boxShadow: '0 0 8px #3B82F6' }}></div>
-                <span style={{ fontSize: '10px', color: '#C7B8EA' }}>Sandar / Pelabuhan</span>
+                <div style={{ width: '8px', height: '8px', background: 'var(--info)', borderRadius: '50%', boxShadow: '0 0 8px var(--info)' }}></div>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>Pelabuhan</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '8px', height: '8px', background: '#EF4444', borderRadius: '50%', boxShadow: '0 0 8px #EF4444' }}></div>
-                <span style={{ fontSize: '10px', color: '#C7B8EA' }}>Pemeliharaan / Perbaikan</span>
+                <div style={{ width: '8px', height: '8px', background: 'var(--danger)', borderRadius: '50%', boxShadow: '0 0 8px var(--danger)' }}></div>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>Pemeliharaan</span>
               </div>
             </div>
           )}
@@ -219,7 +214,7 @@ export function InteractiveMap({ compact = false }: InteractiveMapProps) {
           <svg width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="none" style={{ position: 'absolute', top: 0, left: 0 }}>
             <defs>
               <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(168, 85, 247, 0.04)" strokeWidth="1"/>
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0, 229, 255, 0.04)" strokeWidth="1"/>
               </pattern>
               
               <filter id="cyber-glow" x="-30%" y="-30%" width="160%" height="160%">
@@ -235,24 +230,24 @@ export function InteractiveMap({ compact = false }: InteractiveMapProps) {
             {/* ─── PETA KEPULAUAN INDONESIA (SVG OUTLINES) ─── */}
             <g opacity="0.8" style={{ pointerEvents: 'none' }}>
               {/* Pulau Sumatera */}
-              <path d="M 50 75 L 200 110 L 250 180 L 170 200 L 90 150 L 50 85 Z" fill="rgba(168, 85, 247, 0.02)" stroke="rgba(168, 85, 247, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
-              <text x="110" y="130" fill="rgba(168, 85, 247, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">SUMATERA</text>
+              <path d="M 50 75 L 200 110 L 250 180 L 170 200 L 90 150 L 50 85 Z" fill="rgba(0, 229, 255, 0.02)" stroke="rgba(0, 229, 255, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
+              <text x="110" y="130" fill="rgba(0, 229, 255, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">SUMATERA</text>
 
               {/* Pulau Jawa */}
-              <path d="M 230 355 L 410 365 L 550 375 L 530 395 L 370 385 L 230 370 Z" fill="rgba(168, 85, 247, 0.02)" stroke="rgba(168, 85, 247, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
-              <text x="350" y="410" fill="rgba(168, 85, 247, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">JAWA</text>
+              <path d="M 230 355 L 410 365 L 550 375 L 530 395 L 370 385 L 230 370 Z" fill="rgba(0, 229, 255, 0.02)" stroke="rgba(0, 229, 255, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
+              <text x="350" y="410" fill="rgba(0, 229, 255, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">JAWA</text>
 
               {/* Pulau Kalimantan */}
-              <path d="M 350 150 L 450 115 L 530 130 L 550 200 L 470 240 L 370 220 L 340 180 Z" fill="rgba(168, 85, 247, 0.02)" stroke="rgba(168, 85, 247, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
-              <text x="400" y="180" fill="rgba(168, 85, 247, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">KALIMANTAN</text>
+              <path d="M 350 150 L 450 115 L 530 130 L 550 200 L 470 240 L 370 220 L 340 180 Z" fill="rgba(0, 229, 255, 0.02)" stroke="rgba(0, 229, 255, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
+              <text x="400" y="180" fill="rgba(0, 229, 255, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">KALIMANTAN</text>
 
               {/* Pulau Sulawesi */}
-              <path d="M 610 180 L 730 180 L 730 200 L 670 215 L 740 250 L 710 270 L 650 250 L 630 280 L 600 280 L 620 230 L 580 210 Z" fill="rgba(168, 85, 247, 0.02)" stroke="rgba(168, 85, 247, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
-              <text x="630" y="230" fill="rgba(168, 85, 247, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">SULAWESI</text>
+              <path d="M 610 180 L 730 180 L 730 200 L 670 215 L 740 250 L 710 270 L 650 250 L 630 280 L 600 280 L 620 230 L 580 210 Z" fill="rgba(0, 229, 255, 0.02)" stroke="rgba(0, 229, 255, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
+              <text x="630" y="230" fill="rgba(0, 229, 255, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">SULAWESI</text>
 
               {/* Pulau Papua */}
-              <path d="M 830 230 L 910 220 L 970 250 L 970 300 L 910 310 L 870 270 L 800 260 Z" fill="rgba(168, 85, 247, 0.02)" stroke="rgba(168, 85, 247, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
-              <text x="860" y="270" fill="rgba(168, 85, 247, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">PAPUA</text>
+              <path d="M 830 230 L 910 220 L 970 250 L 970 300 L 910 310 L 870 270 L 800 260 Z" fill="rgba(0, 229, 255, 0.02)" stroke="rgba(0, 229, 255, 0.2)" strokeWidth="1.2" filter="url(#cyber-glow)" />
+              <text x="860" y="270" fill="rgba(0, 229, 255, 0.25)" fontSize="8px" fontWeight="bold" letterSpacing="1px">PAPUA</text>
             </g>
 
             {/* ─── GLOWING SEA LANES (TRANSIT PATHS) ─── */}
@@ -269,7 +264,7 @@ export function InteractiveMap({ compact = false }: InteractiveMapProps) {
                   key={lane.name}
                   d={lane.d}
                   fill="none"
-                  stroke="rgba(168, 85, 247, 0.2)"
+                  stroke="rgba(0, 229, 255, 0.2)"
                   strokeWidth="1.5"
                   strokeDasharray="6 12"
                   className="sea-lane"
@@ -290,8 +285,8 @@ export function InteractiveMap({ compact = false }: InteractiveMapProps) {
                 { name: 'Sorong', x: 820, y: 240 }
               ].map(port => (
                 <g key={port.name}>
-                  <circle cx={port.x} cy={port.y} r="3" fill="#A855F7" />
-                  <circle cx={port.x} cy={port.y} r="7" fill="none" stroke="#A855F7" strokeWidth="0.5" opacity="0.4" />
+                  <circle cx={port.x} cy={port.y} r="3" fill="var(--accent)" />
+                  <circle cx={port.x} cy={port.y} r="7" fill="none" stroke="var(--accent)" strokeWidth="0.5" opacity="0.4" />
                   <text x={port.x + 10} y={port.y + 4} fill="rgba(139, 123, 168, 0.7)" fontSize="7px" fontWeight="bold">
                     {port.name}
                   </text>
@@ -319,7 +314,7 @@ export function InteractiveMap({ compact = false }: InteractiveMapProps) {
                       y1={ry}
                       x2={rx + 10}
                       y2={ry + 28}
-                      stroke="#8B7BA8"
+                      stroke="var(--text-tertiary)"
                       strokeWidth="1"
                       opacity="0.35"
                       className="rain-streak"
@@ -363,11 +358,11 @@ export function InteractiveMap({ compact = false }: InteractiveMapProps) {
                 {/* Radar Sweep Rotating Line originating from Tj. Priok */}
                 <line 
                   x1="300" y1="360" x2="480" y2="360" 
-                  stroke="rgba(168, 85, 247, 0.15)" 
+                  stroke="rgba(0, 229, 255, 0.15)" 
                   strokeWidth="2.5" 
                   style={{ transformOrigin: '300px 360px', animation: 'radar-sweep 8s linear infinite' }} 
                 />
-                <circle cx="300" cy="360" r="180" fill="none" stroke="rgba(168, 85, 247, 0.05)" strokeWidth="1" strokeDasharray="3 6" />
+                <circle cx="300" cy="360" r="180" fill="none" stroke="rgba(0, 229, 255, 0.05)" strokeWidth="1" strokeDasharray="3 6" />
               </g>
             )}
 
@@ -420,12 +415,12 @@ export function InteractiveMap({ compact = false }: InteractiveMapProps) {
                   
                   {/* Vessel Metadata Labels (Hidden if compact on small screens) */}
                   <g transform="translate(14, -4)">
-                    <rect x="-2" y="-9" width="110" height="26" fill="rgba(7,2,14,0.8)" stroke="rgba(168,85,247,0.15)" strokeWidth="0.5" rx="3" style={{ pointerEvents: 'none' }} />
+                    <rect x="-2" y="-9" width="110" height="26" fill="rgba(6,6,8,0.8)" stroke="rgba(0,229,255,0.15)" strokeWidth="0.5" rx="3" style={{ pointerEvents: 'none' }} />
                     <text x="2" y="1" fill="#FFF" fontSize="8px" fontWeight="bold" style={{ pointerEvents: 'none', letterSpacing: '0.2px' }}>
                       {ship.name.toUpperCase()}
                     </text>
                     <text x="2" y="11" fill={ship.statusColor} fontSize="7px" fontWeight="bold" style={{ pointerEvents: 'none' }}>
-                      {moving ? '▶ DALAM PERJALANAN' : ship.statusText?.includes('PEMELIHARAAN') ? '🛠 PERBAIKAN DOK' : '⚓ SANDAR PORT'}
+                      {moving ? 'DALAM PERJALANAN' : ship.statusText?.includes('PEMELIHARAAN') ? 'PERBAIKAN DOK' : 'SANDAR PORT'}
                     </text>
                   </g>
                 </g>

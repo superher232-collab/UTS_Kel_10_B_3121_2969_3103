@@ -27,21 +27,21 @@ export default function Testimonials() {
 
   const testimonials = [
     {
-      quote: "PRIMELOG transformed our fleet operations. Real-time visibility into vessel performance reduced our fuel costs by 23% in the first quarter.",
+      quote: "PRIMELOG mengubah operasi armada kami. Visibilitas real-time terhadap performa kapal mengurangi biaya BBM sebesar 23% di kuartal pertama.",
       author: "Capt. Agus Wijaya",
-      role: "Fleet Operations Director",
+      role: "Direktur Operasi Armada",
       company: "Merchant Marine Corp"
     },
     {
-      quote: "The predictive maintenance feature saved us from three critical engine failures. This system is indispensable for modern maritime logistics.",
+      quote: "Fitur pemeliharaan prediktif menyelamatkan kami dari tiga kegagalan mesin kritis. Sistem ini sangat penting untuk logistik maritim modern.",
       author: "Dr. Sarah Chen",
       role: "Chief Technology Officer",
       company: "Pacific Cargo Lines"
     },
     {
-      quote: "Integration with our existing navigation systems was seamless. The analytics dashboard gives us insights we never had before.",
+      quote: "Integrasi dengan sistem navigasi kami berjalan mulus. Dashboard analitik memberikan wawasan yang belum pernah kami miliki sebelumnya.",
       author: "Hendra Pratama",
-      role: "Head of Maritime Logistics",
+      role: "Kepala Logistik Maritim",
       company: "Nusantara Shipping Group"
     }
   ];
@@ -62,29 +62,30 @@ export default function Testimonials() {
       <div style={{ marginBottom: '40px', maxWidth: '600px' }}>
         <span style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          color: 'rgba(168,85,247,0.7)',
-          letterSpacing: '3px',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--accent)',
+          letterSpacing: '2px',
           textTransform: 'uppercase',
           display: 'block',
-          marginBottom: '12px'
+          marginBottom: '12px',
+          fontWeight: 600
         }}>
-          Testimonials
+          Testimoni
         </span>
         <h2 style={{
           fontFamily: 'var(--font-heading)',
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
-          color: '#F1F0F5',
+          color: 'var(--text-primary)',
           letterSpacing: '-0.03em',
           lineHeight: '1.1',
           margin: 0
         }}>
-          What Our Clients Say
+          Apa Kata Klien Kami
         </h2>
       </div>
 
-      {/* Size-variant grid: 1 large + 2 small */}
+      {/* Grid: 1 large + 2 small */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1.5fr 1fr',
@@ -92,11 +93,18 @@ export default function Testimonials() {
         gap: '12px'
       }}>
         {testimonials.map((t, i) => (
-          <div key={i} className="double-bezel testimonial-card" style={{
+          <div key={i} className="testimonial-card" style={{
             gridColumn: i === 0 ? 'span 1' : 'span 1',
-            gridRow: i === 0 ? 'span 2' : 'span 1'
-          }}>
-            <div className="double-bezel-inner" style={{
+            gridRow: i === 0 ? 'span 2' : 'span 1',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
+            transition: 'all 0.3s var(--ease)'
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+          >
+            <div style={{
               padding: i === 0 ? '36px' : '24px',
               display: 'flex',
               flexDirection: 'column',
@@ -104,11 +112,11 @@ export default function Testimonials() {
               height: '100%',
               boxSizing: 'border-box'
             }}>
-              <Quotes size={i === 0 ? 28 : 20} weight="duotone" color="#A855F7" style={{ opacity: 0.4 }} />
+              <Quotes size={i === 0 ? 28 : 20} weight="duotone" color="var(--accent)" style={{ opacity: 0.4 }} />
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: i === 0 ? '14px' : '12px',
-                color: 'rgba(241,240,245,0.55)',
+                fontSize: i === 0 ? 'var(--text-base)' : 'var(--text-sm)',
+                color: 'var(--text-secondary)',
                 lineHeight: '1.7',
                 margin: 0,
                 fontStyle: 'italic'
@@ -118,17 +126,17 @@ export default function Testimonials() {
               <div style={{ marginTop: 'auto' }}>
                 <p style={{
                   fontFamily: 'var(--font-body)',
-                  fontSize: '12px',
+                  fontSize: 'var(--text-sm)',
                   fontWeight: 600,
-                  color: '#F1F0F5',
+                  color: 'var(--text-primary)',
                   margin: '0 0 2px 0'
                 }}>
                   {t.author}
                 </p>
                 <p style={{
                   fontFamily: 'var(--font-body)',
-                  fontSize: '11px',
-                  color: 'rgba(241,240,245,0.35)',
+                  fontSize: 'var(--text-xs)',
+                  color: 'var(--text-tertiary)',
                   margin: 0
                 }}>
                   {t.role}, {t.company}

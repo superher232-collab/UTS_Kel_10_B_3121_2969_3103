@@ -10,9 +10,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <div style={{
         width: '100%',
         minHeight: '100vh',
-        background: '#07020E', // Dark Futuristic Purple deep dark
-        color: 'white',
-        fontFamily: 'monospace, var(--font-roboto-mono)',
+        background: 'var(--bg-void)',
+        color: 'var(--text-primary)',
+        fontFamily: 'var(--font-body)',
         display: 'flex',
         flexDirection: 'column'
       }}>

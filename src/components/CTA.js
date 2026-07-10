@@ -29,14 +29,16 @@ export default function CTA() {
     <section
       id="get-started"
       ref={sectionRef}
-      className="double-bezel"
       style={{
         maxWidth: '900px',
         margin: 'clamp(64px, 8vw, 100px) auto',
-        padding: '1.5px'
+        padding: '0 24px'
       }}
     >
-      <div className="double-bezel-inner" style={{
+      <div style={{
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-xl)',
         padding: 'clamp(48px, 6vw, 80px) clamp(32px, 4vw, 64px)',
         textAlign: 'center',
         display: 'flex',
@@ -45,75 +47,89 @@ export default function CTA() {
       }}>
         <span style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          color: 'rgba(168,85,247,0.7)',
-          letterSpacing: '3px',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--accent)',
+          letterSpacing: '2px',
           textTransform: 'uppercase',
-          marginBottom: '16px'
+          marginBottom: '16px',
+          fontWeight: 600
         }}>
-          Ready to Get Started?
+          Siap Memulai?
         </span>
 
         <h2 style={{
           fontFamily: 'var(--font-heading)',
           fontSize: 'clamp(28px, 4vw, 42px)',
           fontWeight: 700,
-          color: '#F1F0F5',
+          color: 'var(--text-primary)',
           letterSpacing: '-0.02em',
           lineHeight: '1.1',
           margin: '0 0 16px 0'
         }}>
-          Manage Your Fleet Today
+          Siap Mengelola Armada?
         </h2>
 
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '14px',
-          color: 'rgba(241,240,245,0.45)',
+          fontSize: 'var(--text-base)',
+          color: 'var(--text-secondary)',
           lineHeight: '1.6',
           maxWidth: '480px',
           margin: '0 0 40px 0'
         }}>
-          Access the command dashboard for real-time monitoring, cargo management, and fleet performance analytics.
+          Akses dashboard komando untuk pemantauan real-time, manajemen kargo, dan analitik performa armada.
         </p>
 
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <a href="/login" className="btn-inner" style={{ textDecoration: 'none' }}>
-            Access System
-            <span className="icon-wrap">
-              <ArrowRight size={14} weight="bold" />
-            </span>
+          <a href="/login" style={{
+            background: 'var(--accent)',
+            color: '#060608',
+            fontWeight: 600,
+            fontSize: 'var(--text-base)',
+            padding: '12px 24px',
+            borderRadius: 'var(--radius-md)',
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            transition: 'all 0.3s var(--ease)'
+          }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px var(--accent-glow)'; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
+          >
+            Akses Sistem
+            <ArrowRight size={14} weight="bold" />
           </a>
 
           <a href="/tracking" style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '13px',
-            color: 'rgba(241,240,245,0.6)',
+            fontSize: 'var(--text-sm)',
+            color: 'var(--text-secondary)',
             textDecoration: 'none',
             padding: '12px 24px',
-            borderRadius: '100px',
-            border: '1px solid rgba(168,85,247,0.2)',
-            transition: 'all 0.3s var(--cubic-premium)',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border)',
+            transition: 'all 0.3s var(--ease)',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px'
           }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(168,85,247,0.5)'; e.currentTarget.style.color = '#F1F0F5'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(168,85,247,0.2)'; e.currentTarget.style.color = 'rgba(241,240,245,0.6)'; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
           >
-            Track Cargo
+            Lacak Kargo
             <MagnifyingGlass size={14} weight="bold" />
           </a>
         </div>
 
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          color: 'rgba(241,240,245,0.3)',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--text-tertiary)',
           marginTop: '24px',
           letterSpacing: '0.5px'
         }}>
-          AES-256 Encrypted Access &middot; Multi-factor Authentication
+          Enkripsi AES-256 &middot; Autentikasi Multi-Faktor
         </p>
       </div>
     </section>

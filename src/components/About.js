@@ -46,68 +46,72 @@ export default function About() {
         <div>
           <span style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '11px',
-            color: 'rgba(168,85,247,0.7)',
-            letterSpacing: '3px',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--accent)',
+            letterSpacing: '2px',
             textTransform: 'uppercase',
             display: 'block',
-            marginBottom: '16px'
+            marginBottom: '16px',
+            fontWeight: 600
           }}>
-            About PRIMELOG
+            Tentang PRIMELOG
           </span>
           <h2 style={{
             fontFamily: 'var(--font-heading)',
             fontSize: 'clamp(28px, 3.5vw, 40px)',
             fontWeight: 700,
-            color: '#F1F0F5',
+            color: 'var(--text-primary)',
             letterSpacing: '-0.03em',
             lineHeight: '1.1',
             margin: '0 0 20px 0'
           }}>
-            Next-Gen Fleet<br />Command Platform
+            Platform Komando Armada<br />
+            <span style={{ color: 'var(--text-secondary)' }}>Generasi Terbaru</span>
           </h2>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '14px',
-            color: 'rgba(241,240,245,0.5)',
+            fontSize: 'var(--text-base)',
+            color: 'var(--text-secondary)',
             lineHeight: '1.7',
             margin: 0
           }}>
-            PRIMELOG provides full visibility into every operational aspect — from location tracking and cargo management to predictive maintenance scheduling.
+            PRIMELOG memberikan visibilitas penuh ke setiap aspek operasional — mulai dari pelacakan posisi, manajemen kargo, hingga pemeliharaan prediktif armada.
           </p>
         </div>
 
         {/* Right — stats / highlights */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[
-            { stat: 'Real-Time', desc: 'Live vessel tracking with 30s update intervals' },
-            { stat: 'Predictive', desc: 'AI-driven maintenance and anomaly detection' },
-            { stat: 'End-to-End', desc: 'From port to port cargo visibility' }
+            { stat: 'Real-time', desc: 'Pelacakan posisi kapal dengan interval update 30 detik' },
+            { stat: 'Prediktif', desc: 'AI untuk deteksi anomali dan pemeliharaan armada' },
+            { stat: 'End-to-End', desc: 'Visibilitas kargo dari pelabuhan asal hingga tujuan' }
           ].map((item, i) => (
-            <div key={i} className="hover-lift" style={{
+            <div key={i} style={{
               display: 'flex',
               gap: '16px',
               padding: '16px 20px',
-              background: 'rgba(168,85,247,0.04)',
-              border: '1px solid rgba(168,85,247,0.1)',
-              borderRadius: '12px',
-              transition: 'all 0.3s var(--cubic-premium)'
-            }}>
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-md)',
+              transition: 'all 0.3s var(--ease)'
+            }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,229,255,0.08)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+            >
               <div style={{
-                fontFamily: 'var(--font-geist-mono), monospace',
-                fontSize: '11px',
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
                 fontWeight: 600,
-                color: '#A855F7',
-                letterSpacing: '1px',
+                color: 'var(--accent)',
                 whiteSpace: 'nowrap',
-                minWidth: '70px'
+                minWidth: '80px'
               }}>
                 {item.stat}
               </div>
               <div style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '13px',
-                color: 'rgba(241,240,245,0.5)',
+                fontSize: 'var(--text-base)',
+                color: 'var(--text-secondary)',
                 lineHeight: '1.5'
               }}>
                 {item.desc}

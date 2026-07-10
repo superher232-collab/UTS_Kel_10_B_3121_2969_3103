@@ -276,23 +276,23 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
           ───────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, padding: '16px 8px', boxSizing: 'border-box' }}>
         
-        {/* VIEW 1: RUANG KOMANDO */}
+        {/* VIEW 1: DASHBOARD UTAMA */}
         {activeTab === 'komando' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', color: 'white', margin: 0 }}>
-                RUANG KOMANDO UTAMA ADMIN
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+              <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                Dashboard Utama
               </h1>
-              <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>
-                PENGENDALIAN TOTAL OPERASIONAL, MANAJEMEN TIKET & ALARM ARMADA AKTIF
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>
+                Pengendalian total operasional, manajemen tiket, dan alarm armada aktif.
               </span>
             </div>
 
-            {/* Satelit Monitoring Live Map */}
+            {/* Live Map */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <span style={{ fontSize: '9px', color: '#C084FC', fontWeight: 'bold', letterSpacing: '1px' }}>
-                <MapIcon style={{ width: '12px', height: '12px', verticalAlign: 'middle', marginRight: '4px' }} />
-                SATELIT TRACKING AKTIF & KONTROL TELEMETRI GLOBAL
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--accent)', fontWeight: 600 }}>
+                <MapIcon style={{ width: '14px', height: '14px', verticalAlign: 'middle', marginRight: '4px' }} />
+                Peta Tracking Aktif
               </span>
               <InteractiveMap compact={true} />
             </div>
@@ -300,24 +300,23 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
             {/* Metrics */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '16px' }}>
               {[
-                { label: 'TOTAL KARGO TERDATAL', value: komandoProps.totalShipments, color: '#A855F7', border: 'rgba(168, 85, 247, 0.3)', desc: 'Keseluruhan pengiriman kargo' },
-                { label: 'KARGO PENDING / PROSES', value: komandoProps.pendingShipments, color: '#F59E0B', border: 'rgba(245, 158, 11, 0.3)', desc: 'Kargo antre & diproses sortir' },
-                { label: 'KETERLAMBATAN AKTIF', value: komandoProps.delayedCount, color: '#EF4444', border: 'rgba(239, 68, 68, 0.3)', desc: 'ETA armada melampaui batas waktu' },
-                { label: 'TOTAL REVENUE DIKUMPULKAN', value: formatCurrency(komandoProps.totalRevenue), color: '#22C55E', border: 'rgba(34, 197, 94, 0.3)', desc: 'Pendapatan bruto terakumulasi' }
+                { label: 'Total Kiriman', value: komandoProps.totalShipments, color: 'var(--accent)', border: 'var(--border-focus)', desc: 'Keseluruhan pengiriman kargo' },
+                { label: 'Menunggu Diproses', value: komandoProps.pendingShipments, color: 'var(--warning)', border: 'rgba(255,214,0,0.3)', desc: 'Kargo antre dan diproses' },
+                { label: 'Terlambat', value: komandoProps.delayedCount, color: 'var(--danger)', border: 'rgba(255,23,68,0.3)', desc: 'ETA armada melampaui batas waktu' },
+                { label: 'Total Pendapatan', value: formatCurrency(komandoProps.totalRevenue), color: 'var(--success)', border: 'rgba(0,230,118,0.3)', desc: 'Pendapatan bruto terakumulasi' }
               ].map(card => (
                 <div key={card.label} style={{
-                  background: '#0D0618',
+                  background: 'var(--bg-surface)',
                   border: `1px solid ${card.border}`,
-                  borderRadius: '8px',
+                  borderRadius: 'var(--radius-lg)',
                   padding: '20px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '8px',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
+                  gap: '8px'
                 }}>
-                  <span style={{ fontSize: '8px', color: '#8B7BA8', fontWeight: 'bold', letterSpacing: '0.5px' }}>{card.label}</span>
-                  <div style={{ fontSize: '22px', fontWeight: 'bold', color: card.color }}>{card.value}</div>
-                  <span style={{ fontSize: '8px', color: '#8B7BA8' }}>{card.desc}</span>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', fontWeight: 500 }}>{card.label}</span>
+                  <div style={{ fontSize: '24px', fontWeight: 700, color: card.color, fontFamily: 'var(--font-mono)' }}>{card.value}</div>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>{card.desc}</span>
                 </div>
               ))}
             </div>
@@ -326,81 +325,79 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px', alignItems: 'start' }}>
               
               {/* Queue 1: Delayed */}
-              <div style={{ background: '#0D0618', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '10px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.6)', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={{ borderBottom: '1px solid rgba(239, 68, 68, 0.2)', paddingBottom: '8px' }}>
-                  <span style={{ fontSize: '11px', color: '#EF4444', fontWeight: 'bold', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}><ExclamationTriangleIcon style={{ width: '14px', height: '14px' }} /> ANTRIAN ALARM: KARGO TERLAMBAT (DELAYED)</span>
-                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>Kargo melewati estimasi tiba (ETA)</span>
+              <div style={{ background: 'var(--bg-surface)', border: '1px solid rgba(255,23,68,0.25)', borderRadius: 'var(--radius-lg)', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ borderBottom: '1px solid rgba(255,23,68,0.2)', paddingBottom: '8px' }}>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--danger)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <ExclamationTriangleIcon style={{ width: '14px', height: '14px' }} /> Kargo Terlambat
+                  </span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', display: 'block' }}>Kargo melewati estimasi tiba</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {komandoProps.delayedAlerts.map(s => (
-                    <div key={s.id} style={{ padding: '12px', background: 'rgba(239, 68, 68, 0.03)', border: '1px solid rgba(239, 68, 68, 0.15)', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div key={s.id} style={{ padding: '12px', background: 'rgba(255,23,68,0.03)', border: '1px solid rgba(255,23,68,0.15)', borderRadius: 'var(--radius-sm)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                        <span style={{ fontWeight: 'bold', fontSize: '11px', color: 'white' }}>{s.receiptNo}</span>
-                        <span style={{ fontSize: '8px', color: '#8B7BA8' }}>{s.itemName} ➔ {s.destination}</span>
+                        <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--text-primary)' }}>{s.receiptNo}</span>
+                        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>{s.itemName} → {s.destination}</span>
                       </div>
                       <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '8px', color: '#EF4444', fontWeight: 'bold' }}>EXPIRED ETA</span>
-                        <span style={{ fontSize: '8px', color: '#8B7BA8' }}>{new Date(s.eta).toLocaleDateString('id-ID')}</span>
+                        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--danger)', fontWeight: 600 }}>ETA Lewat</span>
+                        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>{new Date(s.eta).toLocaleDateString('id-ID')}</span>
                       </div>
                     </div>
                   ))}
                   {komandoProps.delayedAlerts.length === 0 && (
-                    <span style={{ fontSize: '10px', color: '#8B7BA8', textAlign: 'center', padding: '16px' }}>Tidak ada keterlambatan pengiriman armada terdeteksi.</span>
+                    <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', textAlign: 'center', padding: '16px' }}>Tidak ada keterlambatan terdeteksi.</span>
                   )}
                 </div>
               </div>
 
               {/* Queue 2: Repair Vehicles */}
-              <div style={{ background: '#0D0618', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '10px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.6)', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={{ borderBottom: '1px solid rgba(245, 158, 11, 0.2)', paddingBottom: '8px' }}>
-                  <span style={{ fontSize: '11px', color: '#F59E0B', fontWeight: 'bold', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}><WrenchIcon style={{ width: '14px', height: '14px' }} /> ANTRIAN ALARM: ARMADA DALAM PEMELIHARAAN</span>
-                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>Armada dengan status PERBAIKAN</span>
+              <div style={{ background: 'var(--bg-surface)', border: '1px solid rgba(255,214,0,0.25)', borderRadius: 'var(--radius-lg)', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ borderBottom: '1px solid rgba(255,214,0,0.2)', paddingBottom: '8px' }}>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--warning)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <WrenchIcon style={{ width: '14px', height: '14px' }} /> Armada Dalam Pemeliharaan
+                  </span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', display: 'block' }}>Armada dengan status perbaikan</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {komandoProps.brokenVehiclesAlerts.map(v => (
-                    <div key={v.id} style={{ padding: '12px', background: 'rgba(245, 158, 11, 0.03)', border: '1px solid rgba(245, 158, 11, 0.15)', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div key={v.id} style={{ padding: '12px', background: 'rgba(255,214,0,0.03)', border: '1px solid rgba(255,214,0,0.15)', borderRadius: 'var(--radius-sm)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                        <span style={{ fontWeight: 'bold', fontSize: '11px', color: 'white' }}>{v.name} ({v.plateNo})</span>
-                        <span style={{ fontSize: '8px', color: '#8B7BA8' }}>Tipe: {v.type}</span>
+                        <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--text-primary)' }}>{v.name} ({v.plateNo})</span>
+                        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Tipe: {v.type}</span>
                       </div>
-                      <span style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid #F59E0B', color: '#F59E0B', fontSize: '8px', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>PERBAIKAN</span>
+                      <span className="badge badge-warning">Perbaikan</span>
                     </div>
                   ))}
                   {komandoProps.brokenVehiclesAlerts.length === 0 && (
-                    <span style={{ fontSize: '10px', color: '#8B7BA8', textAlign: 'center', padding: '16px' }}>Tidak ada armada dalam status perawatan aktif.</span>
+                    <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', textAlign: 'center', padding: '16px' }}>Tidak ada armada dalam perawatan.</span>
                   )}
                 </div>
               </div>
 
               {/* Queue 3: Support Tickets */}
-              <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.6)', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={{ borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px' }}>
-                  <span style={{ fontSize: '11px', color: '#C084FC', fontWeight: 'bold', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}><TicketIcon style={{ width: '14px', height: '14px' }} /> ANTRIAN ALARM: COMPLAINT AKTIF ({komandoProps.openTicketsCount})</span>
-                  <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>Tiket complaint berstatus OPEN</span>
+              <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '8px' }}>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--accent)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <TicketIcon style={{ width: '14px', height: '14px' }} /> Tiket Aktif ({komandoProps.openTicketsCount})
+                  </span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', display: 'block' }}>Tiket complaint berstatus open</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {komandoProps.openTicketsAlerts.map(t => (
-                    <div key={t.id} style={{ padding: '12px', background: 'rgba(168, 85, 247, 0.03)', border: '1px solid rgba(168, 85, 247, 0.15)', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div key={t.id} style={{ padding: '12px', background: 'var(--accent-dim)', border: '1px solid rgba(0,229,255,0.15)', borderRadius: 'var(--radius-sm)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', maxWidth: '70%' }}>
-                        <span style={{ fontWeight: 'bold', fontSize: '11px', color: 'white' }}>{t.ticketNo}</span>
-                        <span style={{ fontSize: '8px', color: '#8B7BA8', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{t.title}</span>
+                        <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--text-primary)' }}>{t.ticketNo}</span>
+                        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{t.title}</span>
                       </div>
                       <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                        <span style={{
-                          background: t.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(168, 85, 247, 0.1)',
-                          border: `1px solid ${t.severity === 'CRITICAL' ? '#EF4444' : 'rgba(168, 85, 247, 0.4)'}`,
-                          color: t.severity === 'CRITICAL' ? '#EF4444' : '#C084FC',
-                          fontSize: '8px',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontWeight: 'bold'
-                        }}>{t.severity}</span>
-                        <Link href={`/dashboard/support`} style={{ fontSize: '8px', color: '#06B6D4', textDecoration: 'none', fontWeight: 'bold' }}>RESPON 💬</Link>
+                        <span className={t.severity === 'CRITICAL' ? 'badge badge-danger' : 'badge badge-accent'}>{t.severity}</span>
+                        <Link href={`/dashboard/support`} style={{ fontSize: 'var(--text-xs)', color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>Respon</Link>
                       </div>
                     </div>
                   ))}
                   {komandoProps.openTicketsAlerts.length === 0 && (
-                    <span style={{ fontSize: '10px', color: '#8B7BA8', textAlign: 'center', padding: '16px' }}>Tidak ada tiket OPEN menunggu respons.</span>
+                    <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', textAlign: 'center', padding: '16px' }}>Tidak ada tiket menunggu respons.</span>
                   )}
                 </div>
               </div>
@@ -420,12 +417,12 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
         {/* VIEW: MAP TELEMETRY */}
         {activeTab === 'map' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', color: 'white', margin: 0 }}>
-                PETA SATELIT MONITORING ARMADA
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+              <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                Peta Armada
               </h1>
-              <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>
-                PEMETAAN TELESKOPIS SATELIT ARMADA KAPAL & SISTEM CONTROL ANOMALI CUACA
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>
+                Pemetaan posisi GPS kapal kargo dan indikator cuaca dinamis.
               </span>
             </div>
             <InteractiveMap />
@@ -446,99 +443,90 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
         {/* VIEW 3: ANALISIS & LAPORAN */}
         {activeTab === 'analytics' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0, color: 'white' }}>ANALITIK & LAPORAN OPERASIONAL</h1>
-              <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>LAPORAN HARIAN · MINGGUAN · BULANAN · KESELURUHAN — DIPERBARUI OTOMATIS</span>
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+              <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Analitik & Laporan</h1>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Laporan harian, mingguan, bulanan — diperbarui otomatis.</span>
             </div>
             <AnalyticsClient role="ADMIN" />
-
           </div>
         )}
 
         {/* VIEW 4: DIREKTORI USER */}
         {activeTab === 'users' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>DIREKTORI PENGGUNA & KONTROL PERAN</h1>
-              <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>MANAJEMEN Kredensial, OTORISASI, & PENONAKTIFAN AKUN (SOFT DELETE)</span>
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+              <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Direktori Pengguna</h1>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Manajemen kredensial, otorisasi, dan penonaktifan akun.</span>
             </div>
 
             {/* Search */}
-            <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '8px', padding: '16px', display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ fontSize: '11px', color: '#8B7BA8', fontWeight: 'bold' }}>CARI PENGGUNA:</span>
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', fontWeight: 500 }}>Cari Pengguna:</span>
               <input
                 type="text"
-                placeholder="Masukkan nama / email..."
+                placeholder="Masukkan nama atau email..."
                 value={usersSearch}
                 onChange={(e) => { setUsersSearch(e.target.value); setUsersPage(1); }}
-                style={{ flex: 1, minWidth: '250px', background: '#07020E', border: '1px solid rgba(168, 85, 247, 0.4)', borderRadius: '4px', padding: '8px 12px', color: 'white', fontFamily: 'monospace', fontSize: '12px' }}
+                style={{ flex: 1, minWidth: '250px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '8px 12px', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)' }}
               />
             </div>
 
-            {usersActionSuccess && <div style={{ padding: '12px', background: 'rgba(34,197,94,0.1)', border: '1px solid #22C55E', borderRadius: '6px', color: '#22C55E', fontSize: '11px', fontWeight: 'bold' }}>{usersActionSuccess}</div>}
-            {usersActionError && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid #EF4444', borderRadius: '6px', color: '#EF4444', fontSize: '11px', fontWeight: 'bold' }}>ERROR: {usersActionError}</div>}
+            {usersActionSuccess && <div className="badge badge-success" style={{ padding: '12px', width: '100%', justifyContent: 'center' }}>{usersActionSuccess}</div>}
+            {usersActionError && <div className="badge badge-danger" style={{ padding: '12px', width: '100%', justifyContent: 'center' }}>{usersActionError}</div>}
 
             {/* Reset Pass Form Modal */}
             {activePasswordResetUserId && (
-              <div style={{ background: '#130A22', border: '2px solid #A855F7', borderRadius: '8px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <h3 style={{ margin: 0, fontSize: '12px', color: '#C084FC' }}>INTI RESET PASSWORD USER</h3>
+              <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--accent)', borderRadius: 'var(--radius-lg)', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <h3 style={{ margin: 0, fontSize: 'var(--text-sm)', color: 'var(--accent)', fontWeight: 600 }}>Reset Password User</h3>
                 <form onSubmit={handlePasswordReset} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                   <input
                     type="password"
                     placeholder="Kata sandi baru (min 6 karakter)..."
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    style={{ flex: 1, minWidth: '200px', background: '#07020E', border: '1px solid rgba(168, 85, 247, 0.6)', borderRadius: '4px', padding: '8px 12px', color: 'white', fontFamily: 'monospace', fontSize: '12px' }}
+                    style={{ flex: 1, minWidth: '200px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '8px 12px', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)' }}
                     required
                   />
-                  <button type="submit" style={{ background: '#22C55E', border: '1px solid #22C55E', color: 'black', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>KIRIM RESET</button>
-                  <button type="button" onClick={() => { setActivePasswordResetUserId(null); setNewPassword(''); }} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#8B7BA8', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '11px' }}>BATAL</button>
+                  <button type="submit" className="btn-primary" style={{ padding: '8px 16px', fontSize: 'var(--text-sm)' }}>Simpan</button>
+                  <button type="button" onClick={() => { setActivePasswordResetUserId(null); setNewPassword(''); }} className="btn-secondary" style={{ padding: '8px 16px', fontSize: 'var(--text-sm)' }}>Batal</button>
                 </form>
               </div>
             )}
 
             {/* List */}
-            <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-                  <h3 style={{ margin: '0 0 16px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>DIREKTORI PENGGUNA AKTIF</h3>
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '24px' }}>
+              <h3 style={{ margin: '0 0 16px 0', fontSize: 'var(--text-sm)', borderBottom: '1px solid var(--border)', paddingBottom: '8px', color: 'var(--accent)', fontWeight: 600 }}>Daftar Pengguna Aktif</h3>
               {usersLoading ? (
                 <SkeletonTable rows={5} cols={4} />
               ) : users.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#8B7BA8' }}>Tidak ada user terdaftar.</div>
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)' }}>Tidak ada user terdaftar.</div>
               ) : (
                 <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'left' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--text-sm)', textAlign: 'left' }}>
                     <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(168, 85, 247, 0.2)', color: '#8B7BA8' }}>
-                        <th style={{ padding: '12px 8px' }}>NAMA</th>
-                        <th style={{ padding: '12px 8px' }}>EMAIL</th>
-                        <th style={{ padding: '12px 8px' }}>TELEPON</th>
-                        <th style={{ padding: '12px 8px' }}>ROLE</th>
-                        <th style={{ padding: '12px 8px' }}>DAFTAR</th>
-                        <th style={{ padding: '12px 8px', textAlign: 'right' }}>AKSI</th>
+                      <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
+                        <th style={{ padding: '12px 8px' }}>Nama</th>
+                        <th style={{ padding: '12px 8px' }}>Email</th>
+                        <th style={{ padding: '12px 8px' }}>Telepon</th>
+                        <th style={{ padding: '12px 8px' }}>Role</th>
+                        <th style={{ padding: '12px 8px' }}>Daftar</th>
+                        <th style={{ padding: '12px 8px', textAlign: 'right' }}>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                       {users.map((u) => (
-                        <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                          <td style={{ padding: '12px 8px', fontWeight: 'bold' }}>{u.name}</td>
-                          <td style={{ padding: '12px 8px', color: '#C084FC' }}>{u.email}</td>
+                        <tr key={u.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                          <td style={{ padding: '12px 8px', fontWeight: 600 }}>{u.name}</td>
+                          <td style={{ padding: '12px 8px', color: 'var(--accent)' }}>{u.email}</td>
                           <td style={{ padding: '12px 8px' }}>{u.phone || '-'}</td>
                           <td style={{ padding: '12px 8px' }}>
-                            <span style={{
-                              background: u.role === 'ADMIN' ? 'rgba(168,85,247,0.1)' : 'rgba(59,130,246,0.1)',
-                              border: `1px solid ${u.role === 'ADMIN' ? '#A855F7' : '#3B82F6'}`,
-                              color: u.role === 'ADMIN' ? '#A855F7' : '#3B82F6',
-                              padding: '2px 6px',
-                              borderRadius: '4px',
-                              fontSize: '9px',
-                              fontWeight: 'bold'
-                            }}>{u.role}</span>
+                            <span className={u.role === 'ADMIN' ? 'badge badge-accent' : 'badge badge-info'}>{u.role}</span>
                           </td>
                           <td style={{ padding: '12px 8px' }}>{new Date(u.createdAt).toLocaleDateString('id-ID')}</td>
                           <td style={{ padding: '12px 8px', textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                            <button onClick={() => handleRoleToggle(u.id, u.role)} style={{ background: 'transparent', border: '1px solid rgba(168,85,247,0.4)', color: '#C084FC', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>TOGGLE ROLE</button>
-                            <button onClick={() => setActivePasswordResetUserId(u.id)} style={{ background: 'transparent', border: '1px solid rgba(6,182,212,0.4)', color: '#06B6D4', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>RESET PW</button>
-                            <button onClick={() => handleSoftDelete(u.id, u.name)} style={{ background: 'transparent', border: '1px solid rgba(239,68,68,0.4)', color: '#EF4444', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>SOFT DELETE</button>
+                            <button onClick={() => handleRoleToggle(u.id, u.role)} className="btn-secondary" style={{ padding: '4px 8px', fontSize: 'var(--text-xs)' }}>Ubah Role</button>
+                            <button onClick={() => setActivePasswordResetUserId(u.id)} className="btn-secondary" style={{ padding: '4px 8px', fontSize: 'var(--text-xs)', borderColor: 'var(--accent)', color: 'var(--accent)' }}>Reset PW</button>
+                            <button onClick={() => handleSoftDelete(u.id, u.name)} className="btn-secondary" style={{ padding: '4px 8px', fontSize: 'var(--text-xs)', borderColor: 'var(--danger)', color: 'var(--danger)' }}>Hapus</button>
                           </td>
                         </tr>
                       ))}
@@ -551,9 +539,9 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
             {/* Pagination */}
             {usersTotalPages > 1 && (
               <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '8px' }}>
-                <button disabled={usersPage === 1} onClick={() => setUsersPage(p => p - 1)} style={{ background: '#0D0618', border: '1px solid rgba(168,85,247,0.4)', color: 'white', padding: '6px 12px', borderRadius: '4px', cursor: usersPage === 1 ? 'not-allowed' : 'pointer' }}>PREV</button>
-                <span style={{ display: 'flex', alignItems: 'center', fontSize: '11px', color: '#8B7BA8' }}>Halaman {usersPage} dari {usersTotalPages}</span>
-                <button disabled={usersPage === usersTotalPages} onClick={() => setUsersPage(p => p + 1)} style={{ background: '#0D0618', border: '1px solid rgba(168,85,247,0.4)', color: 'white', padding: '6px 12px', borderRadius: '4px', cursor: usersPage === usersTotalPages ? 'not-allowed' : 'pointer' }}>NEXT</button>
+                <button disabled={usersPage === 1} onClick={() => setUsersPage(p => p - 1)} className="btn-secondary" style={{ padding: '6px 12px', fontSize: 'var(--text-sm)', opacity: usersPage === 1 ? 0.5 : 1 }}>Sebelumnya</button>
+                <span style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Halaman {usersPage} dari {usersTotalPages}</span>
+                <button disabled={usersPage === usersTotalPages} onClick={() => setUsersPage(p => p + 1)} className="btn-secondary" style={{ padding: '6px 12px', fontSize: 'var(--text-sm)', opacity: usersPage === usersTotalPages ? 0.5 : 1 }}>Selanjutnya</button>
               </div>
             )}
           </div>
@@ -562,19 +550,19 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
         {/* VIEW 5: LOG AUDIT TRAIL */}
         {activeTab === 'audit' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>AUDIT TRAIL LOGS & AKTIVITAS SISTEM</h1>
-              <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>REKAM JEJAK DIGITAL AKTIVITAS OPERASIONAL & PERUBAHAN CONFIG</span>
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+              <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Audit Trail</h1>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Rekam jejak aktivitas operasional dan perubahan konfigurasi.</span>
             </div>
 
             {/* Filters */}
-            <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '8px', padding: '20px', display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '20px', display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold' }}>RESOURCE TYPE:</span>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', fontWeight: 500 }}>Tipe Resource:</span>
                 <select
                   value={resourceType}
                   onChange={(e) => { setResourceType(e.target.value); setLogsPage(1); }}
-                  style={{ background: '#07020E', border: '1px solid rgba(168, 85, 247, 0.4)', borderRadius: '4px', padding: '8px 12px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
+                  style={{ background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '8px 12px', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)' }}
                 >
                   <option value="">Semua Tipe</option>
                   <option value="Shipment">Shipment (Kargo)</option>
@@ -586,59 +574,60 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold' }}>TANGGAL MULAI:</span>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', fontWeight: 500 }}>Tanggal Mulai:</span>
                 <input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => { setDateFrom(e.target.value); setLogsPage(1); }}
-                  style={{ background: '#07020E', border: '1px solid rgba(168, 85, 247, 0.4)', borderRadius: '4px', padding: '6px 12px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
+                  style={{ background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '6px 12px', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)' }}
                 />
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <span style={{ fontSize: '10px', color: '#8B7BA8', fontWeight: 'bold' }}>TANGGAL SELESAI:</span>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', fontWeight: 500 }}>Tanggal Selesai:</span>
                 <input
                   type="date"
                   value={dateTo}
                   onChange={(e) => { setDateTo(e.target.value); setLogsPage(1); }}
-                  style={{ background: '#07020E', border: '1px solid rgba(168, 85, 247, 0.4)', borderRadius: '4px', padding: '6px 12px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
+                  style={{ background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '6px 12px', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)' }}
                 />
               </div>
 
               <button
                 onClick={() => { setResourceType(''); setDateFrom(''); setDateTo(''); setLogsPage(1); }}
-                style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #EF4444', color: '#EF4444', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '11px', fontWeight: 'bold', alignSelf: 'flex-end' }}
+                className="btn-secondary"
+                style={{ padding: '8px 16px', fontSize: 'var(--text-sm)', borderColor: 'var(--danger)', color: 'var(--danger)', alignSelf: 'flex-end' }}
               >
-                RESET FILTER
+                Reset Filter
               </button>
             </div>
 
             {/* List */}
-            <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>REKAM JEJAK OPERASI (IMUTABEL)</h3>
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '24px' }}>
+              <h3 style={{ margin: '0 0 16px 0', fontSize: 'var(--text-sm)', borderBottom: '1px solid var(--border)', paddingBottom: '8px', color: 'var(--accent)', fontWeight: 600 }}>Rekam Jejak Operasi</h3>
               {logsLoading ? (
                 <SkeletonTable rows={4} cols={3} />
               ) : logs.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#8B7BA8' }}>Ledger kosong. Belum ada aktivitas.</div>
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)' }}>Belum ada aktivitas tercatat.</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                   {logs.map((log) => (
-                    <div key={log.id} style={{ padding: '16px', background: '#07020E', border: '1px solid rgba(168, 85, 247, 0.15)', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '11px' }}>
+                    <div key={log.id} style={{ padding: '16px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: 'var(--text-sm)' }}>
                         <div>
-                          <span style={{ color: '#A855F7', fontWeight: 'bold' }}>[{log.action}]</span>
-                          <span style={{ color: '#8B7BA8' }}> pada </span>
-                          <span style={{ fontWeight: 'bold' }}>{log.resourceType} ({log.resourceId.substring(0, 8)}...)</span>
+                          <span style={{ color: 'var(--accent)', fontWeight: 600 }}>[{log.action}]</span>
+                          <span style={{ color: 'var(--text-tertiary)' }}> pada </span>
+                          <span style={{ fontWeight: 600 }}>{log.resourceType} ({log.resourceId.substring(0, 8)}...)</span>
                         </div>
-                        <div style={{ color: '#8B7BA8' }}>{new Date(log.createdAt).toLocaleString('id-ID')}</div>
+                        <div style={{ color: 'var(--text-tertiary)' }}>{new Date(log.createdAt).toLocaleString('id-ID')}</div>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '10px', borderTop: '1px dashed rgba(255,255,255,0.05)', paddingTop: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: 'var(--text-xs)', borderTop: '1px solid var(--border)', paddingTop: '8px' }}>
                         <div>
-                          <span style={{ color: '#8B7BA8' }}>USER: </span>
-                          <span style={{ color: '#C084FC', fontWeight: 'bold' }}>{log.user?.name} ({log.user?.email})</span>
+                          <span style={{ color: 'var(--text-tertiary)' }}>User: </span>
+                          <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{log.user?.name} ({log.user?.email})</span>
                         </div>
                         {log.metadata && (
-                          <div style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '10px', borderRadius: '4px', marginTop: '6px', color: '#38BDF8', overflowX: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                          <div style={{ width: '100%', background: 'var(--bg-void)', border: '1px solid var(--border)', padding: '10px', borderRadius: 'var(--radius-sm)', marginTop: '6px', color: 'var(--info)', overflowX: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)' }}>
                             {log.metadata}
                           </div>
                         )}
@@ -652,9 +641,9 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
             {/* Pagination */}
             {logsTotalPages > 1 && (
               <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '8px' }}>
-                <button disabled={logsPage === 1} onClick={() => setLogsPage(p => p - 1)} style={{ background: '#0D0618', border: '1px solid rgba(168,85,247,0.4)', color: 'white', padding: '6px 12px', borderRadius: '4px', cursor: logsPage === 1 ? 'not-allowed' : 'pointer' }}>PREV</button>
-                <span style={{ display: 'flex', alignItems: 'center', fontSize: '11px', color: '#8B7BA8' }}>Halaman {logsPage} dari {logsTotalPages}</span>
-                <button disabled={logsPage === logsTotalPages} onClick={() => setLogsPage(p => p + 1)} style={{ background: '#0D0618', border: '1px solid rgba(168,85,247,0.4)', color: 'white', padding: '6px 12px', borderRadius: '4px', cursor: logsPage === logsTotalPages ? 'not-allowed' : 'pointer' }}>NEXT</button>
+                <button disabled={logsPage === 1} onClick={() => setLogsPage(p => p - 1)} className="btn-secondary" style={{ padding: '6px 12px', fontSize: 'var(--text-sm)', opacity: logsPage === 1 ? 0.5 : 1 }}>Sebelumnya</button>
+                <span style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Halaman {logsPage} dari {logsTotalPages}</span>
+                <button disabled={logsPage === logsTotalPages} onClick={() => setLogsPage(p => p + 1)} className="btn-secondary" style={{ padding: '6px 12px', fontSize: 'var(--text-sm)', opacity: logsPage === logsTotalPages ? 0.5 : 1 }}>Selanjutnya</button>
               </div>
             )}
           </div>
@@ -663,13 +652,13 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
         {/* VIEW 6: CONFIG SISTEM */}
         {activeTab === 'settings' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>PANEL KONFIGURASI & ATURAN SISTEM</h1>
-              <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>DITRIBUTED TARIFF RULES, TEMPLATE NOTIFIKASI, & DYNAMIC FEATURE FLAGS</span>
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+              <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Pengaturan Sistem</h1>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Aturan tarif, template notifikasi, dan fitur operasional.</span>
             </div>
 
-            {settingsSuccess && <div style={{ padding: '12px', background: 'rgba(34,197,94,0.1)', border: '1px solid #22C55E', borderRadius: '6px', color: '#22C55E', fontSize: '11px', fontWeight: 'bold' }}>{settingsSuccess}</div>}
-            {settingsError && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid #EF4444', borderRadius: '6px', color: '#EF4444', fontSize: '11px', fontWeight: 'bold' }}>ERROR: {settingsError}</div>}
+            {settingsSuccess && <div className="badge badge-success" style={{ padding: '12px', width: '100%', justifyContent: 'center' }}>{settingsSuccess}</div>}
+            {settingsError && <div className="badge badge-danger" style={{ padding: '12px', width: '100%', justifyContent: 'center' }}>{settingsError}</div>}
 
             {settingsLoading ? (
               <SkeletonCard lines={6} />
@@ -678,44 +667,45 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px' }}>
                   
                   {/* Tariff Rules */}
-                  <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>MODIFIER TARIF KARGO</h3>
+                  <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <h3 style={{ margin: 0, fontSize: 'var(--text-sm)', borderBottom: '1px solid var(--border)', paddingBottom: '8px', color: 'var(--accent)', fontWeight: 600 }}>Tarif Kargo</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Tarif Laut (per kg):</span>
+                        <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Tarif Laut (per kg):</span>
                         <input
                           type="number"
                           value={tariffRules.LAUT || 0}
                           onChange={(e) => setTariffRules({ ...tariffRules, LAUT: parseInt(e.target.value) || 0 })}
-                          style={{ width: '120px', background: '#07020E', border: '1px solid rgba(168,85,247,0.4)', borderRadius: '4px', padding: '6px 10px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
+                          style={{ width: '120px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '6px 10px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-sm)' }}
                         />
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Biaya Dasar (Base Fee):</span>
+                        <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Biaya Dasar:</span>
                         <input
                           type="number"
                           value={tariffRules.baseFee || 0}
                           onChange={(e) => setTariffRules({ ...tariffRules, baseFee: parseInt(e.target.value) || 0 })}
-                          style={{ width: '120px', background: '#07020E', border: '1px solid rgba(168,85,247,0.4)', borderRadius: '4px', padding: '6px 10px', color: 'white', fontFamily: 'monospace', fontSize: '11px' }}
+                          style={{ width: '120px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '6px 10px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-sm)' }}
                         />
                       </div>
                       <button
                         onClick={() => handleSaveSetting('tariffRules', tariffRules, 'TARIFF')}
-                        style={{ marginTop: '12px', background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)', border: 'none', color: 'white', padding: '10px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}
+                        className="btn-primary"
+                        style={{ marginTop: '12px', padding: '10px', fontSize: 'var(--text-sm)' }}
                       >
-                        SIMPAN PARAMETER TARIF
+                        Simpan Tarif
                       </button>
                     </div>
                   </div>
 
                   {/* Feature flags */}
-                  <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>⚙️ FITUR & PENGENDALI OPERASIONAL</h3>
+                  <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <h3 style={{ margin: 0, fontSize: 'var(--text-sm)', borderBottom: '1px solid var(--border)', paddingBottom: '8px', color: 'var(--accent)', fontWeight: 600 }}>Fitur Operasional</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                          <span style={{ fontSize: '11px', fontWeight: 'bold', display: 'block' }}>AUTO-ALLOTMENT FLEET</span>
-                          <span style={{ fontSize: '8px', color: '#8B7BA8' }}>Alokasikan armada terdekat otomatis saat order masuk</span>
+                          <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, display: 'block' }}>Auto-Alokasi Armada</span>
+                          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Alokasikan armada terdekat otomatis saat order masuk</span>
                         </div>
                         <input
                           type="checkbox"
@@ -729,10 +719,10 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                         />
                       </div>
 
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
                         <div>
-                          <span style={{ fontSize: '11px', fontWeight: 'bold', display: 'block' }}>KOMPENSASI KETERLAMBATAN</span>
-                          <span style={{ fontSize: '8px', color: '#8B7BA8' }}>Izinkan voucher refund otomatis pada tiket delayed</span>
+                          <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, display: 'block' }}>Kompensasi Keterlambatan</span>
+                          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Izinkan voucher refund otomatis pada tiket delayed</span>
                         </div>
                         <input
                           type="checkbox"
@@ -751,51 +741,53 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                 </div>
 
                 {/* templates */}
-                <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-                  <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>✉️ TEMPLATE EMAIL & NOTIFIKASI SISTEM</h3>
+                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '24px' }}>
+                  <h3 style={{ margin: 0, fontSize: 'var(--text-sm)', borderBottom: '1px solid var(--border)', paddingBottom: '8px', color: 'var(--accent)', fontWeight: 600 }}>Template Email & Notifikasi</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginTop: '16px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#8B7BA8' }}>Template Sambutan Akun Baru (Welcome):</span>
+                      <span style={{ fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Template Sambutan Akun Baru:</span>
                       <textarea
                         value={notifTemplates.welcome}
                         onChange={(e) => setNotifTemplates({ ...notifTemplates, welcome: e.target.value })}
-                        style={{ height: '80px', background: '#07020E', border: '1px solid rgba(168,85,247,0.4)', borderRadius: '4px', padding: '10px', color: 'white', fontFamily: 'monospace', fontSize: '11px', resize: 'vertical' }}
+                        style={{ height: '80px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '10px', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', resize: 'vertical' }}
                       />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#8B7BA8' }}>Template Update Status Kargo (Shipment Update):</span>
+                      <span style={{ fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Template Update Status Kargo:</span>
                       <textarea
                         value={notifTemplates.shipmentUpdate}
                         onChange={(e) => setNotifTemplates({ ...notifTemplates, shipmentUpdate: e.target.value })}
-                        style={{ height: '80px', background: '#07020E', border: '1px solid rgba(168,85,247,0.4)', borderRadius: '4px', padding: '10px', color: 'white', fontFamily: 'monospace', fontSize: '11px', resize: 'vertical' }}
+                        style={{ height: '80px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '10px', color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', resize: 'vertical' }}
                       />
                     </div>
                   </div>
                   <button
                     onClick={() => handleSaveSetting('notifTemplates', notifTemplates, 'NOTIFICATION')}
-                    style={{ width: '100%', marginTop: '16px', background: 'linear-gradient(90deg, #A855F7 0%, #06B6D4 100%)', border: 'none', color: 'white', padding: '10px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}
+                    className="btn-primary"
+                    style={{ width: '100%', marginTop: '16px', padding: '10px', fontSize: 'var(--text-sm)' }}
                   >
-                    SIMPAN TEMPLATE EMAIL NOTIFIKASI
+                    Simpan Template
                   </button>
                 </div>
 
                 {/* Manual Override Automation */}
-                <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-                  <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>TRIGGER AUTOMATION ENGINE OVERRIDE</h3>
+                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '24px' }}>
+                  <h3 style={{ margin: 0, fontSize: 'var(--text-sm)', borderBottom: '1px solid var(--border)', paddingBottom: '8px', color: 'var(--accent)', fontWeight: 600 }}>Manual Override Automation</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
-                    <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Jalankan background job automasi secara manual sekarang. Ini memproses pemindaian status kargo terlambat, alokasi armada otomatis, pembuatan invoice kargo selesai, dan preferensi notifikasi.</span>
+                    <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>Jalankan background job automasi secara manual. Memproses pemindaian status kargo terlambat, alokasi armada otomatis, dan pembuatan invoice.</span>
                     <button
                       onClick={handleTriggerAutomation}
                       disabled={runningAutomation}
-                      style={{ alignSelf: 'flex-start', background: '#E11D48', border: 'none', color: 'white', padding: '10px 20px', borderRadius: '6px', cursor: runningAutomation ? 'not-allowed' : 'pointer', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}
+                      className="btn-primary"
+                      style={{ alignSelf: 'flex-start', background: 'var(--danger)', padding: '10px 20px', fontSize: 'var(--text-sm)', opacity: runningAutomation ? 0.7 : 1 }}
                     >
-                      {runningAutomation ? 'MENJALANKAN ENGINE AUTOMASI...' : 'MANUAL OVERRIDE RUN'}
+                      {runningAutomation ? 'Menjalankan...' : 'Jalankan Sekarang'}
                     </button>
                     {automationLogs.length > 0 && (
-                      <div style={{ background: '#07020E', border: '1px solid rgba(168,85,247,0.3)', padding: '16px', borderRadius: '6px', marginTop: '12px', overflowX: 'auto', maxHeight: '180px', overflowY: 'auto' }}>
-                        <span style={{ color: '#A855F7', fontSize: '9px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>AUTOMATION ENGINE SYSTEM LOGS:</span>
+                      <div style={{ background: 'var(--bg-input)', border: '1px solid var(--border)', padding: '16px', borderRadius: 'var(--radius-sm)', marginTop: '12px', overflowX: 'auto', maxHeight: '180px', overflowY: 'auto' }}>
+                        <span style={{ color: 'var(--accent)', fontSize: 'var(--text-xs)', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Log Automasi:</span>
                         {automationLogs.map((log, index) => (
-                          <div key={index} style={{ fontSize: '10px', color: '#38BDF8', borderBottom: '1px solid rgba(255,255,255,0.02)', padding: '4px 0' }}>→ {log}</div>
+                          <div key={index} style={{ fontSize: 'var(--text-xs)', color: 'var(--info)', borderBottom: '1px solid var(--border)', padding: '4px 0', fontFamily: 'var(--font-mono)' }}>{log}</div>
                         ))}
                       </div>
                     )}

@@ -26,11 +26,11 @@ export default function Gallery() {
   }, []);
 
   const items = [
-    { src: '/ship1.png', label: 'Maritime Operations', desc: 'Active fleet surveillance' },
-    { src: '/ship2.png', label: 'Fleet Management', desc: 'Cross-vessel coordination' },
-    { src: '/ship3.png', label: 'Global Reach', desc: 'International sea routes' },
-    { src: '/ship4.png', label: 'Cargo Logistics', desc: 'Multi-modal distribution' },
-    { src: '/ship5.png', label: 'Strategic Ports', desc: 'Key transit hubs' }
+    { src: '/ship1.png', label: 'Operasi Maritim', desc: 'Pemantauan armada aktif' },
+    { src: '/ship2.png', label: 'Manajemen Armada', desc: 'Koordinasi antar kapal' },
+    { src: '/ship3.png', label: 'Jangkauan Global', desc: 'Rute pelayaran internasional' },
+    { src: '/ship4.png', label: 'Logistik Kargo', desc: 'Distribusi multi-moda' },
+    { src: '/ship5.png', label: 'Pelabuhan Strategis', desc: 'Pusat transit utama' }
   ];
 
   return (
@@ -49,29 +49,30 @@ export default function Gallery() {
       <div style={{ marginBottom: '40px', maxWidth: '600px' }}>
         <span style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          color: 'rgba(168,85,247,0.7)',
-          letterSpacing: '3px',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--accent)',
+          letterSpacing: '2px',
           textTransform: 'uppercase',
           display: 'block',
-          marginBottom: '12px'
+          marginBottom: '12px',
+          fontWeight: 600
         }}>
-          Visual Tour
+          Galeri Visual
         </span>
         <h2 style={{
           fontFamily: 'var(--font-heading)',
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
-          color: '#F1F0F5',
+          color: 'var(--text-primary)',
           letterSpacing: '-0.03em',
           lineHeight: '1.1',
           margin: 0
         }}>
-          Fleet Gallery
+          Galeri Armada
         </h2>
       </div>
 
-      {/* Edge-to-edge gallery strip */}
+      {/* Gallery grid */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(5, 1fr)',
@@ -81,7 +82,7 @@ export default function Gallery() {
           <div key={i} className="gallery-card" style={{
             position: 'relative',
             overflow: 'hidden',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-md)',
             height: '220px',
             cursor: 'pointer'
           }}>
@@ -94,13 +95,13 @@ export default function Gallery() {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                transition: 'transform 0.6s var(--cubic-premium)'
+                transition: 'transform 0.6s var(--ease)'
               }}
             />
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(0deg, rgba(5,5,5,0.9) 0%, transparent 50%)',
+              background: 'linear-gradient(0deg, rgba(6,6,8,0.9) 0%, transparent 50%)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'flex-end',
@@ -108,17 +109,16 @@ export default function Gallery() {
             }}>
               <span style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '12px',
+                fontSize: 'var(--text-sm)',
                 fontWeight: 600,
-                color: '#F1F0F5',
-                letterSpacing: '0.5px'
+                color: 'var(--text-primary)'
               }}>
                 {item.label}
               </span>
               <span style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '11px',
-                color: 'rgba(241,240,245,0.4)',
+                fontSize: 'var(--text-xs)',
+                color: 'var(--text-tertiary)',
                 marginTop: '2px'
               }}>
                 {item.desc}

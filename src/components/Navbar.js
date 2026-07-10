@@ -13,16 +13,31 @@ export default function Navbar() {
   }, []);
 
   const links = [
-    { href: '#about', label: 'About' },
-    { href: '#features', label: 'Features' },
-    { href: '#advantages', label: 'Advantages' },
-    { href: '#testimonials', label: 'Testimonials' },
+    { href: '#about', label: 'Tentang' },
+    { href: '#features', label: 'Fitur' },
+    { href: '#advantages', label: 'Keunggulan' },
+    { href: '#contact', label: 'Kontak' },
   ];
 
   return (
     <>
-      <nav className="island-nav" style={{
-        background: scrolled ? 'rgba(12, 12, 20, 0.92)' : 'rgba(12, 12, 20, 0.75)',
+      <nav style={{
+        position: 'fixed',
+        top: '16px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 9999,
+        width: 'auto',
+        maxWidth: '90vw',
+        background: scrolled ? 'rgba(6,6,8,0.92)' : 'rgba(6,6,8,0.75)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: '1px solid var(--border)',
+        borderRadius: '100px',
+        padding: '8px 12px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
         boxShadow: scrolled
           ? '0 8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)'
           : '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
@@ -51,9 +66,9 @@ export default function Navbar() {
           </div>
           <span style={{
             fontWeight: 700,
-            color: '#F1F0F5',
+            color: 'var(--text-primary)',
             fontSize: '13px',
-            letterSpacing: '1.5px'
+            letterSpacing: '1px'
           }}>
             PRIMELOG
           </span>
@@ -62,7 +77,23 @@ export default function Navbar() {
         {/* Desktop links */}
         <div style={{ display: 'flex', gap: '2px' }} className="nav-desktop-links">
           {links.map((link) => (
-            <a key={link.href} href={link.href}>
+            <a key={link.href} href={link.href} style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '12px',
+              color: 'var(--text-secondary)',
+              textDecoration: 'none',
+              padding: '8px 16px',
+              borderRadius: '100px',
+              transition: 'all 0.3s var(--ease)',
+              letterSpacing: '0.5px',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--accent-dim)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; }}
+            >
               {link.label}
             </a>
           ))}
@@ -81,7 +112,7 @@ export default function Navbar() {
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            color: 'rgba(241,240,245,0.6)'
+            color: 'var(--text-secondary)'
           }}
           className="nav-mobile-toggle"
           aria-label="Toggle menu"
@@ -103,8 +134,22 @@ export default function Navbar() {
         </button>
 
         {/* CTA */}
-        <a href="/login" className="nav-cta" style={{ textDecoration: 'none' }}>
-          Sign In
+        <a href="/login" style={{
+          background: 'var(--accent)',
+          color: '#060608',
+          fontFamily: 'var(--font-body)',
+          fontSize: '13px',
+          fontWeight: 600,
+          padding: '8px 20px',
+          borderRadius: '100px',
+          textDecoration: 'none',
+          transition: 'all 0.3s var(--ease)',
+          whiteSpace: 'nowrap'
+        }}
+          onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 20px var(--accent-glow)'; e.currentTarget.style.transform = 'scale(1.04)'; }}
+          onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'scale(1)'; }}
+        >
+          Masuk
         </a>
       </nav>
 
@@ -114,7 +159,7 @@ export default function Navbar() {
           position: 'fixed',
           inset: 0,
           zIndex: 9998,
-          background: 'rgba(5,5,5,0.95)',
+          background: 'rgba(6,6,8,0.95)',
           backdropFilter: 'blur(32px)',
           display: 'flex',
           flexDirection: 'column',
@@ -128,11 +173,11 @@ export default function Navbar() {
               href={link.href}
               onClick={() => setMobileOpen(false)}
               style={{
-                color: '#F1F0F5',
+                color: 'var(--text-primary)',
                 textDecoration: 'none',
                 fontSize: '20px',
                 fontFamily: 'var(--font-body)',
-                letterSpacing: '2px'
+                letterSpacing: '1px'
               }}
             >
               {link.label}
@@ -141,15 +186,18 @@ export default function Navbar() {
           <a
             href="/login"
             onClick={() => setMobileOpen(false)}
-            className="btn-inner"
-            style={{ marginTop: '16px' }}
+            style={{
+              background: 'var(--accent)',
+              color: '#060608',
+              fontWeight: 600,
+              padding: '12px 24px',
+              borderRadius: '100px',
+              textDecoration: 'none',
+              fontSize: '14px',
+              marginTop: '16px'
+            }}
           >
-            Sign In
-            <span className="icon-wrap">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </span>
+            Masuk
           </a>
         </div>
       )}

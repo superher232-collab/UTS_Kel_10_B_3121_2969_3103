@@ -26,12 +26,12 @@ export default function Advantages() {
   }, []);
 
   const items = [
-    { text: '24/7 monitoring for entire fleet', icon: <Clock size={18} weight="duotone" color="#22C55E" /> },
-    { text: 'Interactive dashboard with real-time data', icon: <Monitor size={18} weight="duotone" color="#3B82F6" /> },
-    { text: 'Automated alert system for anomalies', icon: <Bell size={18} weight="duotone" color="#EF4444" /> },
-    { text: 'Comprehensive reports and deep analytics', icon: <FileText size={18} weight="duotone" color="#F59E0B" /> },
-    { text: 'Integration with vessel navigation systems', icon: <NavigationArrow size={18} weight="duotone" color="#06B6D4" /> },
-    { text: 'Enterprise-grade data security', icon: <Lock size={18} weight="duotone" color="#A855F7" /> }
+    { text: 'Pemantauan 24/7 untuk seluruh armada', icon: <Clock size={18} weight="duotone" color="var(--accent)" /> },
+    { text: 'Dashboard interaktif dengan data real-time', icon: <Monitor size={18} weight="duotone" color="var(--accent)" /> },
+    { text: 'Sistem alarm otomatis untuk anomali', icon: <Bell size={18} weight="duotone" color="var(--accent)" /> },
+    { text: 'Laporan lengkap dan analisis mendalam', icon: <FileText size={18} weight="duotone" color="var(--accent)" /> },
+    { text: 'Integrasi dengan sistem navigasi kapal', icon: <NavigationArrow size={18} weight="duotone" color="var(--accent)" /> },
+    { text: 'Keamanan data kelas enterprise', icon: <Lock size={18} weight="duotone" color="var(--accent)" /> }
   ];
 
   return (
@@ -50,37 +50,47 @@ export default function Advantages() {
       <div style={{ marginBottom: '48px', maxWidth: '600px' }}>
         <span style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          color: 'rgba(168,85,247,0.7)',
-          letterSpacing: '3px',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--accent)',
+          letterSpacing: '2px',
           textTransform: 'uppercase',
           display: 'block',
-          marginBottom: '12px'
+          marginBottom: '12px',
+          fontWeight: 600
         }}>
-          Why PRIMELOG
+          Mengapa PRIMELOG
         </span>
         <h2 style={{
           fontFamily: 'var(--font-heading)',
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
-          color: '#F1F0F5',
+          color: 'var(--text-primary)',
           letterSpacing: '-0.03em',
           lineHeight: '1.1',
           margin: 0
         }}>
-          Key Advantages
+          Keunggulan Utama
         </h2>
       </div>
 
-      {/* 3-col bento icon tiles */}
+      {/* 3-col grid */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '12px'
       }}>
         {items.map((item, i) => (
-          <div key={i} className="double-bezel advantage-card hover-lift">
-            <div className="double-bezel-inner" style={{
+          <div key={i} className="advantage-card" style={{
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
+            transition: 'all 0.3s var(--ease)',
+            cursor: 'default'
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,229,255,0.08)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+          >
+            <div style={{
               padding: '24px',
               display: 'flex',
               flexDirection: 'column',
@@ -93,7 +103,7 @@ export default function Advantages() {
                 width: '42px',
                 height: '42px',
                 borderRadius: '11px',
-                background: 'rgba(168,85,247,0.08)',
+                background: 'var(--accent-dim)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -103,8 +113,8 @@ export default function Advantages() {
               </div>
               <span style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '13px',
-                color: 'rgba(241,240,245,0.65)',
+                fontSize: 'var(--text-base)',
+                color: 'var(--text-secondary)',
                 lineHeight: '1.5'
               }}>
                 {item.text}

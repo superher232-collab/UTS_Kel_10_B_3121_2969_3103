@@ -53,19 +53,19 @@ export default function CustomerMapPage() {
       width: '100%',
       height: '100%',
       minHeight: '80vh',
-      background: '#07020E',
-      color: 'white',
-      fontFamily: 'monospace',
+      background: 'var(--bg-void)',
+      color: 'var(--text-primary)',
+      fontFamily: 'var(--font-body)',
       display: 'flex',
       flexDirection: 'column',
       gap: '20px'
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ color: '#C084FC', letterSpacing: '2px', fontSize: '24px', margin: 0, fontWeight: 'bold' }}>
-            🗺️ PERSONAL TRACKING RADAR
+          <h1 style={{ color: 'var(--text-primary)', fontSize: 'var(--text-2xl)', margin: 0, fontWeight: 700 }}>
+            Pelacakan Kiriman
           </h1>
-          <p style={{ fontSize: '11px', color: '#8B7BA8', margin: '4px 0 0 0' }}>
+          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', margin: '4px 0 0 0' }}>
             Pemantauan rute dan posisi armada laut.
           </p>
         </div>
@@ -76,21 +76,20 @@ export default function CustomerMapPage() {
         {/* MAP VISUALIZATION AREA */}
         <div style={{
           flex: '2 1 600px',
-          border: '1px solid rgba(168, 85, 247, 0.25)',
-          borderRadius: '12px',
-          background: '#0D0618',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          background: 'var(--bg-surface)',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
           minHeight: '400px'
         }}>
           {/* Grid background */}
           <div style={{
             position: 'absolute', inset: 0,
-            backgroundImage: 'linear-gradient(rgba(168, 85, 247, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(168, 85, 247, 0.05) 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
             opacity: 0.5
           }} />
@@ -102,8 +101,8 @@ export default function CustomerMapPage() {
               <path 
                 key={idx} 
                 d={path} 
-                fill="#1A112A" 
-                stroke="#A855F7" 
+                fill="var(--bg-elevated)" 
+                stroke="var(--accent)" 
                 strokeWidth="0.5" 
                 style={{ opacity: 0.6 }}
               />
@@ -112,8 +111,8 @@ export default function CustomerMapPage() {
             {/* Ports/Cities Markers */}
             {Object.entries(POSITIONS).map(([city, pos]) => (
               <g key={city}>
-                <circle cx={pos.x} cy={pos.y} r="0.6" fill="#8B7BA8" />
-                <text x={pos.x} y={pos.y - 1.5} fontSize="2" fill="#8B7BA8" textAnchor="middle" style={{ opacity: 0.7 }}>{city}</text>
+                <circle cx={pos.x} cy={pos.y} r="0.6" fill="var(--text-tertiary)" />
+                <text x={pos.x} y={pos.y - 1.5} fontSize="2" fill="var(--text-tertiary)" textAnchor="middle" style={{ opacity: 0.7 }}>{city}</text>
               </g>
             ))}
 
@@ -123,7 +122,6 @@ export default function CustomerMapPage() {
               const dest = POSITIONS[s.destination] || POSITIONS['Surabaya'];
               const isSelected = selectedShipment?.id === s.id;
               
-              // Simple interpolation for "current" position based on status
               let progress = 0.5;
               if (s.status === 'PENDING' || s.status === 'DIPROSES') progress = 0.1;
               if (s.status === 'DALAM_PENGIRIMAN') progress = 0.6;
@@ -136,19 +134,19 @@ export default function CustomerMapPage() {
                   <line 
                     x1={origin.x} y1={origin.y} 
                     x2={dest.x} y2={dest.y} 
-                    stroke={isSelected ? "#06B6D4" : "rgba(168,85,247,0.3)"} 
+                    stroke={isSelected ? "var(--accent)" : "rgba(0,229,255,0.3)"} 
                     strokeWidth={isSelected ? "0.6" : "0.3"} 
                     strokeDasharray="2,1"
                   />
                   {/* Ship Marker */}
-                  <circle cx={currentX} cy={currentY} r="1.5" fill={isSelected ? "#06B6D4" : "#A855F7"} />
+                  <circle cx={currentX} cy={currentY} r="1.5" fill={isSelected ? "var(--accent)" : "var(--accent)"} />
                   {isSelected && (
-                    <circle cx={currentX} cy={currentY} r="3" fill="none" stroke="#06B6D4" strokeWidth="0.4">
+                    <circle cx={currentX} cy={currentY} r="3" fill="none" stroke="var(--accent)" strokeWidth="0.4">
                       <animate attributeName="r" values="1.5;4" dur="1.5s" repeatCount="indefinite" />
                       <animate attributeName="opacity" values="1;0" dur="1.5s" repeatCount="indefinite" />
                     </circle>
                   )}
-                  <text x={currentX} y={currentY - 2.5} fontSize="2" fill="white" textAnchor="middle" fontWeight="bold">
+                  <text x={currentX} y={currentY - 2.5} fontSize="2" fill="var(--text-primary)" textAnchor="middle" fontWeight="bold">
                     {s.receiptNo.slice(-6)}
                   </text>
                 </g>
@@ -159,25 +157,17 @@ export default function CustomerMapPage() {
           {/* Standby Ship Animation if no shipments */}
           {!loading && !hasShipments && (
             <div style={{ position: 'absolute', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-              <div style={{ position: 'relative', width: '60px', height: '60px', animation: 'float 3s ease-in-out infinite' }}>
-                <div style={{ fontSize: '40px', filter: 'drop-shadow(0 0 15px rgba(6, 182, 212, 0.6))' }}>🚢</div>
-                <div style={{
-                  position: 'absolute', bottom: '0', left: '50%', transform: 'translateX(-50%)',
-                  width: '40px', height: '10px', background: 'radial-gradient(ellipse at center, rgba(6,182,212,0.4) 0%, transparent 70%)',
-                  animation: 'pulse 2s infinite'
-                }} />
-              </div>
               <div style={{
-                background: 'rgba(6, 182, 212, 0.1)',
-                border: '1px solid rgba(6, 182, 212, 0.3)',
+                background: 'var(--accent-dim)',
+                border: '1px solid rgba(0,229,255,0.3)',
                 padding: '8px 16px',
                 borderRadius: '20px',
-                color: '#06B6D4',
-                fontSize: '11px',
-                fontWeight: 'bold',
+                color: 'var(--accent)',
+                fontSize: 'var(--text-xs)',
+                fontWeight: 600,
                 letterSpacing: '1px'
               }}>
-                🟢 ARMADA STANDBY (TERSEDIA)
+                Armada Siap
               </div>
             </div>
           )}
@@ -191,106 +181,94 @@ export default function CustomerMapPage() {
         {/* SIDEBAR AREA */}
         <div style={{
           flex: '1 1 300px',
-          border: '1px solid rgba(168, 85, 247, 0.25)',
-          borderRadius: '12px',
-          background: '#0D0618',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          background: 'var(--bg-surface)',
           padding: '24px',
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
           maxHeight: '80vh',
           overflowY: 'auto'
         }}>
-          <h2 style={{ fontSize: '13px', color: '#C084FC', borderBottom: '1px dashed rgba(168,85,247,0.3)', paddingBottom: '12px', margin: 0, fontWeight: 'bold' }}>
-            {selectedShipment ? `INFO KARGO: ${selectedShipment.receiptNo}` : 'PEMANTAUAN KARGO AKTIF'}
+          <h2 style={{ fontSize: 'var(--text-sm)', color: 'var(--accent)', borderBottom: '1px solid var(--border)', paddingBottom: '12px', margin: 0, fontWeight: 600 }}>
+            {selectedShipment ? `Info Kargo: ${selectedShipment.receiptNo}` : 'Pemantauan Kargo Aktif'}
           </h2>
 
           {loading ? (
-            <div style={{ color: '#8B7BA8', fontSize: '11px', textAlign: 'center', marginTop: '20px' }}>Memuat radar...</div>
+            <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)', textAlign: 'center', marginTop: '20px' }}>Memuat data...</div>
           ) : !hasShipments ? (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', height: '100%', textAlign: 'center', color: '#8B7BA8' }}>
-              <span style={{ fontSize: '32px' }}>📡</span>
-              <p style={{ fontSize: '11px', lineHeight: '1.6', margin: 0 }}>
-                Saat ini Anda tidak memiliki kargo yang sedang aktif atau dalam perjalanan.<br/><br/>
-                Armada kami dalam posisi <strong style={{color:'#06B6D4'}}>STANDBY</strong> dan siap melayani pengiriman Anda kapan saja.
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', height: '100%', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+              <p style={{ fontSize: 'var(--text-sm)', lineHeight: '1.6', margin: 0 }}>
+                Saat ini Anda tidak memiliki kargo yang sedang aktif atau dalam perjalanan.
               </p>
             </div>
           ) : selectedShipment ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{
-                background: 'rgba(168, 85, 247, 0.05)',
-                border: '1px solid rgba(168, 85, 247, 0.2)',
+                background: 'var(--accent-dim)',
+                border: '1px solid rgba(0,229,255,0.2)',
                 padding: '16px',
-                borderRadius: '8px',
+                borderRadius: 'var(--radius-sm)',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '12px'
               }}>
                 <div>
-                  <span style={{ fontSize: '9px', color: '#8B7BA8', display: 'block' }}>NAMA BARANG</span>
-                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: 'white' }}>{selectedShipment.itemName}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', display: 'block' }}>Nama Barang</span>
+                  <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{selectedShipment.itemName}</span>
                 </div>
                 <div>
-                  <span style={{ fontSize: '9px', color: '#8B7BA8', display: 'block' }}>STATUS</span>
-                  <span style={{ fontSize: '10px', color: '#06B6D4', fontWeight: 'bold', padding: '4px 8px', background: 'rgba(6,182,212,0.1)', borderRadius: '4px', display: 'inline-block', marginTop: '4px' }}>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', display: 'block' }}>Status</span>
+                  <span className="badge badge-accent" style={{ marginTop: '4px' }}>
                     {selectedShipment.status.replace('_', ' ')}
                   </span>
                 </div>
                 <div>
-                  <span style={{ fontSize: '9px', color: '#8B7BA8', display: 'block' }}>RUTE PERJALANAN</span>
-                  <span style={{ fontSize: '11px', color: '#C7B8EA' }}>{selectedShipment.origin} <strong style={{color:'#A855F7'}}>→</strong> {selectedShipment.destination}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', display: 'block' }}>Rute Perjalanan</span>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>{selectedShipment.origin} <strong style={{color:'var(--accent)'}}>→</strong> {selectedShipment.destination}</span>
                 </div>
                 <div style={{ marginTop: '8px' }}>
                   <button
                     onClick={() => window.location.href = `/dashboard/cargo/${selectedShipment.id}`}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      background: '#A855F7',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontWeight: 'bold',
-                      fontSize: '11px',
-                      cursor: 'pointer',
-                      fontFamily: 'monospace'
-                    }}
+                    className="btn-primary"
+                    style={{ width: '100%', padding: '10px', fontSize: 'var(--text-sm)' }}
                   >
-                    DETAIL PELACAKAN PENUH
+                    Detail Pelacakan
                   </button>
                 </div>
               </div>
               <button 
                 onClick={() => setSelectedShipment(null)}
-                style={{ background: 'transparent', border: '1px dashed #A855F7', color: '#A855F7', padding: '8px', borderRadius: '6px', fontSize: '10px', cursor: 'pointer', fontFamily: 'monospace' }}
+                className="btn-secondary"
+                style={{ fontSize: 'var(--text-xs)' }}
               >
-                Kembali ke Daftar Keseluruhan
+                Kembali ke Daftar
               </button>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ fontSize: '10px', color: '#8B7BA8', marginBottom: '8px' }}>Pilih armada di peta untuk melihat detail. Kargo aktif Anda:</div>
+              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: '8px' }}>Pilih armada di peta untuk melihat detail. Kargo aktif Anda:</div>
               {shipments.map(s => (
                 <div 
                   key={s.id} 
                   onClick={() => setSelectedShipment(s)}
                   style={{
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.05)',
+                    background: 'var(--bg-input)',
+                    border: '1px solid var(--border)',
                     padding: '12px',
-                    borderRadius: '8px',
+                    borderRadius: 'var(--radius-sm)',
                     cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(168,85,247,0.4)'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-focus)'}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#C084FC' }}>{s.receiptNo.slice(-8)}</span>
-                    <span style={{ fontSize: '9px', color: '#06B6D4' }}>{s.status}</span>
+                    <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--accent)' }}>{s.receiptNo.slice(-8)}</span>
+                    <span className="badge badge-accent">{s.status}</span>
                   </div>
-                  <div style={{ fontSize: '10px', color: '#8B7BA8', marginTop: '6px' }}>{s.origin} → {s.destination}</div>
+                  <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginTop: '6px' }}>{s.origin} → {s.destination}</div>
                 </div>
               ))}
             </div>

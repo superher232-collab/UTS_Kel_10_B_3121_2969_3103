@@ -1,27 +1,27 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 
-const geist = Geist({
-  variable: "--font-geist",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata = {
-  title: "PRIMELOG — Fleet Command System",
+  title: "PRIMELOG — Sistem Manajemen Armada",
   description:
-    "PRIMELOG is an integrated platform for real-time fleet monitoring, cargo management, and operational analytics. Track vessels, optimize logistics, and manage your maritime fleet from one command center.",
+    "Platform terpadu untuk pemantauan armada real-time, manajemen kargo, dan analitik operasional maritim.",
   openGraph: {
-    title: "PRIMELOG — Fleet Command System",
+    title: "PRIMELOG — Sistem Manajemen Armada",
     description:
-      "Real-time maritime fleet monitoring, cargo management, and operational analytics platform.",
+      "Pemantauan armada maritim real-time, manajemen kargo, dan analitik operasional.",
     type: "website",
     siteName: "PRIMELOG",
   },
@@ -33,11 +33,11 @@ export default function RootLayout({ children }) {
     "@type": "Organization",
     name: "PRIMELOG",
     description:
-      "Integrated maritime fleet command system for real-time monitoring, cargo management, and logistics optimization.",
+      "Platform manajemen armada maritim terpadu untuk pemantauan real-time, manajemen kargo, dan optimasi logistik.",
     url: "https://primelog.vercel.app",
   };
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
+    <html lang="id" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         <script
           type="application/ld+json"

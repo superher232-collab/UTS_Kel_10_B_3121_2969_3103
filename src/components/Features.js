@@ -27,24 +27,24 @@ export default function Features() {
 
   const features = [
     {
-      icon: <Compass size={22} weight="duotone" color="#A855F7" />,
-      title: 'Real-Time Tracking',
-      desc: 'Monitor vessel positions and routes with high accuracy across all Indonesian waters in real time'
+      icon: <Compass size={22} weight="duotone" color="var(--accent)" />,
+      title: 'Pelacakan Real-Time',
+      desc: 'Pantau posisi dan rute seluruh armada kapal secara langsung.'
     },
     {
-      icon: <Drop size={22} weight="duotone" color="#A855F7" />,
-      title: 'Fuel Monitoring',
-      desc: 'Track fleet fuel consumption to optimize efficiency and reduce operational costs'
+      icon: <Drop size={22} weight="duotone" color="var(--accent)" />,
+      title: 'Monitoring Bahan Bakar',
+      desc: 'Efisiensi konsumsi BBM untuk optimasi biaya operasional.'
     },
     {
-      icon: <Gauge size={22} weight="duotone" color="#A855F7" />,
-      title: 'Vessel Performance',
-      desc: 'Monitor engine health metrics and technical performance of every fleet vessel comprehensively'
+      icon: <Gauge size={22} weight="duotone" color="var(--accent)" />,
+      title: 'Performa Kapal',
+      desc: 'Status mesin dan kesehatan teknis setiap armada.'
     },
     {
-      icon: <ChartBar size={22} weight="duotone" color="#A855F7" />,
-      title: 'Efficiency Analytics',
-      desc: 'Data-driven operational efficiency visualization to support strategic management decisions'
+      icon: <ChartBar size={22} weight="duotone" color="var(--accent)" />,
+      title: 'Analitik Efisiensi',
+      desc: 'Visualisasi data operasional untuk pengambilan keputusan.'
     }
   ];
 
@@ -64,43 +64,51 @@ export default function Features() {
       <div style={{ marginBottom: '48px', maxWidth: '600px' }}>
         <span style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '11px',
-          color: 'rgba(168,85,247,0.7)',
-          letterSpacing: '3px',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--accent)',
+          letterSpacing: '2px',
           textTransform: 'uppercase',
           display: 'block',
-          marginBottom: '12px'
+          marginBottom: '12px',
+          fontWeight: 600
         }}>
-          Platform Capabilities
+          Fitur Platform
         </span>
         <h2 style={{
           fontFamily: 'var(--font-heading)',
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
-          color: '#F1F0F5',
+          color: 'var(--text-primary)',
           letterSpacing: '-0.03em',
           lineHeight: '1.1',
           margin: 0
         }}>
-          Everything you need to<br />
-          <span style={{ color: 'rgba(241,240,245,0.5)' }}>command your fleet</span>
+          Yang Anda butuhkan untuk<br />
+          <span style={{ color: 'var(--text-secondary)' }}>mengelola armada</span>
         </h2>
       </div>
 
-      {/* Bento grid: 1 wide + 3 small */}
+      {/* Grid: 1 large + 3 small */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
         gridTemplateRows: 'auto auto',
         gap: '12px'
       }}>
-        {/* First card spans 2 columns */}
         {features.map((f, i) => (
-          <div key={i} className="double-bezel feature-card hover-lift" style={{
+          <div key={i} className="feature-card" style={{
             gridColumn: i === 0 ? 'span 2' : 'span 1',
-            gridRow: i === 0 ? 'span 2' : 'span 1'
-          }}>
-            <div className="double-bezel-inner" style={{
+            gridRow: i === 0 ? 'span 2' : 'span 1',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
+            transition: 'all 0.3s var(--ease)',
+            cursor: 'default'
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,229,255,0.08)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+          >
+            <div style={{
               padding: i === 0 ? '32px' : '24px',
               display: 'flex',
               flexDirection: i === 0 ? 'column' : 'row',
@@ -113,7 +121,7 @@ export default function Features() {
                 width: i === 0 ? '52px' : '40px',
                 height: i === 0 ? '52px' : '40px',
                 borderRadius: '12px',
-                background: 'rgba(168,85,247,0.08)',
+                background: 'var(--accent-dim)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -126,16 +134,15 @@ export default function Features() {
                   fontFamily: 'var(--font-heading)',
                   fontSize: i === 0 ? '18px' : '15px',
                   fontWeight: 600,
-                  color: '#F1F0F5',
-                  letterSpacing: '-0.01em',
+                  color: 'var(--text-primary)',
                   margin: '0 0 6px 0'
                 }}>
                   {f.title}
                 </h3>
                 <p style={{
                   fontFamily: 'var(--font-body)',
-                  fontSize: '13px',
-                  color: 'rgba(241,240,245,0.45)',
+                  fontSize: 'var(--text-base)',
+                  color: 'var(--text-secondary)',
                   lineHeight: '1.6',
                   margin: 0
                 }}>

@@ -5,28 +5,33 @@ export default function Footer() {
     <footer style={{
       width: '100%',
       padding: '48px 24px 32px',
-      borderTop: '1px solid rgba(168,85,247,0.08)',
+      borderTop: '1px solid var(--border)',
       display: 'flex',
-      flexDirection: 'column',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      gap: '8px'
+      flexWrap: 'wrap',
+      gap: '24px'
     }}>
+      <div style={{ display: 'flex', gap: '24px' }}>
+        <a href="#about" style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)', textDecoration: 'none', fontFamily: 'var(--font-body)', transition: 'color 0.2s' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+        >Tentang</a>
+        <a href="#features" style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)', textDecoration: 'none', fontFamily: 'var(--font-body)', transition: 'color 0.2s' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+        >Fitur</a>
+        <a href="#contact" style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)', textDecoration: 'none', fontFamily: 'var(--font-body)', transition: 'color 0.2s' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+        >Kontak</a>
+      </div>
       <span style={{
         fontFamily: 'var(--font-body)',
-        fontSize: '12px',
-        fontWeight: 600,
-        color: 'rgba(241,240,245,0.4)',
-        letterSpacing: '2px'
+        fontSize: 'var(--text-xs)',
+        color: 'var(--text-tertiary)'
       }}>
-        PRIMELOG
-      </span>
-      <span style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: '11px',
-        color: 'rgba(241,240,245,0.2)',
-        letterSpacing: '0.5px'
-      }}>
-        &copy; 2026 PrimeLog. All systems operational.
+        &copy; 2026 PRIMELOG. All rights reserved.
       </span>
     </footer>
   );

@@ -15,12 +15,11 @@ export default function Login() {
     setLoading(true);
     setErrorMsg('');
     
-    // No bypass mode. Require actual input
     const finalEmail = email.trim();
     const finalPassword = password;
 
     if (!finalEmail || !finalPassword) {
-      setErrorMsg('Email and password cannot be empty.');
+      setErrorMsg('Email dan kata sandi tidak boleh kosong.');
       setLoading(false);
       return;
     }
@@ -33,18 +32,17 @@ export default function Login() {
       });
 
       if (result?.error) {
-        setErrorMsg('Invalid credentials. Please try again.');
+        setErrorMsg('Kredensial tidak valid. Silakan coba lagi.');
       } else {
         localStorage.setItem('role', finalEmail.includes('admin') 
           ? 'Admin' 
           : 'Customer');
         localStorage.setItem('username', finalEmail.split('@')[0]);
-        // Redirection check: Admin -> /admin, User -> /dashboard
         window.location.href = finalEmail.includes('admin') ? '/admin' : '/dashboard';
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg('A system connection error occurred.');
+      setErrorMsg('Terjadi kesalahan koneksi sistem.');
     } finally {
       setLoading(false);
     }
@@ -60,7 +58,7 @@ export default function Login() {
       justifyContent: 'center',
       position: 'relative',
       overflow: 'hidden',
-      background: '#0D0B14'
+      background: 'var(--bg-void)'
     }}>
 
       {/* Header / Logo Area */}
@@ -78,85 +76,78 @@ export default function Login() {
           <Image src="/logo.png" alt="Logo" width={60} height={60} style={{ objectFit: 'contain' }} priority />
         </div>
         <h1 style={{
-          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontFamily: 'var(--font-body)',
           fontSize: '24px',
-          color: '#F1F0F5',
+          color: 'var(--text-primary)',
           letterSpacing: '2px',
           margin: '0 0 8px 0',
           fontWeight: '700'
         }}>PRIMELOG</h1>
         <p style={{
           fontFamily: 'var(--font-body)',
-          color: 'var(--purple-logo, #C084FC)',
+          color: 'var(--accent)',
           fontSize: '14px',
-          margin: 0,
-          letterSpacing: '1px'
-        }}>Fleet Command System v2.0</p>
+          margin: 0
+        }}>Sistem Manajemen Armada</p>
       </div>
 
       {/* Login Card */}
       <div style={{
-        background: 'rgba(18, 16, 26, 0.7)',
+        background: 'rgba(6, 6, 8, 0.7)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(168, 85, 247, 0.2)',
-        borderRadius: '12px',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-lg)',
         padding: '40px',
         width: '90%',
         maxWidth: '440px',
         zIndex: 10,
         display: 'flex',
-        flexDirection: 'column',
-        boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+        flexDirection: 'column'
       }}>
         <h2 style={{
-          fontFamily: 'var(--font-heading)',
+          fontFamily: 'var(--font-body)',
           fontSize: '18px',
-          letterSpacing: '1px',
           margin: '0 0 10px 0',
-          fontWeight: '600',
-          background: 'linear-gradient(135deg, #F1F0F5 0%, #A855F7 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        }}>SYSTEM ACCESS</h2>
+          fontWeight: '700',
+          color: 'var(--text-primary)'
+        }}>Masuk</h2>
         <p style={{
           fontFamily: 'var(--font-body)',
-          color: '#8B7BA8',
+          color: 'var(--text-secondary)',
           fontSize: '14px',
           margin: '0 0 30px 0'
-        }}>Enter your credentials to continue</p>
+        }}>Masukkan kredensial Anda untuk melanjutkan</p>
 
         <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }} onSubmit={(e) => e.preventDefault()}>
           {/* Role Selection */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: '#8B7BA8',
+              color: 'var(--text-secondary)',
               fontFamily: 'var(--font-body)',
-              fontSize: '11px',
-              letterSpacing: '1.5px',
-              textTransform: 'uppercase',
+              fontSize: 'var(--text-sm)',
               fontWeight: 500
-            }}>ROLE</label>
+            }}>Peran</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              background: '#1A1825',
-              border: '1px solid #3D3A52',
-              borderRadius: '4px',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-md)',
               padding: '12px 16px',
               gap: '12px',
               transition: 'all 0.3s ease'
             }}
             onFocus={(e) => {
-              e.currentTarget.style.border = '1px solid #7C3AED';
-              e.currentTarget.style.boxShadow = '0 0 5px rgba(124, 58, 237, 0.3)';
+              e.currentTarget.style.borderColor = 'var(--accent)';
+              e.currentTarget.style.boxShadow = '0 0 0 3px var(--accent-glow)';
             }}
             onBlur={(e) => {
-              e.currentTarget.style.border = '1px solid #3D3A52';
+              e.currentTarget.style.borderColor = 'var(--border)';
               e.currentTarget.style.boxShadow = 'none';
             }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -173,7 +164,7 @@ export default function Login() {
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  color: 'white',
+                  color: 'var(--text-primary)',
                   fontFamily: 'var(--font-body)',
                   fontSize: '14px',
                   width: '100%',
@@ -181,10 +172,10 @@ export default function Login() {
                   cursor: 'pointer'
                 }}
               >
-                <option value="admin" style={{ background: '#12101A', color: '#F1F0F5' }}>Administrator</option>
-                <option value="customer" style={{ background: '#12101A', color: '#F1F0F5' }}>Customer</option>
+                <option value="admin" style={{ background: 'var(--bg-void)', color: 'var(--text-primary)' }}>Administrator</option>
+                <option value="customer" style={{ background: 'var(--bg-void)', color: 'var(--text-primary)' }}>Customer</option>
               </select>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </div>
@@ -193,47 +184,45 @@ export default function Login() {
           {/* Username */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: '#8B7BA8',
+              color: 'var(--text-secondary)',
               fontFamily: 'var(--font-body)',
-              fontSize: '11px',
-              letterSpacing: '1.5px',
-              textTransform: 'uppercase',
+              fontSize: 'var(--text-sm)',
               fontWeight: 500
-            }}>{role === 'admin' ? 'ADMIN EMAIL' : 'USER EMAIL'}</label>
+            }}>Email</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              background: '#1A1825',
-              border: '1px solid #3D3A52',
-              borderRadius: '4px',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-md)',
               padding: '12px 16px',
               gap: '12px',
               transition: 'all 0.3s ease'
             }}
             onFocus={(e) => {
-              e.currentTarget.style.border = '1px solid #7C3AED';
-              e.currentTarget.style.boxShadow = '0 0 5px rgba(124, 58, 237, 0.3)';
+              e.currentTarget.style.borderColor = 'var(--accent)';
+              e.currentTarget.style.boxShadow = '0 0 0 3px var(--accent-glow)';
             }}
             onBlur={(e) => {
-              e.currentTarget.style.border = '1px solid #3D3A52';
+              e.currentTarget.style.borderColor = 'var(--border)';
               e.currentTarget.style.boxShadow = 'none';
             }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
               <input 
                 id="usernameInput"
                 type="email" 
-                placeholder={role === 'admin' ? 'Enter admin email' : 'Enter user email'} 
+                placeholder={role === 'admin' ? 'Masukkan email admin' : 'Masukkan email Anda'} 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  color: 'white',
+                  color: 'var(--text-primary)',
                   fontFamily: 'var(--font-body)',
                   fontSize: '14px',
                   width: '100%'
@@ -245,46 +234,44 @@ export default function Login() {
           {/* Password */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: '#8B7BA8',
+              color: 'var(--text-secondary)',
               fontFamily: 'var(--font-body)',
-              fontSize: '11px',
-              letterSpacing: '1.5px',
-              textTransform: 'uppercase',
+              fontSize: 'var(--text-sm)',
               fontWeight: 500
-            }}>PASSWORD</label>
+            }}>Kata Sandi</label>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              background: '#1A1825',
-              border: '1px solid #3D3A52',
-              borderRadius: '4px',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-md)',
               padding: '12px 16px',
               gap: '12px',
               transition: 'all 0.3s ease'
             }}
             onFocus={(e) => {
-              e.currentTarget.style.border = '1px solid #7C3AED';
-              e.currentTarget.style.boxShadow = '0 0 5px rgba(124, 58, 237, 0.3)';
+              e.currentTarget.style.borderColor = 'var(--accent)';
+              e.currentTarget.style.boxShadow = '0 0 0 3px var(--accent-glow)';
             }}
             onBlur={(e) => {
-              e.currentTarget.style.border = '1px solid #3D3A52';
+              e.currentTarget.style.borderColor = 'var(--border)';
               e.currentTarget.style.boxShadow = 'none';
             }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B99A8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
               <input 
                 type="password" 
-                placeholder="Enter your password" 
+                placeholder="Masukkan kata sandi" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={{
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  color: 'white',
+                  color: 'var(--text-primary)',
                   fontFamily: 'var(--font-body)',
                   fontSize: '14px',
                   width: '100%'
@@ -299,8 +286,8 @@ export default function Login() {
               <div style={{
                 width: '16px',
                 height: '16px',
-                background: '#1A1825',
-                border: '1px solid #3D3A52',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
                 borderRadius: '2px',
                 display: 'flex',
                 alignItems: 'center',
@@ -319,12 +306,12 @@ export default function Login() {
                   const checkmark = e.target.nextElementSibling;
                   if (e.target.checked) {
                     checkmark.style.opacity = '1';
-                    e.target.parentElement.style.background = '#7C3AED';
-                    e.target.parentElement.style.borderColor = '#7C3AED';
+                    e.target.parentElement.style.background = 'var(--accent)';
+                    e.target.parentElement.style.borderColor = 'var(--accent)';
                   } else {
                     checkmark.style.opacity = '0';
-                    e.target.parentElement.style.background = '#1A1825';
-                    e.target.parentElement.style.borderColor = '#3D3A52';
+                    e.target.parentElement.style.background = 'var(--bg-surface)';
+                    e.target.parentElement.style.borderColor = 'var(--border)';
                   }
                 }}
                 />
@@ -332,19 +319,19 @@ export default function Login() {
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
-              <span style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '13px' }}>Remember me</span>
+              <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-body)', fontSize: '13px' }}>Ingat saya</span>
             </label>
-            <Link href="/forgot-password" style={{ color: '#C084FC', fontFamily: 'var(--font-body)', fontSize: '13px', textDecoration: 'none' }}>Forgot password?</Link>
+            <Link href="/forgot-password" style={{ color: 'var(--accent)', fontFamily: 'var(--font-body)', fontSize: '13px', textDecoration: 'none' }}>Lupa kata sandi?</Link>
           </div>
 
           {errorMsg && (
             <div style={{
-              color: '#EF4444',
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              borderRadius: '4px',
+              color: 'var(--danger)',
+              background: 'rgba(255, 23, 68, 0.1)',
+              border: '1px solid rgba(255, 23, 68, 0.3)',
+              borderRadius: 'var(--radius-md)',
               padding: '10px',
-              fontSize: '12px',
+              fontSize: '13px',
               fontFamily: 'var(--font-body)',
               marginTop: '10px',
               textAlign: 'center'
@@ -354,27 +341,17 @@ export default function Login() {
           )}
 
           {/* Submit Button */}
-          <button type="button" onClick={handleLogin} disabled={loading} className="btn-inner" style={{
+          <button type="button" onClick={handleLogin} disabled={loading} className="btn-primary" style={{
             justifyContent: 'center',
             width: '100%',
             marginTop: '10px',
             cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1
-          }}
-          onMouseEnter={(e) => {
-            if (!loading) {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #A855F7 0%, #9249F2 100%)';
-              e.currentTarget.style.boxShadow = '0 0 40px rgba(168,85,247,0.5)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!loading) {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)';
-              e.currentTarget.style.boxShadow = '0 0 24px rgba(168,85,247,0.25)';
-            }
-          }}
-          >
-            {loading ? 'VERIFYING...' : 'ACCESS SYSTEM'}
+            opacity: loading ? 0.7 : 1,
+            padding: '14px 24px',
+            fontSize: '15px',
+            fontWeight: 700
+          }}>
+            {loading ? 'Memverifikasi...' : 'Masuk'}
             <span className="icon-wrap">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7" />
@@ -383,29 +360,28 @@ export default function Login() {
           </button>
         </form>
 
-        <p style={{ marginTop: '20px', marginBottom: '10px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body)' }}>
-          Don't have an account? <Link href="/register" style={{ color: '#C084FC', textDecoration: 'none' }}>Register here</Link>
+        <p style={{ marginTop: '20px', marginBottom: '10px', textAlign: 'center', fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }}>
+          Belum punya akun? <Link href="/register" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Daftar di sini</Link>
         </p>
 
         {/* Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '40px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 8px #22C55E' }}></div>
-          <span style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '12px' }}>System Status: Online</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success)', boxShadow: '0 0 8px var(--success)' }}></div>
+          <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-body)', fontSize: '12px' }}>Status Sistem: Online</span>
         </div>
       </div>
 
       <div style={{ zIndex: 10, marginTop: '30px' }}>
-        <p style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '12px', textAlign: 'center' }}>Secure access required. All activities are monitored.</p>
+        <p style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-body)', fontSize: '12px', textAlign: 'center' }}>Akses aman diperlukan. Semua aktivitas dipantau.</p>
       </div>
 
       <style>{`
         input:focus-visible, select:focus-visible {
-          outline: 2px solid #A855F7 !important;
+          outline: 2px solid var(--accent) !important;
           outline-offset: 2px !important;
-          box-shadow: 0 0 12px rgba(168, 85, 247, 0.3) !important;
         }
         button:focus-visible {
-          outline: 2px solid #A855F7;
+          outline: 2px solid var(--accent);
           outline-offset: 2px;
         }
         @media (prefers-reduced-motion: reduce) {

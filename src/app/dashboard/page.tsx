@@ -81,10 +81,10 @@ export default async function CustomerDashboardPage() {
   return (
     <div style={{
       padding: '40px 24px',
-      background: '#0D0B14',
+      background: 'var(--bg-void)',
       minHeight: '100vh',
-      color: '#F1F0F5',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
+      color: 'var(--text-primary)',
+      fontFamily: 'var(--font-body)',
       boxSizing: 'border-box'
     }}>
       <div style={{
@@ -97,9 +97,9 @@ export default async function CustomerDashboardPage() {
         
         {/* Welcome Profile Header Panel */}
         <div style={{
-          border: '1px solid #2A2740',
-          borderRadius: '12px',
-          background: '#12101A',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          background: 'var(--bg-surface)',
           padding: '24px 32px',
           display: 'flex',
           justifyContent: 'space-between',
@@ -108,14 +108,12 @@ export default async function CustomerDashboardPage() {
           gap: '20px'
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '10px', color: '#7C3AED', fontWeight: 'bold', letterSpacing: '2px', fontFamily: '"Roboto Mono", monospace' }}>PORTAL PELANGGAN PRIMELOG</span>
-            <h1 style={{ fontSize: '24px', color: '#F1F0F5', letterSpacing: '1px', margin: 0, fontWeight: 'bold' }}>
-              SELAMAT DATANG, {session.user.name?.toUpperCase() || session.user.email?.toUpperCase()}
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--accent)', fontWeight: 600, letterSpacing: '1px' }}>Portal Pelanggan</span>
+            <h1 style={{ fontSize: 'var(--text-2xl)', color: 'var(--text-primary)', margin: 0, fontWeight: 700 }}>
+              Selamat Datang, {session.user.name || session.user.email}
             </h1>
-            <span style={{ fontSize: '13px', color: '#9B99A8' }}>Kelola pengiriman kargo, lacak armada maritim, dan ajukan complaint support di satu platform terpadu.</span>
+            <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>Kelola pengiriman kargo, lacak armada maritim, dan ajukan dukungan di satu platform.</span>
           </div>
-
-
         </div>
 
         {/* 3 Metrics Dashboard Grid */}
@@ -127,27 +125,27 @@ export default async function CustomerDashboardPage() {
 
         {/* Integrated Real-time Maritime Map */}
         <DashboardMapWrapper>
-          <h2 style={{ fontSize: '14px', fontWeight: 'bold', color: '#F1F0F5', letterSpacing: '1px', margin: 0 }}>
-            🛰️ SATELIT MONITORING ARMADA LIVE
+          <h2 style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+            Peta Armada Live
           </h2>
           <InteractiveMap compact={true} />
         </DashboardMapWrapper>
 
         {/* Shortcuts & Quick Actions Dashboard Hub */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <h2 style={{ fontSize: '14px', fontWeight: 'bold', color: '#F1F0F5', letterSpacing: '1px', margin: 0 }}>
-            ⚡ PINTASAN AKSI CEPAT ADMIN
+          <h2 style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+            Aksi Cepat
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[
-              { title: '📦 KONTROL CARGO UTAMA', desc: 'Kelola detail pengiriman kargo, edit alamat, atau batalkan order pengiriman.', href: '/dashboard/cargo', label: 'BUKA CARGO CENTER' },
-              { title: '🔍 LACAK RESI MASSAL', desc: 'Lacak riwayat pengiriman banyak resi sekaligus menggunakan bulk-tracking.', href: '/dashboard/cargo', label: 'MULAI LACAK MASSAL' },
-              { title: '💬 LIVE CHAT SUPPORT', desc: 'Ajukan complaint support tiket atau chat live secara interaktif dengan Admin.', href: '/dashboard/support', label: 'BUKA SUPPORT CENTER' }
+              { title: 'Kargo', desc: 'Kelola detail pengiriman kargo, edit alamat, atau batalkan order.', href: '/dashboard/cargo', label: 'Buka Kargo' },
+              { title: 'Lacak Kiriman', desc: 'Lacak riwayat pengiriman banyak resi sekaligus.', href: '/dashboard/cargo', label: 'Mulai Melacak' },
+              { title: 'Dukungan', desc: 'Ajukan tiket keluhan atau chat dengan admin.', href: '/dashboard/support', label: 'Buka Dukungan' }
             ].map(shortcut => (
               <div key={shortcut.title} style={{
-                background: '#12101A',
-                border: '1px solid #2A2740',
-                borderRadius: '8px',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-lg)',
                 padding: '20px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -155,22 +153,16 @@ export default async function CustomerDashboardPage() {
                 justifyContent: 'space-between'
               }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#F1F0F5', margin: 0 }}>{shortcut.title}</h3>
-                  <p style={{ fontSize: '12px', color: '#9B99A8', margin: 0, lineHeight: '1.4' }}>{shortcut.desc}</p>
+                  <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{shortcut.title}</h3>
+                  <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.4' }}>{shortcut.desc}</p>
                 </div>
                 <Link
                   href={shortcut.href}
+                  className="btn-secondary"
                   style={{
-                    background: '#1A1825',
-                    border: '1px solid #3D3A52',
-                    color: '#F1F0F5',
-                    padding: '8px',
-                    borderRadius: '4px',
                     textAlign: 'center',
-                    fontSize: '10px',
-                    fontWeight: 'bold',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s'
+                    fontSize: 'var(--text-sm)',
+                    padding: '8px'
                   }}
                 >
                   {shortcut.label}
@@ -182,75 +174,68 @@ export default async function CustomerDashboardPage() {
 
         {/* Recent Shipments List Table */}
         <div style={{
-          background: '#12101A',
-          border: '1px solid #2A2740',
-          borderRadius: '10px',
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
           padding: '24px'
         }}>
-          <div style={{ borderBottom: '1px solid #2A2740', paddingBottom: '12px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '12px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <h2 style={{ fontSize: '14px', fontWeight: 'bold', color: '#F1F0F5', letterSpacing: '1px', margin: 0 }}>
-                📋 DAFTAR PENGIRIMAN KARGO TERBARU
+              <h2 style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                Kiriman Terbaru
               </h2>
-              <span style={{ fontSize: '12px', color: '#9B99A8' }}>Menampilkan hingga 5 riwayat pengiriman kargo terbaru Anda</span>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>Menampilkan hingga 5 riwayat pengiriman terbaru</span>
             </div>
-            <Link href="/dashboard/cargo" style={{ fontSize: '12px', color: '#A855F7', textDecoration: 'none', fontWeight: 'bold' }}>LIHAT SEMUA KARGO ➔</Link>
+            <Link href="/dashboard/cargo" style={{ fontSize: 'var(--text-sm)', color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>Lihat Semua</Link>
           </div>
 
           {recentShipments.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '32px', color: '#9B99A8', fontSize: '13px' }}>
-              Belum ada transaksi kargo tercatat. Silakan buat kargo baru untuk memulai pelacakan.
+            <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
+              Belum ada kiriman. Mulai dengan membuat kargo baru.
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', textAlign: 'left' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--text-sm)', textAlign: 'left' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #2A2740', color: '#9B99A8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    <th style={{ padding: '10px 8px' }}>NO RESI</th>
-                    <th style={{ padding: '10px 8px' }}>NAMA BARANG</th>
-                    <th style={{ padding: '10px 8px' }}>RUTE</th>
-                    <th style={{ padding: '10px 8px' }}>ARMADA</th>
-                    <th style={{ padding: '10px 8px' }}>TARIF</th>
-                    <th style={{ padding: '10px 8px' }}>STATUS</th>
-                    <th style={{ padding: '10px 8px', textAlign: 'right' }}>AKSI CEPAT</th>
+                  <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-tertiary)', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <th style={{ padding: '10px 8px' }}>No Resi</th>
+                    <th style={{ padding: '10px 8px' }}>Nama Barang</th>
+                    <th style={{ padding: '10px 8px' }}>Rute</th>
+                    <th style={{ padding: '10px 8px' }}>Armada</th>
+                    <th style={{ padding: '10px 8px' }}>Tarif</th>
+                    <th style={{ padding: '10px 8px' }}>Status</th>
+                    <th style={{ padding: '10px 8px', textAlign: 'right' }}>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recentShipments.map((s) => {
                     const isDiproses = s.status === 'DIPROSES';
-                    let statusColor = '#22C55E';
-                    if (s.status === 'DIPROSES' || s.status === 'PENDING') statusColor = '#A855F7';
-                    if (s.status === 'SAMPAI' || s.status === 'SELESAI') statusColor = '#3B82F6';
-                    if (s.status === 'DIBATALKAN') statusColor = '#EF4444';
+                    let statusColor = 'var(--success)';
+                    if (s.status === 'DIPROSES' || s.status === 'PENDING') statusColor = 'var(--accent)';
+                    if (s.status === 'SAMPAI' || s.status === 'SELESAI') statusColor = 'var(--info)';
+                    if (s.status === 'DIBATALKAN') statusColor = 'var(--danger)';
 
                     return (
-                      <tr key={s.id} style={{ borderBottom: '1px solid #2A2740' }}>
-                        <td style={{ padding: '12px 8px', fontWeight: 'bold', color: '#F1F0F5', fontFamily: '"Roboto Mono", monospace' }}>{s.receiptNo}</td>
+                      <tr key={s.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                        <td style={{ padding: '12px 8px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{s.receiptNo}</td>
                         <td style={{ padding: '12px 8px' }}>{s.itemName}</td>
-                        <td style={{ padding: '12px 8px' }}>{s.origin} ➔ {s.destination}</td>
-                        <td style={{ padding: '12px 8px', color: '#7C3AED' }}>{s.vehicle?.name || 'BELUM DIASIGN'}</td>
-                        <td style={{ padding: '12px 8px', fontWeight: 'bold', fontFamily: '"Roboto Mono", monospace' }}>{formatCurrency(s.tariff)}</td>
+                        <td style={{ padding: '12px 8px' }}>{s.origin} → {s.destination}</td>
+                        <td style={{ padding: '12px 8px', color: 'var(--accent)' }}>{s.vehicle?.name || 'Belum Diassign'}</td>
+                        <td style={{ padding: '12px 8px', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{formatCurrency(s.tariff)}</td>
                         <td style={{ padding: '12px 8px' }}>
-                          <span style={{
+                          <span className="badge" style={{
                             background: `${statusColor}15`,
                             border: `1px solid ${statusColor}`,
                             color: statusColor,
-                            padding: '2px 6px',
-                            borderRadius: '4px',
-                            fontSize: '9px',
-                            fontWeight: 'bold',
-                            boxShadow: `0 0 6px ${statusColor}20`
                           }}>{s.status}</span>
                         </td>
                         <td style={{ padding: '12px 8px', textAlign: 'right', display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
-                          <Link href={`/dashboard/cargo?q=${s.receiptNo}`} style={{ background: 'transparent', border: '1px solid #3D3A52', color: '#F1F0F5', padding: '4px 8px', borderRadius: '4px', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold' }}>LACAK 🔍</Link>
-                          <Link href={`/dashboard/cargo/${s.id}`} style={{ background: 'transparent', border: '1px solid #3D3A52', color: '#F1F0F5', padding: '4px 8px', borderRadius: '4px', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold' }}>DETAIL 📋</Link>
-                          
-                          {/* Cancel actions enabled strictly ONLY if status is DIPROSES (BR-02/BR-03) */}
+                          <Link href={`/dashboard/cargo?q=${s.receiptNo}`} className="btn-secondary" style={{ padding: '4px 8px', fontSize: 'var(--text-xs)', textDecoration: 'none' }}>Lacak</Link>
+                          <Link href={`/dashboard/cargo/${s.id}`} className="btn-secondary" style={{ padding: '4px 8px', fontSize: 'var(--text-xs)', textDecoration: 'none' }}>Detail</Link>
                           {isDiproses ? (
-                            <Link href="/dashboard/cargo" style={{ background: 'transparent', border: '1px solid #EF4444', color: '#EF4444', padding: '4px 8px', borderRadius: '4px', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold' }}>BATAL ❌</Link>
+                            <Link href="/dashboard/cargo" className="btn-secondary" style={{ padding: '4px 8px', fontSize: 'var(--text-xs)', textDecoration: 'none', borderColor: 'var(--danger)', color: 'var(--danger)' }}>Batal</Link>
                           ) : (
-                            <span style={{ border: '1px solid #3D3A52', color: '#9B99A8', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', cursor: 'not-allowed', fontWeight: 'bold' }}>KUNCI 🔒</span>
+                            <span className="btn-secondary" style={{ padding: '4px 8px', fontSize: 'var(--text-xs)', cursor: 'not-allowed', opacity: 0.5 }}>Kunci</span>
                           )}
                         </td>
                       </tr>
@@ -267,91 +252,82 @@ export default async function CustomerDashboardPage() {
           
           {/* Active Support Tickets List */}
           <div style={{
-            background: '#12101A',
-            border: '1px solid #2A2740',
-            borderRadius: '10px',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
             padding: '24px'
           }}>
-            <div style={{ borderBottom: '1px solid #2A2740', paddingBottom: '12px', marginBottom: '16px' }}>
-              <h2 style={{ fontSize: '14px', fontWeight: 'bold', color: '#F1F0F5', letterSpacing: '1px', margin: 0 }}>
-                🎟️ ADUAN & TIKET BAN AKTIF
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '12px', marginBottom: '16px' }}>
+              <h2 style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                Tiket Bantuan Aktif
               </h2>
-              <span style={{ fontSize: '12px', color: '#9B99A8' }}>Daftar status tiket keluhan yang telah Anda ajukan ke Admin</span>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>Daftar status tiket keluhan yang telah Anda ajukan</span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {activeTickets.map(t => (
                 <div key={t.id} style={{
                   padding: '12px',
-                  background: '#1A1825',
-                  border: '1px solid #3D3A52',
-                  borderRadius: '6px',
+                  background: 'var(--bg-input)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-sm)',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center'
                 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', maxWidth: '70%' }}>
-                    <span style={{ fontWeight: 'bold', fontSize: '13px', color: '#F1F0F5', fontFamily: '"Roboto Mono", monospace' }}>{t.ticketNo}</span>
-                    <span style={{ fontSize: '12px', color: '#9B99A8', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{t.title}</span>
+                    <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{t.ticketNo}</span>
+                    <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{t.title}</span>
                   </div>
 
                   <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{
-                      background: 'transparent',
-                      border: '1px solid #7C3AED',
-                      color: '#A855F7',
-                      fontSize: '10px',
-                      padding: '2px 5px',
-                      borderRadius: '4px',
-                      fontWeight: 'bold',
-                      display: 'inline-block'
-                    }}>{t.status}</span>
-                    <Link href="/dashboard/support" style={{ fontSize: '10px', color: '#10B981', textDecoration: 'none', fontWeight: 'bold' }}>MASUK CHAT 💬</Link>
+                    <span className="badge badge-accent">{t.status}</span>
+                    <Link href="/dashboard/support" style={{ fontSize: 'var(--text-xs)', color: 'var(--success)', textDecoration: 'none', fontWeight: 600 }}>Buka Chat</Link>
                   </div>
                 </div>
               ))}
 
               {activeTickets.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '24px', color: '#9B99A8', fontSize: '12px' }}>
-                  Tidak ada tiket keluhan aktif terekam.
+                <div style={{ textAlign: 'center', padding: '24px', color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
+                  Tidak ada tiket keluhan aktif.
                 </div>
               )}
             </div>
           </div>
 
-          {/* Cyber FAQ Accordion Bantuan */}
+          {/* FAQ Accordion */}
           <div style={{
-            background: '#12101A',
-            border: '1px solid #2A2740',
-            borderRadius: '10px',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
             padding: '24px'
           }}>
-            <div style={{ borderBottom: '1px solid #2A2740', paddingBottom: '12px', marginBottom: '16px' }}>
-              <h2 style={{ fontSize: '14px', fontWeight: 'bold', color: '#F1F0F5', letterSpacing: '1px', margin: 0 }}>
-                💡 FAQ & PANDUAN PENGIRIMAN
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '12px', marginBottom: '16px' }}>
+              <h2 style={{ fontSize: 'var(--text-base)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                FAQ & Panduan
               </h2>
-              <span style={{ fontSize: '12px', color: '#9B99A8' }}>Panduan singkat dan aturan operasional platform PrimeLog</span>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>Panduan singkat dan aturan operasional platform</span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
-                { q: 'Bagaimana cara melacak kargo saya secara real-time?', a: 'Gunakan nomor resi kargo Anda di menu Lacak Resi. Peta satelit di atas juga akan otomatis menampilkan titik koordinat armada kapal yang mengangkut kargo Anda.' },
-                { q: 'Kapan saya bisa mengedit atau membatalkan kargo?', a: 'Sesuai dengan aturan bisnis PrimeLog (BR-02/BR-03), pengubahan atau pembatalan kargo HANYA dapat dilakukan jika status pengiriman kargo Anda masih berada dalam status "DIPROSES" di sortir hub.' },
-                { q: 'Bagaimana penghitungan tarif kargo dilakukan?', a: 'Tarif dihitung berdasarkan berat kargo (kg) dikalikan tarif moda pengiriman yang aktif (Laut) ditambah dengan biaya dasar (Base Fee) sistem.' },
-                { q: 'Bagaimana jika pengiriman kargo terlambat?', a: 'Jika kargo terlambat (melewati ETA), status akan ditandai terlambat secara otomatis. Silakan buka Support Center untuk mengajukan keluhan dan mencairkan refund kompensasi apabila fitur kompensasi sistem diaktifkan oleh Admin.' }
+                { q: 'Bagaimana cara melacak kargo saya?', a: 'Gunakan nomor resi kargo Anda di menu Lacak Kiriman. Peta di atas juga akan menampilkan posisi armada kapal yang mengangkut kargo Anda.' },
+                { q: 'Kapan saya bisa mengedit atau membatalkan kargo?', a: 'Pengubahan atau pembatalan kargo hanya dapat dilakukan jika status masih "DIPROSES" di sortir hub.' },
+                { q: 'Bagaimana penghitungan tarif kargo?', a: 'Tarif dihitung berdasarkan berat kargo (kg) dikalikan tarif moda pengiriman ditambah biaya dasar sistem.' },
+                { q: 'Bagaimana jika pengiriman terlambat?', a: 'Jika kargo terlambat (melewati ETA), status akan ditandai terlambat otomatis. Silakan buka Dukungan untuk mengajukan keluhan.' }
               ].map((faq, i) => (
                 <details key={i} style={{
-                  background: '#1A1825',
-                  border: '1px solid #3D3A52',
-                  borderRadius: '4px',
+                  background: 'var(--bg-input)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-sm)',
                   padding: '12px',
                   cursor: 'pointer'
                 }}>
-                  <summary style={{ fontSize: '13px', fontWeight: 'bold', color: '#F1F0F5', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>❓ {faq.q}</span>
-                    <span style={{ color: '#A855F7', fontSize: '10px' }}>▼</span>
+                  <summary style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>{faq.q}</span>
+                    <span style={{ color: 'var(--accent)', fontSize: 'var(--text-xs)' }}>▼</span>
                   </summary>
-                  <p style={{ margin: '12px 0 0 0', fontSize: '12px', color: '#9B99A8', lineHeight: '1.5', cursor: 'default' }}>
+                  <p style={{ margin: '12px 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', lineHeight: '1.5', cursor: 'default' }}>
                     {faq.a}
                   </p>
                 </details>

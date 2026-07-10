@@ -147,13 +147,23 @@ export default function CTA() {
         position: 'relative',
         zIndex: 1
       }}>
-        🔐 Akses terenkripsi AES-256 · Autentikasi multi-faktor
+        Akses terenkripsi AES-256 · Autentikasi multi-faktor
       </p>
 
       <style>{`
         .btn-cta-primary:hover {
           background: #A855F7 !important;
           box-shadow: 0 0 20px rgba(168, 85, 247, 0.6) !important;
+        }
+        .btn-cta-secondary:hover {
+          border-color: #A855F7 !important;
+        }
+        a:focus-visible {
+          outline: 2px solid #A855F7;
+          outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { transition: none !important; }
         }
       `}</style>
     </section>

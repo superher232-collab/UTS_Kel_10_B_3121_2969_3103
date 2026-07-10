@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import { CargoShipment } from '../../app/dashboard/cargo/page'
 
 interface Ship {
@@ -112,64 +112,66 @@ export function CargoForm({ isOpen, onClose, onSubmit, editData, ships = [], rol
 
   // Sync editData values if editing
   useEffect(() => {
-    if (editData) {
-      let dateStr = '';
-      if (editData.tanggal_kirim) {
-        const d = new Date(editData.tanggal_kirim);
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        dateStr = `${yyyy}-${mm}-${dd}`;
-      }
+    startTransition(() => {
+      if (editData) {
+        let dateStr = '';
+        if (editData.tanggal_kirim) {
+          const d = new Date(editData.tanggal_kirim);
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const dd = String(d.getDate()).padStart(2, '0');
+          dateStr = `${yyyy}-${mm}-${dd}`;
+        }
 
-      setForm({
-        tanggal_kirim: dateStr,
-        nama_pengirim: editData.nama_pengirim || '',
-        nama_penerima: editData.nama_penerima || '',
-        no_telepon: editData.no_telepon || '',
-        kota_asal: editData.kota_asal || '',
-        kota_tujuan: editData.kota_tujuan || '',
-        jenis_barang: editData.jenis_barang || '',
-        berat_kg: editData.berat_kg ? String(editData.berat_kg) : '',
-        harga_tarif: editData.harga_tarif ? String(editData.harga_tarif) : '',
-        jenis_kendaraan: 'laut',
-        vehicleId: editData.vehicleId || '',
-        jenis_pengiriman: editData.jenis_pengiriman || 'biasa',
-        status_pengiriman: editData.status_pengiriman || 'diproses',
-        status_barang: editData.status_barang || 'aman',
-        status_transaksi: editData.status_transaksi || 'belum_bayar',
-        metode_pembayaran: editData.metode_pembayaran || 'TUNAI',
-        deskripsi: editData.deskripsi || '',
-        targetUserId: (editData as any).userId || ''
-      });
-      setOriginSearch(editData.kota_asal || '');
-      setDestSearch(editData.kota_tujuan || '');
-      setErrors({});
-    } else {
-      setForm({
-        tanggal_kirim: todayStr,
-        nama_pengirim: '',
-        nama_penerima: '',
-        no_telepon: '',
-        kota_asal: '',
-        kota_tujuan: '',
-        jenis_barang: '',
-        berat_kg: '',
-        harga_tarif: '',
-        jenis_kendaraan: 'laut',
-        vehicleId: '',
-        jenis_pengiriman: 'biasa',
-        status_pengiriman: 'diproses',
-        status_barang: 'aman',
-        status_transaksi: 'belum_bayar',
-        metode_pembayaran: 'TUNAI',
-        deskripsi: '',
-        targetUserId: ''
-      });
-      setOriginSearch('');
-      setDestSearch('');
-      setErrors({});
-    }
+        setForm({
+          tanggal_kirim: dateStr,
+          nama_pengirim: editData.nama_pengirim || '',
+          nama_penerima: editData.nama_penerima || '',
+          no_telepon: editData.no_telepon || '',
+          kota_asal: editData.kota_asal || '',
+          kota_tujuan: editData.kota_tujuan || '',
+          jenis_barang: editData.jenis_barang || '',
+          berat_kg: editData.berat_kg ? String(editData.berat_kg) : '',
+          harga_tarif: editData.harga_tarif ? String(editData.harga_tarif) : '',
+          jenis_kendaraan: 'laut',
+          vehicleId: editData.vehicleId || '',
+          jenis_pengiriman: editData.jenis_pengiriman || 'biasa',
+          status_pengiriman: editData.status_pengiriman || 'diproses',
+          status_barang: editData.status_barang || 'aman',
+          status_transaksi: editData.status_transaksi || 'belum_bayar',
+          metode_pembayaran: editData.metode_pembayaran || 'TUNAI',
+          deskripsi: editData.deskripsi || '',
+          targetUserId: (editData as any).userId || ''
+        });
+        setOriginSearch(editData.kota_asal || '');
+        setDestSearch(editData.kota_tujuan || '');
+        setErrors({});
+      } else {
+        setForm({
+          tanggal_kirim: todayStr,
+          nama_pengirim: '',
+          nama_penerima: '',
+          no_telepon: '',
+          kota_asal: '',
+          kota_tujuan: '',
+          jenis_barang: '',
+          berat_kg: '',
+          harga_tarif: '',
+          jenis_kendaraan: 'laut',
+          vehicleId: '',
+          jenis_pengiriman: 'biasa',
+          status_pengiriman: 'diproses',
+          status_barang: 'aman',
+          status_transaksi: 'belum_bayar',
+          metode_pembayaran: 'TUNAI',
+          deskripsi: '',
+          targetUserId: ''
+        });
+        setOriginSearch('');
+        setDestSearch('');
+        setErrors({});
+      }
+    });
   }, [editData, isOpen]);
 
   const getFilteredOrigins = () => {

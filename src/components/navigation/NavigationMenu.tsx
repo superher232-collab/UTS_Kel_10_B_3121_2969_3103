@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { useDashboard } from '@/context/DashboardContext';
 import { motion } from 'framer-motion';
+import { 
+  CommandLineIcon, TruckIcon, MapIcon, ChartBarIcon, 
+  CubeIcon, Cog6ToothIcon, UsersIcon, ClipboardDocumentListIcon,
+  ArrowRightIcon, ChevronDownIcon, ArrowRightStartOnRectangleIcon
+} from '@heroicons/react/24/outline';
 
 export default function NavigationMenu() {
   const pathname = usePathname();
@@ -18,7 +23,9 @@ export default function NavigationMenu() {
   const activeTab = searchParams.get('tab') || 'komando';
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem('role') === 'Admin');
+    startTransition(() => {
+      setIsAdmin(localStorage.getItem('role') === 'Admin');
+    });
   }, []);
 
   useEffect(() => {
@@ -128,7 +135,7 @@ export default function NavigationMenu() {
                 transition: 'all 0.3s ease'
               }}
             >
-              🎛️ KOMANDO
+              <CommandLineIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> KOMANDO
               {isAdminTabActive('komando') && (
                 <motion.div
                   layoutId="adminActiveUnderline"
@@ -163,7 +170,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                🚢 FLEET <span style={{ fontSize: '8px' }}>▼</span>
+                <TruckIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> FLEET <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {isAdminTabActive('fleet') && (
                   <motion.div
                     layoutId="adminActiveUnderline"
@@ -228,7 +235,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                🗺️ MAP <span style={{ fontSize: '8px' }}>▼</span>
+                <MapIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> MAP <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {isAdminTabActive('map') && (
                   <motion.div
                     layoutId="adminActiveUnderline"
@@ -311,7 +318,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                📊 ANALYTICS <span style={{ fontSize: '8px' }}>▼</span>
+                <ChartBarIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> ANALYTICS <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {isAdminTabActive('analytics') && (
                   <motion.div
                     layoutId="adminActiveUnderline"
@@ -368,7 +375,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                📦 CARGO <span style={{ fontSize: '8px' }}>▼</span>
+                <CubeIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> CARGO <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {isAdminTabActive('cargo') && (
                   <motion.div
                     layoutId="adminActiveUnderline"
@@ -417,7 +424,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                ⚙️ CONTROLS <span style={{ fontSize: '8px' }}>▼</span>
+                <Cog6ToothIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> CONTROLS <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {(isAdminTabActive('settings') || isAdminTabActive('users') || isAdminTabActive('audit')) && (
                   <motion.div
                     layoutId="adminActiveUnderline"
@@ -473,7 +480,7 @@ export default function NavigationMenu() {
                 transition: 'all 0.3s ease'
               }}
             >
-              🎛️ DASHBOARD
+              <CommandLineIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> DASHBOARD
               {pathname === '/dashboard' && (
                 <motion.div
                   layoutId="customerActiveUnderline"
@@ -508,7 +515,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                🗺️ MAP & FLEET <span style={{ fontSize: '8px' }}>▼</span>
+                <MapIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> MAP & FLEET <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {pathname === '/dashboard/map' && (
                   <motion.div
                     layoutId="customerActiveUnderline"
@@ -569,7 +576,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                📦 CARGO <span style={{ fontSize: '8px' }}>▼</span>
+                <CubeIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> CARGO <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {pathname?.startsWith('/dashboard/cargo') && (
                   <motion.div
                     layoutId="customerActiveUnderline"
@@ -618,7 +625,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                📊 ANALYTICS <span style={{ fontSize: '8px' }}>▼</span>
+                <ChartBarIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> ANALYTICS <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {pathname?.startsWith('/dashboard/analytics') && (
                   <motion.div
                     layoutId="customerActiveUnderline"
@@ -667,7 +674,7 @@ export default function NavigationMenu() {
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                ⚙️ SETTINGS <span style={{ fontSize: '8px' }}>▼</span>
+                <Cog6ToothIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> SETTINGS <ChevronDownIcon style={{ width: '10px', height: '10px' }} />
                 {pathname?.startsWith('/dashboard/settings') && (
                   <motion.div
                     layoutId="customerActiveUnderline"
@@ -716,7 +723,7 @@ export default function NavigationMenu() {
                 transition: 'all 0.3s ease',
                 boxShadow: '0 0 10px rgba(168,85,247,0.3)'
               }}>
-                🛠️ KOMANDO ADMIN
+                <CommandLineIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} /> KOMANDO ADMIN
               </div>
             </Link>
           )}
@@ -755,11 +762,7 @@ export default function NavigationMenu() {
             e.currentTarget.style.color = '#8B7BA8';
           }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" y1="12" x2="9" y2="12"></line>
-          </svg>
+          <ArrowRightStartOnRectangleIcon style={{ width: '14px', height: '14px', flexShrink: 0 }} />
           KELUAR
         </button>
       </div>
@@ -799,6 +802,13 @@ export default function NavigationMenu() {
           color: #A855F7 !important;
         }
 
+        .megamenu-tab:focus-visible,
+        .nav-link-item:focus-visible {
+          outline: 2px solid #A855F7;
+          outline-offset: 2px;
+          border-radius: 4px;
+        }
+
         .radar-ping {
           width: 6px;
           height: 6px;
@@ -807,6 +817,11 @@ export default function NavigationMenu() {
           box-shadow: 0 0 6px #EF4444;
           display: inline-block;
           animation: pulse 1s infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .megamenu-content { transition: none; }
+          .nav-link-item, .megamenu-tab { transition: none; }
         }
       `}</style>
     </nav>

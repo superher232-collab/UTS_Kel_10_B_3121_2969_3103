@@ -179,7 +179,9 @@ export default function Contact() {
           >
             {status === 'idle' && 'KIRIM PESAN SEKARANG'}
             {status === 'loading' && 'MENGIRIM...'}
-            {status === 'success' && '✅ PESAN BERHASIL DIKIRIM'}
+            {status === 'success' && (
+              <>PESAN BERHASIL DIKIRIM</>
+            )}
           </button>
           
           {status === 'success' && (
@@ -189,6 +191,20 @@ export default function Contact() {
           )}
         </form>
       </div>
+      <style>{`
+        #contact input:focus-visible, #contact textarea:focus-visible {
+          outline: 2px solid #A855F7 !important;
+          outline-offset: 2px !important;
+          box-shadow: 0 0 12px rgba(168, 85, 247, 0.3) !important;
+        }
+        #contact button:focus-visible {
+          outline: 2px solid #A855F7;
+          outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { transition: none !important; }
+        }
+      `}</style>
     </motion.section>
   );
 }

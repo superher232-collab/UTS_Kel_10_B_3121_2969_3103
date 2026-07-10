@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, startTransition } from 'react'
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState<any>(null)
@@ -17,11 +17,7 @@ export default function SettingsPage() {
     smsNotif: true
   })
 
-  useEffect(() => {
-    fetchProfile()
-  }, [])
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const res = await fetch('/api/user/profile')
       const data = await res.json()
@@ -40,7 +36,11 @@ export default function SettingsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    startTransition(() => { fetchProfile() })
+  }, [fetchProfile])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target as any
@@ -88,7 +88,7 @@ export default function SettingsPage() {
     <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 'bold', letterSpacing: '2px', color: 'white', margin: '0 0 8px 0' }}>
-          ⚙️ PENGATURAN PROFIL
+          PENGATURAN PROFIL
         </h1>
         <span style={{ fontSize: '11px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>
           KELOLA DATA PERSONAL & PREFERENSI NOTIFIKASI
@@ -97,13 +97,13 @@ export default function SettingsPage() {
 
       {error && (
         <div style={{ padding: '12px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #EF4444', borderRadius: '6px', color: '#EF4444', fontSize: '11px', fontWeight: 'bold' }}>
-          ⚠️ ERROR: {error}
+          ERROR: {error}
         </div>
       )}
       
       {success && (
         <div style={{ padding: '12px', background: 'rgba(34, 197, 94, 0.1)', border: '1px solid #22C55E', borderRadius: '6px', color: '#22C55E', fontSize: '11px', fontWeight: 'bold' }}>
-          ✅ {success}
+          {success}
         </div>
       )}
 
@@ -211,13 +211,38 @@ export default function SettingsPage() {
             fontWeight: 'bold', 
             fontSize: '14px',
             letterSpacing: '2px',
-            transition: 'all 0.3s'
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            if (!saving) {
+              e.currentTarget.style.opacity = '0.9'
+              e.currentTarget.style.transform = 'translateY(-1px)'
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = '1'
+            e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          {saving ? 'MENYIMPAN KE SERVER...' : 'SIMPAN PERUBAHAN PROFIL'}
+          {saving ? 'MENYIMPAN...' : 'SIMPAN PERUBAHAN'}
         </button>
 
       </form>
+
+      <style>{`
+        input:focus-visible, textarea:focus-visible, select:focus-visible {
+          outline: 2px solid #A855F7 !important;
+          outline-offset: 2px !important;
+          box-shadow: 0 0 12px rgba(168, 85, 247, 0.3) !important;
+        }
+        input[type="checkbox"]:focus-visible {
+          outline: 2px solid #A855F7;
+          outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { transition: none !important; }
+        }
+      `}</style>
     </div>
   )
 }

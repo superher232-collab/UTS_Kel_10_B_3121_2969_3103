@@ -430,6 +430,21 @@ export default function RegisterPage() {
       <div style={{ zIndex: 10, marginTop: '24px' }}>
         <p style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px', textAlign: 'center' }}>Akses aman diperlukan. Semua aktivitas dipantau.</p>
       </div>
+
+      <style>{`
+        input:focus-visible, select:focus-visible {
+          outline: 2px solid #A855F7 !important;
+          outline-offset: 2px !important;
+          box-shadow: 0 0 12px rgba(168, 85, 247, 0.3) !important;
+        }
+        button:focus-visible {
+          outline: 2px solid #A855F7;
+          outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { transition: none !important; }
+        }
+      `}</style>
     </div>
   )
 }

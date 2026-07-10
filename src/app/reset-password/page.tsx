@@ -1,7 +1,7 @@
 // src/app/reset-password/page.tsx
 'use client'
 
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect, Suspense, startTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 
@@ -18,7 +18,9 @@ function ResetPasswordForm() {
 
   useEffect(() => {
     if (!token) {
-      setError('Token reset password tidak ditemukan di URL. Silakan minta tautan baru.')
+      startTransition(() => {
+        setError('Token reset password tidak ditemukan di URL. Silakan minta tautan baru.')
+      })
     }
   }, [token])
 
@@ -289,6 +291,21 @@ function ResetPasswordForm() {
           Kembali ke halaman <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login</a>
         </p>
       </div>
+
+      <style>{`
+        input:focus-visible, select:focus-visible {
+          outline: 2px solid #A855F7 !important;
+          outline-offset: 2px !important;
+          box-shadow: 0 0 12px rgba(168, 85, 247, 0.3) !important;
+        }
+        button:focus-visible {
+          outline: 2px solid #A855F7;
+          outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { transition: none !important; }
+        }
+      `}</style>
     </div>
   )
 }

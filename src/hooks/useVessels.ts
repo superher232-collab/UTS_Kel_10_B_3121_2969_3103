@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, startTransition } from 'react';
 import { mockDb, Vessel, VesselLog } from '@/lib/mockDb';
 
 export function useVessels() {
@@ -236,7 +236,9 @@ export function useVessels() {
 
   // Initial Fetch
   useEffect(() => {
-    fetchData();
+    startTransition(() => {
+      fetchData();
+    });
   }, [fetchData]);
 
   // --- AUTOMATIC STREAMING SIMULATION (Every 30 seconds) ---

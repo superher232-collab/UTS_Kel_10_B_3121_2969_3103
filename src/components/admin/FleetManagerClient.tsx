@@ -199,7 +199,6 @@ export function FleetManagerClient({ initialVehicles, pendingShipments }: FleetM
           alignItems: 'center',
           gap: '10px'
         }}>
-          <span>{toast.type === 'success' ? '✅' : '❌'}</span>
           <span>{toast.message.toUpperCase()}</span>
         </div>
       )}
@@ -427,7 +426,7 @@ export function FleetManagerClient({ initialVehicles, pendingShipments }: FleetM
                       <div style={{ display: 'flex', justifyContent: 'space-between', flex: 1, fontSize: '10px' }}>
                         <div>
                           <span style={{ color: 'white', fontWeight: 'bold' }}>{s.receiptNo}</span>
-                          <span style={{ color: '#8B7BA8', display: 'block', fontSize: '8px' }}>{s.itemName} • {s.origin} ➔ {s.destination}</span>
+                          <span style={{ color: '#8B7BA8', display: 'block', fontSize: '8px' }}>{s.itemName} • {s.origin} → {s.destination}</span>
                         </div>
                         <span style={{ color: '#06B6D4', fontWeight: 'bold' }}>{s.weight.toFixed(1)} kg</span>
                       </div>
@@ -506,7 +505,7 @@ export function FleetManagerClient({ initialVehicles, pendingShipments }: FleetM
                     </div>
                     {isOverCapacity && (
                       <div style={{ color: '#EF4444', fontSize: '9px', fontWeight: 'bold', marginTop: '4px', borderTop: '1px dashed rgba(239, 68, 68, 0.2)', paddingTop: '6px' }}>
-                        ⚠️ ALARM KAPASITAS: Muatan kargo melampaui batas maksimal berat armada. Kurangi pilihan kargo atau pilih armada lain.
+                        ALARM KAPASITAS: Muatan kargo melampaui batas maksimal berat armada. Kurangi pilihan kargo atau pilih armada lain.
                       </div>
                     )}
                   </>
@@ -535,7 +534,7 @@ export function FleetManagerClient({ initialVehicles, pendingShipments }: FleetM
                 textAlign: 'center'
               }}
             >
-              {loading ? 'MENGEKSEKUSI ALOKASI BULK...' : '🚀 BIND & SELESAIKAN ALOKASI MASAL'}
+              {loading ? 'MENGEKSEKUSI ALOKASI BULK...' : 'BIND & SELESAIKAN ALOKASI MASAL'}
             </button>
           </form>
         </div>

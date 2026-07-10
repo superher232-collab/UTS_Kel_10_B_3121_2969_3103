@@ -422,3 +422,11 @@ body {
   .about-text { font-size: 14px; line-height: 22px; }
   .btn-cta { font-size: 14px; padding: 14px 32px; }
 }
+
+/* =========================================
+   SKELETON LOADING ANIMATION
+   ========================================= */
+@keyframes skeletonShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

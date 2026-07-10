@@ -1,8 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import SkeletonCard from '@/components/ui/SkeletonCard'
+import SkeletonTable from '@/components/ui/SkeletonTable'
+import { 
+  ExclamationTriangleIcon, WrenchIcon, TicketIcon, 
+  ChartBarIcon, UsersIcon, ClipboardDocumentListIcon,
+  Cog6ToothIcon, BoltIcon, LockClosedIcon,
+  CheckCircleIcon, XCircleIcon, ArrowRightIcon,
+  MapIcon
+} from '@heroicons/react/24/outline';
 import { CargoDashboardClient } from '@/components/cargo/CargoDashboardClient';
 import { FleetManagerClient } from '@/components/admin/FleetManagerClient';
 import { InteractiveMap } from '@/components/map/InteractiveMap';
@@ -42,7 +51,9 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
   useEffect(() => {
     const tabParam = searchParams.get('tab');
     if (tabParam) {
-      setActiveTab(tabParam);
+      startTransition(() => {
+        setActiveTab(tabParam);
+      });
     }
   }, [searchParams]);
 
@@ -81,7 +92,9 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
   }
 
   useEffect(() => {
-    fetchUsers();
+    startTransition(() => {
+      fetchUsers();
+    });
   }, [activeTab, usersPage, usersSearch]);
 
   const handleRoleToggle = async (userId: string, currentRole: string) => {
@@ -172,7 +185,9 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
   }
 
   useEffect(() => {
-    fetchLogs();
+    startTransition(() => {
+      fetchLogs();
+    });
   }, [activeTab, logsPage, resourceType, dateFrom, dateTo]);
 
   // 4. CONFIG SETTINGS STATE
@@ -205,7 +220,9 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
   }
 
   useEffect(() => {
-    fetchSettings();
+    startTransition(() => {
+      fetchSettings();
+    });
   }, [activeTab]);
 
   const handleSaveSetting = async (key: string, value: any, category: string) => {
@@ -274,7 +291,8 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
             {/* Satelit Monitoring Live Map */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <span style={{ fontSize: '9px', color: '#C084FC', fontWeight: 'bold', letterSpacing: '1px' }}>
-                🛰️ SATELIT TRACKING AKTIF & KONTROL TELEMETRI GLOBAL
+                <MapIcon style={{ width: '12px', height: '12px', verticalAlign: 'middle', marginRight: '4px' }} />
+                SATELIT TRACKING AKTIF & KONTROL TELEMETRI GLOBAL
               </span>
               <InteractiveMap compact={true} />
             </div>
@@ -310,7 +328,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
               {/* Queue 1: Delayed */}
               <div style={{ background: '#0D0618', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '10px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.6)', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <div style={{ borderBottom: '1px solid rgba(239, 68, 68, 0.2)', paddingBottom: '8px' }}>
-                  <span style={{ fontSize: '11px', color: '#EF4444', fontWeight: 'bold', letterSpacing: '1px' }}>🚨 ANTRIAN ALARM: KARGO TERLAMBAT (DELAYED)</span>
+                  <span style={{ fontSize: '11px', color: '#EF4444', fontWeight: 'bold', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}><ExclamationTriangleIcon style={{ width: '14px', height: '14px' }} /> ANTRIAN ALARM: KARGO TERLAMBAT (DELAYED)</span>
                   <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>Kargo melewati estimasi tiba (ETA)</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -335,7 +353,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
               {/* Queue 2: Repair Vehicles */}
               <div style={{ background: '#0D0618', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '10px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.6)', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <div style={{ borderBottom: '1px solid rgba(245, 158, 11, 0.2)', paddingBottom: '8px' }}>
-                  <span style={{ fontSize: '11px', color: '#F59E0B', fontWeight: 'bold', letterSpacing: '1px' }}>🔧 ANTRIAN ALARM: ARMADA DALAM PEMELIHARAAN</span>
+                  <span style={{ fontSize: '11px', color: '#F59E0B', fontWeight: 'bold', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}><WrenchIcon style={{ width: '14px', height: '14px' }} /> ANTRIAN ALARM: ARMADA DALAM PEMELIHARAAN</span>
                   <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>Armada dengan status PERBAIKAN</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -357,7 +375,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
               {/* Queue 3: Support Tickets */}
               <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.6)', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <div style={{ borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px' }}>
-                  <span style={{ fontSize: '11px', color: '#C084FC', fontWeight: 'bold', letterSpacing: '1px' }}>🎟️ ANTRIAN ALARM: COMPLAINT AKTIF ({komandoProps.openTicketsCount})</span>
+                  <span style={{ fontSize: '11px', color: '#C084FC', fontWeight: 'bold', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}><TicketIcon style={{ width: '14px', height: '14px' }} /> ANTRIAN ALARM: COMPLAINT AKTIF ({komandoProps.openTicketsCount})</span>
                   <span style={{ fontSize: '8px', color: '#8B7BA8', display: 'block' }}>Tiket complaint berstatus OPEN</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -429,7 +447,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
         {activeTab === 'analytics' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0, color: 'white' }}>📊 ANALITIK & LAPORAN OPERASIONAL</h1>
+              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0, color: 'white' }}>ANALITIK & LAPORAN OPERASIONAL</h1>
               <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>LAPORAN HARIAN · MINGGUAN · BULANAN · KESELURUHAN — DIPERBARUI OTOMATIS</span>
             </div>
             <AnalyticsClient role="ADMIN" />
@@ -441,7 +459,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
         {activeTab === 'users' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>👥 DIREKTORI PENGGUNA & KONTROL PERAN</h1>
+              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>DIREKTORI PENGGUNA & KONTROL PERAN</h1>
               <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>MANAJEMEN Kredensial, OTORISASI, & PENONAKTIFAN AKUN (SOFT DELETE)</span>
             </div>
 
@@ -457,13 +475,13 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
               />
             </div>
 
-            {usersActionSuccess && <div style={{ padding: '12px', background: 'rgba(34,197,94,0.1)', border: '1px solid #22C55E', borderRadius: '6px', color: '#22C55E', fontSize: '11px', fontWeight: 'bold' }}>✅ {usersActionSuccess}</div>}
-            {usersActionError && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid #EF4444', borderRadius: '6px', color: '#EF4444', fontSize: '11px', fontWeight: 'bold' }}>⚠️ ERROR: {usersActionError}</div>}
+            {usersActionSuccess && <div style={{ padding: '12px', background: 'rgba(34,197,94,0.1)', border: '1px solid #22C55E', borderRadius: '6px', color: '#22C55E', fontSize: '11px', fontWeight: 'bold' }}>{usersActionSuccess}</div>}
+            {usersActionError && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid #EF4444', borderRadius: '6px', color: '#EF4444', fontSize: '11px', fontWeight: 'bold' }}>ERROR: {usersActionError}</div>}
 
             {/* Reset Pass Form Modal */}
             {activePasswordResetUserId && (
               <div style={{ background: '#130A22', border: '2px solid #A855F7', borderRadius: '8px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <h3 style={{ margin: 0, fontSize: '12px', color: '#C084FC' }}>🔐 INTI RESET PASSWORD USER</h3>
+                <h3 style={{ margin: 0, fontSize: '12px', color: '#C084FC' }}>INTI RESET PASSWORD USER</h3>
                 <form onSubmit={handlePasswordReset} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                   <input
                     type="password"
@@ -481,9 +499,9 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
 
             {/* List */}
             <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>👥 DIREKTORI PENGGUNA AKTIF</h3>
+                  <h3 style={{ margin: '0 0 16px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>DIREKTORI PENGGUNA AKTIF</h3>
               {usersLoading ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#8B7BA8' }}>📡 MEMUAT AKUN DARI SERVER...</div>
+                <SkeletonTable rows={5} cols={4} />
               ) : users.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px', color: '#8B7BA8' }}>Tidak ada user terdaftar.</div>
               ) : (
@@ -518,9 +536,9 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                           </td>
                           <td style={{ padding: '12px 8px' }}>{new Date(u.createdAt).toLocaleDateString('id-ID')}</td>
                           <td style={{ padding: '12px 8px', textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                            <button onClick={() => handleRoleToggle(u.id, u.role)} style={{ background: 'transparent', border: '1px solid rgba(168,85,247,0.4)', color: '#C084FC', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>TOGGLE ROLE 👥</button>
-                            <button onClick={() => setActivePasswordResetUserId(u.id)} style={{ background: 'transparent', border: '1px solid rgba(6,182,212,0.4)', color: '#06B6D4', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>RESET PW 🔐</button>
-                            <button onClick={() => handleSoftDelete(u.id, u.name)} style={{ background: 'transparent', border: '1px solid rgba(239,68,68,0.4)', color: '#EF4444', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>SOFT DELETE ❌</button>
+                            <button onClick={() => handleRoleToggle(u.id, u.role)} style={{ background: 'transparent', border: '1px solid rgba(168,85,247,0.4)', color: '#C084FC', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>TOGGLE ROLE</button>
+                            <button onClick={() => setActivePasswordResetUserId(u.id)} style={{ background: 'transparent', border: '1px solid rgba(6,182,212,0.4)', color: '#06B6D4', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>RESET PW</button>
+                            <button onClick={() => handleSoftDelete(u.id, u.name)} style={{ background: 'transparent', border: '1px solid rgba(239,68,68,0.4)', color: '#EF4444', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '9px', fontWeight: 'bold' }}>SOFT DELETE</button>
                           </td>
                         </tr>
                       ))}
@@ -545,7 +563,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
         {activeTab === 'audit' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>🔍 AUDIT TRAIL LOGS & AKTIVITAS SISTEM</h1>
+              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>AUDIT TRAIL LOGS & AKTIVITAS SISTEM</h1>
               <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>REKAM JEJAK DIGITAL AKTIVITAS OPERASIONAL & PERUBAHAN CONFIG</span>
             </div>
 
@@ -591,15 +609,15 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                 onClick={() => { setResourceType(''); setDateFrom(''); setDateTo(''); setLogsPage(1); }}
                 style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #EF4444', color: '#EF4444', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'monospace', fontSize: '11px', fontWeight: 'bold', alignSelf: 'flex-end' }}
               >
-                RESET FILTER 🔄
+                RESET FILTER
               </button>
             </div>
 
             {/* List */}
             <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>🔍 REKAM JEJAK OPERASI (IMUTABEL)</h3>
+              <h3 style={{ margin: '0 0 16px 0', fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>REKAM JEJAK OPERASI (IMUTABEL)</h3>
               {logsLoading ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#8B7BA8' }}>📡 MEMBACA LOG AUDIT DARI LEDGER...</div>
+                <SkeletonTable rows={4} cols={3} />
               ) : logs.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px', color: '#8B7BA8' }}>Ledger kosong. Belum ada aktivitas.</div>
               ) : (
@@ -646,22 +664,22 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
         {activeTab === 'settings' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ borderBottom: '1px dashed rgba(168, 85, 247, 0.25)', paddingBottom: '16px' }}>
-              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>⚙️ PANEL KONFIGURASI & ATURAN SISTEM</h1>
+              <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', margin: 0 }}>PANEL KONFIGURASI & ATURAN SISTEM</h1>
               <span style={{ fontSize: '9px', color: '#A855F7', fontWeight: 'bold', letterSpacing: '1px' }}>DITRIBUTED TARIFF RULES, TEMPLATE NOTIFIKASI, & DYNAMIC FEATURE FLAGS</span>
             </div>
 
-            {settingsSuccess && <div style={{ padding: '12px', background: 'rgba(34,197,94,0.1)', border: '1px solid #22C55E', borderRadius: '6px', color: '#22C55E', fontSize: '11px', fontWeight: 'bold' }}>✅ {settingsSuccess}</div>}
-            {settingsError && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid #EF4444', borderRadius: '6px', color: '#EF4444', fontSize: '11px', fontWeight: 'bold' }}>⚠️ ERROR: {settingsError}</div>}
+            {settingsSuccess && <div style={{ padding: '12px', background: 'rgba(34,197,94,0.1)', border: '1px solid #22C55E', borderRadius: '6px', color: '#22C55E', fontSize: '11px', fontWeight: 'bold' }}>{settingsSuccess}</div>}
+            {settingsError && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid #EF4444', borderRadius: '6px', color: '#EF4444', fontSize: '11px', fontWeight: 'bold' }}>ERROR: {settingsError}</div>}
 
             {settingsLoading ? (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#A855F7' }}>📡 MEMUAT KONFIGURASI...</div>
+              <SkeletonCard lines={6} />
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px' }}>
                   
                   {/* Tariff Rules */}
                   <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>📊 MODIFIER TARIF KARGO</h3>
+                    <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>MODIFIER TARIF KARGO</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Tarif Laut (per kg):</span>
@@ -685,7 +703,7 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                         onClick={() => handleSaveSetting('tariffRules', tariffRules, 'TARIFF')}
                         style={{ marginTop: '12px', background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)', border: 'none', color: 'white', padding: '10px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}
                       >
-                        SIMPAN PARAMETER TARIF 💾
+                        SIMPAN PARAMETER TARIF
                       </button>
                     </div>
                   </div>
@@ -757,13 +775,13 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                     onClick={() => handleSaveSetting('notifTemplates', notifTemplates, 'NOTIFICATION')}
                     style={{ width: '100%', marginTop: '16px', background: 'linear-gradient(90deg, #A855F7 0%, #06B6D4 100%)', border: 'none', color: 'white', padding: '10px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}
                   >
-                    SIMPAN TEMPLATE EMAIL NOTIFIKASI 💾
+                    SIMPAN TEMPLATE EMAIL NOTIFIKASI
                   </button>
                 </div>
 
                 {/* Manual Override Automation */}
                 <div style={{ background: '#0D0618', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '10px', padding: '24px' }}>
-                  <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>⚡ TRIGGER AUTOMATION ENGINE OVERRIDE</h3>
+                  <h3 style={{ margin: 0, fontSize: '12px', borderBottom: '1px solid rgba(168, 85, 247, 0.2)', paddingBottom: '8px', color: '#C084FC', letterSpacing: '1px' }}>TRIGGER AUTOMATION ENGINE OVERRIDE</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
                     <span style={{ fontSize: '11px', color: '#8B7BA8' }}>Jalankan background job automasi secara manual sekarang. Ini memproses pemindaian status kargo terlambat, alokasi armada otomatis, pembuatan invoice kargo selesai, dan preferensi notifikasi.</span>
                     <button
@@ -771,13 +789,13 @@ export function AdminDashboardClient({ initialTab, cargoProps, fleetProps, koman
                       disabled={runningAutomation}
                       style={{ alignSelf: 'flex-start', background: '#E11D48', border: 'none', color: 'white', padding: '10px 20px', borderRadius: '6px', cursor: runningAutomation ? 'not-allowed' : 'pointer', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}
                     >
-                      {runningAutomation ? '⏳ MENJALANKAN ENGINE AUTOMASI...' : '⚡ MANUAL OVERRIDE RUN'}
+                      {runningAutomation ? 'MENJALANKAN ENGINE AUTOMASI...' : 'MANUAL OVERRIDE RUN'}
                     </button>
                     {automationLogs.length > 0 && (
                       <div style={{ background: '#07020E', border: '1px solid rgba(168,85,247,0.3)', padding: '16px', borderRadius: '6px', marginTop: '12px', overflowX: 'auto', maxHeight: '180px', overflowY: 'auto' }}>
-                        <span style={{ color: '#A855F7', fontSize: '9px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>🖥️ AUTOMATION ENGINE SYSTEM LOGS:</span>
+                        <span style={{ color: '#A855F7', fontSize: '9px', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>AUTOMATION ENGINE SYSTEM LOGS:</span>
                         {automationLogs.map((log, index) => (
-                          <div key={index} style={{ fontSize: '10px', color: '#38BDF8', borderBottom: '1px solid rgba(255,255,255,0.02)', padding: '4px 0' }}>➔ {log}</div>
+                          <div key={index} style={{ fontSize: '10px', color: '#38BDF8', borderBottom: '1px solid rgba(255,255,255,0.02)', padding: '4px 0' }}>→ {log}</div>
                         ))}
                       </div>
                     )}

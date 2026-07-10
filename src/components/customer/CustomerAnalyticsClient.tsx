@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, startTransition } from 'react'
 
 interface AnalyticsSummary {
   totalShipments: number
@@ -134,7 +134,9 @@ export function CustomerAnalyticsClient() {
   }, [])
 
   useEffect(() => {
-    fetchData()
+    startTransition(() => {
+      fetchData()
+    })
   }, [fetchData])
 
   return (

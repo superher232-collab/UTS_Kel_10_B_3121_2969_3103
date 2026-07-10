@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, startTransition } from 'react'
 
 type Period = 'daily' | 'weekly' | 'monthly' | 'overall'
 
@@ -108,8 +108,8 @@ function PureCSSBarChart({ data, valueKey, color, maxHeight = 180 }: {
   )
 }
 
-function KPICard({ label, value, sub, color, icon }: {
-  label: string; value: string; sub?: string; color: string; icon: string
+function KPICard({ label, value, sub, color }: {
+  label: string; value: string; sub?: string; color: string
 }) {
   return (
     <div style={{
@@ -125,10 +125,6 @@ function KPICard({ label, value, sub, color, icon }: {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      <div style={{
-        position: 'absolute', top: '-10px', right: '-10px',
-        fontSize: '60px', opacity: 0.04, userSelect: 'none'
-      }}>{icon}</div>
       <span style={{ fontSize: '9px', color: '#8B7BA8', fontFamily: 'monospace', letterSpacing: '1px', textTransform: 'uppercase' }}>{label}</span>
       <span style={{ fontSize: '22px', fontWeight: 'bold', color, fontFamily: 'monospace', letterSpacing: '-0.5px' }}>{value}</span>
       {sub && <span style={{ fontSize: '9px', color: '#6B5C83', fontFamily: 'monospace' }}>{sub}</span>}
@@ -136,14 +132,14 @@ function KPICard({ label, value, sub, color, icon }: {
   )
 }
 
-function HorizontalBar({ label, value, total, color, icon }: {
-  label: string; value: number; total: number; color: string; icon: string
+function HorizontalBar({ label, value, total, color }: {
+  label: string; value: number; total: number; color: string
 }) {
   const pct = total > 0 ? Math.round((value / total) * 100) : 0
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '11px', color: '#C7B8EA', fontFamily: 'monospace' }}>{icon} {label}</span>
+        <span style={{ fontSize: '11px', color: '#C7B8EA', fontFamily: 'monospace' }}>{label}</span>
         <span style={{ fontSize: '10px', color, fontFamily: 'monospace', fontWeight: 'bold' }}>{value} ({pct}%)</span>
       </div>
       <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
@@ -181,7 +177,9 @@ export function AnalyticsClient({ role }: AnalyticsClientProps) {
   }, [])
 
   useEffect(() => {
-    fetchData(period)
+    startTransition(() => {
+      fetchData(period)
+    })
   }, [period, fetchData])
 
   const cardStyle: React.CSSProperties = {
@@ -252,11 +250,11 @@ export function AnalyticsClient({ role }: AnalyticsClientProps) {
         <>
           {/* KPI Cards */}
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <KPICard icon="📦" label="Total Kargo" value={formatNumber(data.summary.totalShipments)} color="#C084FC" />
-            <KPICard icon="💰" label="Total Pendapatan" value={formatCurrency(data.summary.totalRevenue)} sub={`Rata-rata ${formatCurrency(data.summary.avgTariff)}/kargo`} color="#06B6D4" />
-            <KPICard icon="✅" label="Selesai" value={formatNumber(data.summary.completedShipments)} color="#22C55E" />
-            <KPICard icon="⏳" label="Aktif / Pending" value={formatNumber(data.summary.pendingShipments)} color="#F59E0B" />
-            <KPICard icon="❌" label="Dibatalkan" value={formatNumber(data.summary.cancelledShipments)} color="#EF4444" />
+            <KPICard label="Total Kargo" value={formatNumber(data.summary.totalShipments)} color="#C084FC" />
+            <KPICard label="Total Pendapatan" value={formatCurrency(data.summary.totalRevenue)} sub={`Rata-rata ${formatCurrency(data.summary.avgTariff)}/kargo`} color="#06B6D4" />
+            <KPICard label="Selesai" value={formatNumber(data.summary.completedShipments)} color="#22C55E" />
+            <KPICard label="Aktif / Pending" value={formatNumber(data.summary.pendingShipments)} color="#F59E0B" />
+            <KPICard label="Dibatalkan" value={formatNumber(data.summary.cancelledShipments)} color="#EF4444" />
           </div>
 
           {/* Charts Row */}
@@ -302,7 +300,7 @@ export function AnalyticsClient({ role }: AnalyticsClientProps) {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <HorizontalBar
-                  label="LAUT" icon="🚢"
+                  label="LAUT"
                   value={data.modeDistribution.LAUT}
                   total={data.summary.totalShipments}
                   color="#06B6D4"
@@ -318,13 +316,13 @@ export function AnalyticsClient({ role }: AnalyticsClientProps) {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <HorizontalBar
-                  label="TUNAI" icon="💵"
+                  label="TUNAI"
                   value={data.paymentMethodStats.TUNAI}
                   total={data.summary.totalShipments}
                   color="#22C55E"
                 />
                 <HorizontalBar
-                  label="QRIS" icon="📱"
+                  label="QRIS"
                   value={data.paymentMethodStats.QRIS}
                   total={data.summary.totalShipments}
                   color="#F59E0B"

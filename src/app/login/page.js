@@ -401,6 +401,21 @@ export default function Login() {
       <div style={{ zIndex: 10, marginTop: '30px' }}>
         <p style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px', textAlign: 'center' }}>Akses aman diperlukan. Semua aktivitas dipantau.</p>
       </div>
+
+      <style>{`
+        input:focus-visible, select:focus-visible {
+          outline: 2px solid #7C3AED !important;
+          outline-offset: 2px !important;
+          box-shadow: 0 0 12px rgba(124, 58, 237, 0.3) !important;
+        }
+        button:focus-visible {
+          outline: 2px solid #A855F7;
+          outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { transition: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

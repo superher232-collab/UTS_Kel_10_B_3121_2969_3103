@@ -9,7 +9,10 @@ export default auth((req) => {
   const session = req.auth
   const { pathname } = req.nextUrl
 
-  // Jika user belum login, lempar ke /login
+  if (pathname === '/') {
+    return NextResponse.next()
+  }
+
   if (!session?.user) {
     return NextResponse.redirect(new URL('/login', req.nextUrl))
   }

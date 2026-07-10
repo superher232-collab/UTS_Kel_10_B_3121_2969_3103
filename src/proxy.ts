@@ -32,6 +32,7 @@ export default auth((req) => {
 })
 
 export const config = {
-  // Melindungi seluruh route aplikasi KECUALI route auth, aset publik, dan file Next.js internal
-  matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico|login|register|forgot-password|reset-password).*)']
+  matcher: [
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|gif|ico|webp)$|login|register|forgot-password|reset-password|logo.png).*)'
+  ]
 }

@@ -1,23 +1,20 @@
 "use client";
 import React, { useState } from 'react';
-import { motion } from "framer-motion";
+import { PaperPlaneTilt, CheckCircle, Spinner } from "@phosphor-icons/react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState('idle'); // idle | loading | success
+  const [status, setStatus] = useState('idle');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
-    
+
     setStatus('loading');
-    
-    // Mock network request
+
     setTimeout(() => {
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
-      
-      // Reset success message after 3 seconds
       setTimeout(() => setStatus('idle'), 3000);
     }, 1500);
   };
@@ -27,184 +24,190 @@ export default function Contact() {
   };
 
   return (
-    <motion.section
+    <section
       id="contact"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '80px 24px',
-        position: 'relative',
-        background: '#0D0B14',
-        margin: '40px 0'
+        padding: 'clamp(64px, 8vw, 100px) 24px',
+        maxWidth: '700px',
+        margin: '0 auto',
+        width: '100%',
+        boxSizing: 'border-box'
       }}
     >
-      <h3 style={{
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-        fontSize: '14px',
-        fontWeight: 600,
-        color: '#9B99A8',
-        letterSpacing: '3px',
-        marginBottom: '12px'
-      }}>
-        CONTACT US
-      </h3>
-      
-      <h2 style={{
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-        fontSize: 'clamp(24px, 5vw, 36px)',
-        fontWeight: 700,
-        color: '#F1F0F5',
-        letterSpacing: '1px',
-        marginBottom: '40px',
-        textAlign: 'center'
-      }}>
-        Need Help or More Information?
-      </h2>
-
-      <div style={{
-        width: '100%',
-        maxWidth: '500px',
-        background: '#12101A',
-        border: '1px solid rgba(124, 58, 237, 0.3)',
-        borderRadius: '12px',
-        padding: '32px',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
-      }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="name" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>FULL NAME *</label>
-            <input 
-              type="text" 
-              id="name" 
-              name="name" 
-              value={formData.name}
-              onChange={handleChange}
-              required
-              placeholder="Enter your name..."
-              style={{
-                background: '#0D0B14',
-                border: '1px solid rgba(124, 58, 237, 0.3)',
-                borderRadius: '6px',
-                padding: '12px',
-                color: '#F1F0F5',
-                fontSize: '14px',
-                outline: 'none',
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                transition: 'border-color 0.3s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#7C3AED'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(124, 58, 237, 0.3)'}
-            />
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="email" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>EMAIL ADDRESS *</label>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="your@email.com"
-              style={{
-                background: '#0D0B14',
-                border: '1px solid rgba(124, 58, 237, 0.3)',
-                borderRadius: '6px',
-                padding: '12px',
-                color: '#F1F0F5',
-                fontSize: '14px',
-                outline: 'none',
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                transition: 'border-color 0.3s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#7C3AED'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(124, 58, 237, 0.3)'}
-            />
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="message" style={{ color: '#9B99A8', fontSize: '12px', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 'bold' }}>MESSAGE *</label>
-            <textarea 
-              id="message" 
-              name="message" 
-              value={formData.message}
-              onChange={handleChange}
-              required
-              rows={4}
-              placeholder="Write your message or question here..."
-              style={{
-                background: '#0D0B14',
-                border: '1px solid rgba(124, 58, 237, 0.3)',
-                borderRadius: '6px',
-                padding: '12px',
-                color: '#F1F0F5',
-                fontSize: '14px',
-                outline: 'none',
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                resize: 'vertical',
-                transition: 'border-color 0.3s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#7C3AED'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(124, 58, 237, 0.3)'}
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={status === 'loading' || status === 'success'}
-            style={{
-              background: status === 'success' ? '#22C55E' : '#7C3AED',
-              color: '#F1F0F5',
-              border: 'none',
-              padding: '16px',
-              borderRadius: '6px',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              cursor: (status === 'loading' || status === 'success') ? 'not-allowed' : 'pointer',
-              marginTop: '10px',
-              transition: 'all 0.3s',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            {status === 'idle' && 'SEND MESSAGE'}
-            {status === 'loading' && 'SENDING...'}
-            {status === 'success' && (
-              <>MESSAGE SENT</>
-            )}
-          </button>
-          
-          {status === 'success' && (
-             <p style={{ textAlign: 'center', fontSize: '12px', color: '#22C55E', margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-               Thank you! Our admin team will respond via Email shortly.
-             </p>
-          )}
-        </form>
+      {/* Section header */}
+      <div style={{ marginBottom: '40px', textAlign: 'center' }}>
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: '11px',
+          color: 'rgba(168,85,247,0.7)',
+          letterSpacing: '3px',
+          textTransform: 'uppercase',
+          display: 'block',
+          marginBottom: '12px'
+        }}>
+          Contact Us
+        </span>
+        <h2 style={{
+          fontFamily: 'var(--font-heading)',
+          fontSize: 'clamp(28px, 4vw, 40px)',
+          fontWeight: 700,
+          color: '#F1F0F5',
+          letterSpacing: '-0.02em',
+          lineHeight: '1.1',
+          margin: 0
+        }}>
+          Need Help or More Information?
+        </h2>
       </div>
+
+      {/* Glass card form */}
+      <div className="double-bezel">
+        <div className="double-bezel-inner" style={{ padding: 'clamp(24px, 3vw, 40px)' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '11px',
+                color: 'rgba(241,240,245,0.5)',
+                letterSpacing: '1px',
+                textTransform: 'uppercase'
+              }}>Full Name *</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                placeholder="Enter your name"
+                style={{
+                  background: 'rgba(0,0,0,0.3)',
+                  border: '1px solid rgba(168,85,247,0.15)',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  color: '#F1F0F5',
+                  fontSize: '14px',
+                  fontFamily: 'var(--font-body)',
+                  outline: 'none',
+                  transition: 'all 0.3s var(--cubic-premium)'
+                }}
+                onFocus={e => { e.target.style.borderColor = 'rgba(168,85,247,0.5)'; e.target.style.boxShadow = '0 0 16px rgba(168,85,247,0.1)'; }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(168,85,247,0.15)'; e.target.style.boxShadow = 'none'; }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '11px',
+                color: 'rgba(241,240,245,0.5)',
+                letterSpacing: '1px',
+                textTransform: 'uppercase'
+              }}>Email Address *</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="your@email.com"
+                style={{
+                  background: 'rgba(0,0,0,0.3)',
+                  border: '1px solid rgba(168,85,247,0.15)',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  color: '#F1F0F5',
+                  fontSize: '14px',
+                  fontFamily: 'var(--font-body)',
+                  outline: 'none',
+                  transition: 'all 0.3s var(--cubic-premium)'
+                }}
+                onFocus={e => { e.target.style.borderColor = 'rgba(168,85,247,0.5)'; e.target.style.boxShadow = '0 0 16px rgba(168,85,247,0.1)'; }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(168,85,247,0.15)'; e.target.style.boxShadow = 'none'; }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '11px',
+                color: 'rgba(241,240,245,0.5)',
+                letterSpacing: '1px',
+                textTransform: 'uppercase'
+              }}>Message *</label>
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                rows={4}
+                placeholder="Write your message or question here"
+                style={{
+                  background: 'rgba(0,0,0,0.3)',
+                  border: '1px solid rgba(168,85,247,0.15)',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  color: '#F1F0F5',
+                  fontSize: '14px',
+                  fontFamily: 'var(--font-body)',
+                  outline: 'none',
+                  resize: 'vertical',
+                  transition: 'all 0.3s var(--cubic-premium)'
+                }}
+                onFocus={e => { e.target.style.borderColor = 'rgba(168,85,247,0.5)'; e.target.style.boxShadow = '0 0 16px rgba(168,85,247,0.1)'; }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(168,85,247,0.15)'; e.target.style.boxShadow = 'none'; }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={status === 'loading' || status === 'success'}
+              className="btn-inner"
+              style={{
+                justifyContent: 'center',
+                width: '100%',
+                textDecoration: 'none',
+                border: 'none',
+                cursor: (status === 'loading' || status === 'success') ? 'not-allowed' : 'pointer',
+                opacity: (status === 'loading' || status === 'success') ? 0.7 : 1
+              }}
+            >
+              {status === 'idle' && (
+                <>Send Message <span className="icon-wrap"><PaperPlaneTilt size={14} weight="bold" /></span></>
+              )}
+              {status === 'loading' && (
+                <>Sending... <span className="icon-wrap"><Spinner size={14} weight="bold" className="spin" /></span></>
+              )}
+              {status === 'success' && (
+                <>Message Sent <span className="icon-wrap"><CheckCircle size={14} weight="bold" /></span></>
+              )}
+            </button>
+
+            {status === 'success' && (
+              <p style={{
+                textAlign: 'center',
+                fontSize: '12px',
+                color: '#22C55E',
+                margin: 0,
+                fontFamily: 'var(--font-body)'
+              }}>
+                Thank you! Our admin team will respond via Email shortly.
+              </p>
+            )}
+          </form>
+        </div>
+      </div>
+
       <style>{`
-        #contact input:focus-visible, #contact textarea:focus-visible {
-          outline: 2px solid #A855F7 !important;
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        input:focus-visible, textarea:focus-visible {
+          outline: 2px solid rgba(168,85,247,0.5) !important;
           outline-offset: 2px !important;
-          box-shadow: 0 0 12px rgba(168, 85, 247, 0.3) !important;
-        }
-        #contact button:focus-visible {
-          outline: 2px solid #A855F7;
-          outline-offset: 2px;
         }
         @media (prefers-reduced-motion: reduce) {
-          *, *::before, *::after { transition: none !important; }
+          *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
       `}</style>
-    </motion.section>
+    </section>
   );
 }

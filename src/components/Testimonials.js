@@ -2,6 +2,7 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Quotes } from "@phosphor-icons/react";
 
 export default function Testimonials() {
   const sectionRef = useRef(null);
@@ -10,18 +11,13 @@ export default function Testimonials() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(sectionRef.current.children,
-        { opacity: 0, y: 40 },
+      gsap.fromTo(sectionRef.current.querySelectorAll('.testimonial-card'),
+        { opacity: 0, y: 30 },
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.15,
+          opacity: 1, y: 0,
+          duration: 0.7, stagger: 0.12,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 85%",
-          }
+          scrollTrigger: { trigger: sectionRef.current, start: "top 85%" }
         }
       );
     }, sectionRef);
@@ -55,99 +51,94 @@ export default function Testimonials() {
       id="testimonials"
       ref={sectionRef}
       style={{
-        padding: '80px 24px',
-        position: 'relative',
-        background: '#12101A',
-        borderLeft: '3px solid #7C3AED',
-        margin: '40px 0',
-        overflow: 'hidden'
+        padding: 'clamp(64px, 8vw, 100px) 24px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        width: '100%',
+        boxSizing: 'border-box'
       }}
     >
-      {/* Section label */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        marginBottom: '40px'
-      }}>
+      {/* Section header */}
+      <div style={{ marginBottom: '40px', maxWidth: '600px' }}>
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: '11px',
+          color: 'rgba(168,85,247,0.7)',
+          letterSpacing: '3px',
+          textTransform: 'uppercase',
+          display: 'block',
+          marginBottom: '12px'
+        }}>
+          Testimonials
+        </span>
         <h2 style={{
-          fontFamily: 'system-ui, -apple-system, sans-serif',
-          fontSize: '24px',
+          fontFamily: 'var(--font-heading)',
+          fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
           color: '#F1F0F5',
-          letterSpacing: '1px',
+          letterSpacing: '-0.02em',
+          lineHeight: '1.1',
           margin: 0
         }}>
-          WHAT OUR CLIENTS SAY
+          What Our Clients Say
         </h2>
       </div>
 
-      {/* Testimonials grid */}
+      {/* Cards grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '24px'
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '16px'
       }}>
         {testimonials.map((t, i) => (
-          <div
-            key={i}
-            style={{
-              background: '#0D0B14',
-              border: '1px solid rgba(124, 58, 237, 0.15)',
-              borderRadius: '8px',
+          <div key={i} className="double-bezel testimonial-card">
+            <div className="double-bezel-inner" style={{
               padding: '28px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '16px',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            {/* Quote icon */}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A855F7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
-              <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
-              <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" />
-            </svg>
-
-            {/* Quote text */}
-            <p style={{
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              fontSize: '14px',
-              color: '#C7B8EA',
-              lineHeight: '1.7',
-              margin: 0,
-              fontStyle: 'italic'
+              gap: '16px'
             }}>
-              &ldquo;{t.quote}&rdquo;
-            </p>
-
-            {/* Author info */}
-            <div style={{ marginTop: 'auto' }}>
+              <Quotes size={24} weight="duotone" color="#A855F7" style={{ opacity: 0.4 }} />
               <p style={{
-                fontFamily: 'system-ui, -apple-system, sans-serif',
+                fontFamily: 'var(--font-body)',
                 fontSize: '13px',
-                fontWeight: 'bold',
-                color: '#F1F0F5',
-                margin: '0 0 4px 0',
-                letterSpacing: '0.5px'
+                color: 'rgba(241,240,245,0.55)',
+                lineHeight: '1.7',
+                margin: 0,
+                fontStyle: 'italic'
               }}>
-                {t.author}
+                &ldquo;{t.quote}&rdquo;
               </p>
-              <p style={{
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                fontSize: '11px',
-                color: '#9B99A8',
-                margin: 0
-              }}>
-                {t.role}, {t.company}
-              </p>
+              <div style={{ marginTop: 'auto' }}>
+                <p style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: '#F1F0F5',
+                  margin: '0 0 2px 0'
+                }}>
+                  {t.author}
+                </p>
+                <p style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '11px',
+                  color: 'rgba(241,240,245,0.35)',
+                  margin: 0
+                }}>
+                  {t.role}, {t.company}
+                </p>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
       <style>{`
-        @media (prefers-reduced-motion: reduce) {
-          *, *::before, *::after { transition: none !important; }
+        @media (max-width: 768px) {
+          #testimonials > div:last-child { grid-template-columns: 1fr !important; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          #testimonials > div:last-child { grid-template-columns: repeat(2, 1fr) !important; }
         }
       `}</style>
     </section>

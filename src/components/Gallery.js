@@ -9,144 +9,138 @@ export default function Gallery() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-        }
-      });
 
-      // Animate the section container
-      tl.fromTo(sectionRef.current,
-        { opacity: 0, y: 60 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
-      )
-      // Stagger the gallery items
-      .fromTo(".gallery-item",
+    const ctx = gsap.context(() => {
+      gsap.fromTo(sectionRef.current.querySelectorAll('.gallery-card'),
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power2.out" },
-        "-=0.4"
+        {
+          opacity: 1, y: 0,
+          duration: 0.6, stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: { trigger: sectionRef.current, start: "top 85%" }
+        }
       );
     }, sectionRef);
-    
+
     return () => ctx.revert();
   }, []);
+
   const items = [
-    { src: '/ship1.png', label: 'MARITIME OPERATIONS', desc: 'Active fleet surveillance' },
-    { src: '/ship2.png', label: 'FLEET MANAGEMENT', desc: 'Cross-vessel coordination' },
-    { src: '/ship3.png', label: 'GLOBAL REACH', desc: 'International sea routes' },
-    { src: '/ship4.png', label: 'CARGO LOGISTICS', desc: 'Multi-modal distribution' },
-    { src: '/ship5.png', label: 'STRATEGIC PORTS', desc: 'Key transit hubs' }
+    { src: '/ship1.png', label: 'Maritime Operations', desc: 'Active fleet surveillance' },
+    { src: '/ship2.png', label: 'Fleet Management', desc: 'Cross-vessel coordination' },
+    { src: '/ship3.png', label: 'Global Reach', desc: 'International sea routes' },
+    { src: '/ship4.png', label: 'Cargo Logistics', desc: 'Multi-modal distribution' },
+    { src: '/ship5.png', label: 'Strategic Ports', desc: 'Key transit hubs' }
   ];
 
   return (
     <section
+      id="gallery"
       ref={sectionRef}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '32px',
-        padding: '80px 24px',
-        background: '#0D0B14'
+        padding: 'clamp(64px, 8vw, 100px) 24px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        width: '100%',
+        boxSizing: 'border-box'
       }}
     >
-      {/* Section Label */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px'
-      }}>
+      {/* Section header */}
+      <div style={{ marginBottom: '40px', maxWidth: '600px' }}>
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: '11px',
+          color: 'rgba(168,85,247,0.7)',
+          letterSpacing: '3px',
+          textTransform: 'uppercase',
+          display: 'block',
+          marginBottom: '12px'
+        }}>
+          Visual Tour
+        </span>
         <h2 style={{
-          fontFamily: 'system-ui, -apple-system, sans-serif',
-          fontSize: '24px',
+          fontFamily: 'var(--font-heading)',
+          fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
           color: '#F1F0F5',
-          letterSpacing: '1.5px',
+          letterSpacing: '-0.02em',
+          lineHeight: '1.1',
           margin: 0
         }}>
-          FLEET GALLERY
+          Fleet Gallery
         </h2>
       </div>
 
-      {/* Gallery Grid */}
+      {/* Gallery grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '32px'
+        gridTemplateColumns: 'repeat(5, 1fr)',
+        gap: '12px'
       }}>
         {items.map((item, i) => (
-          <div
-            key={i}
-            className="gallery-item"
-            style={{
-              position: 'relative',
-              height: '200px',
+          <div key={i} className="double-bezel gallery-card" style={{ padding: '1.5px' }}>
+            <div className="double-bezel-inner" style={{
+              padding: 0,
               overflow: 'hidden',
-              borderRadius: '8px',
-              border: '1px solid rgba(124, 58, 237, 0.2)',
-              borderLeft: '3px solid #7C3AED',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-              background: '#12101A'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.borderColor = 'rgba(124, 58, 237, 0.4)';
-              e.currentTarget.style.borderLeft = '3px solid #7C3AED';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.borderColor = 'rgba(124, 58, 237, 0.2)';
-              e.currentTarget.style.borderLeft = '3px solid #7C3AED';
-            }}
-          >
-            <Image
-              src={item.src}
-              alt={item.label}
-              width={400}
-              height={250}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transition: 'transform 0.5s ease'
-              }}
-            />
-
-            {/* Gradient overlay */}
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(0deg, rgba(13, 11, 20, 0.95) 0%, rgba(13, 11, 20, 0.4) 50%, transparent 100%)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-              padding: '20px'
+              position: 'relative',
+              height: '200px'
             }}>
-              <span style={{
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                fontSize: '12px',
-                fontWeight: 'bold',
-                color: '#F1F0F5',
-                letterSpacing: '1px'
+              <Image
+                src={item.src}
+                alt={item.label}
+                width={400}
+                height={250}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  transition: 'transform 0.6s var(--cubic-premium)'
+                }}
+              />
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(0deg, rgba(5,5,5,0.9) 0%, transparent 60%)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+                padding: '20px'
               }}>
-                {item.label}
-              </span>
-              <span style={{
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                fontSize: '11px',
-                color: '#9B99A8',
-                marginTop: '4px'
-              }}>
-                {item.desc}
-              </span>
+                <span style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: '#F1F0F5',
+                  letterSpacing: '0.5px'
+                }}>
+                  {item.label}
+                </span>
+                <span style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '11px',
+                  color: 'rgba(241,240,245,0.4)',
+                  marginTop: '2px'
+                }}>
+                  {item.desc}
+                </span>
+              </div>
             </div>
           </div>
         ))}
       </div>
+
+      <style>{`
+        @media (max-width: 1024px) {
+          #gallery > div:last-child { grid-template-columns: repeat(3, 1fr) !important; }
+        }
+        @media (max-width: 768px) {
+          #gallery > div:last-child { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 480px) {
+          #gallery > div:last-child { grid-template-columns: 1fr !important; }
+        }
+        .gallery-card:hover img { transform: scale(1.05); }
+      `}</style>
     </section>
   );
 }

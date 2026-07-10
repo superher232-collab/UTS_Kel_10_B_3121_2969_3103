@@ -96,27 +96,32 @@ export default function Login() {
 
       {/* Login Card */}
       <div style={{
-        background: '#12101A',
-        border: '1px solid #2A2740',
-        borderRadius: '8px',
+        background: 'rgba(18, 16, 26, 0.7)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(168, 85, 247, 0.2)',
+        borderRadius: '12px',
         padding: '40px',
         width: '90%',
         maxWidth: '440px',
         zIndex: 10,
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
       }}>
         <h2 style={{
-          color: '#F1F0F5',
-          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontFamily: 'var(--font-heading)',
           fontSize: '18px',
           letterSpacing: '1px',
           margin: '0 0 10px 0',
-          fontWeight: '600'
+          fontWeight: '600',
+          background: 'linear-gradient(135deg, #F1F0F5 0%, #A855F7 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
         }}>SYSTEM ACCESS</h2>
         <p style={{
-          color: '#9B99A8',
-          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontFamily: 'var(--font-body)',
+          color: '#8B7BA8',
           fontSize: '14px',
           margin: '0 0 30px 0'
         }}>Enter your credentials to continue</p>
@@ -125,10 +130,11 @@ export default function Login() {
           {/* Role Selection */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: '#9B99A8',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              fontSize: '12px',
-              letterSpacing: '1px',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
+              fontSize: '11px',
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
               fontWeight: 500
             }}>ROLE</label>
             <div style={{
@@ -187,10 +193,11 @@ export default function Login() {
           {/* Username */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: '#9B99A8',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              fontSize: '12px',
-              letterSpacing: '1px',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
+              fontSize: '11px',
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
               fontWeight: 500
             }}>{role === 'admin' ? 'ADMIN EMAIL' : 'USER EMAIL'}</label>
             <div style={{
@@ -238,10 +245,11 @@ export default function Login() {
           {/* Password */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
-              color: '#9B99A8',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              fontSize: '12px',
-              letterSpacing: '1px',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
+              fontSize: '11px',
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
               fontWeight: 500
             }}>PASSWORD</label>
             <div style={{
@@ -324,9 +332,9 @@ export default function Login() {
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
-              <span style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '13px' }}>Remember me</span>
+              <span style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '13px' }}>Remember me</span>
             </label>
-            <Link href="/forgot-password" style={{ color: '#7C3AED', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '13px', textDecoration: 'none' }}>Forgot password?</Link>
+            <Link href="/forgot-password" style={{ color: '#C084FC', fontFamily: 'var(--font-body)', fontSize: '13px', textDecoration: 'none' }}>Forgot password?</Link>
           </div>
 
           {errorMsg && (
@@ -346,67 +354,55 @@ export default function Login() {
           )}
 
           {/* Submit Button */}
-          <button type="button" onClick={handleLogin} disabled={loading} style={{
-            background: loading 
-              ? 'rgba(124, 58, 237, 0.5)' 
-              : '#7C3AED',
-            border: 'none',
-            borderRadius: '4px',
-            color: 'white',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            fontWeight: '600',
-            fontSize: '14px',
-            padding: '14px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            textAlign: 'center',
-            textDecoration: 'none',
-            marginTop: '10px',
-            letterSpacing: '1px',
-            display: 'flex',
+          <button type="button" onClick={handleLogin} disabled={loading} className="btn-inner" style={{
             justifyContent: 'center',
-            alignItems: 'center',
-            gap: '8px',
-            transition: 'all 0.2s ease',
+            width: '100%',
+            marginTop: '10px',
+            cursor: loading ? 'not-allowed' : 'pointer',
             opacity: loading ? 0.7 : 1
           }}
           onMouseEnter={(e) => {
             if (!loading) {
-              e.currentTarget.style.background = '#A855F7';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #A855F7 0%, #9249F2 100%)';
+              e.currentTarget.style.boxShadow = '0 0 40px rgba(168,85,247,0.5)';
             }
           }}
           onMouseLeave={(e) => {
             if (!loading) {
-              e.currentTarget.style.background = '#7C3AED';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)';
+              e.currentTarget.style.boxShadow = '0 0 24px rgba(168,85,247,0.25)';
             }
           }}
           >
             {loading ? 'VERIFYING...' : 'ACCESS SYSTEM'}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ width: '16px', height: '16px' }}>
-              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            </svg>
+            <span className="icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
           </button>
         </form>
 
-        <p style={{ marginTop: '20px', marginBottom: '10px', textAlign: 'center', fontSize: '13px', color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-          Don't have an account? <Link href="/register" style={{ color: '#7C3AED', textDecoration: 'none' }}>Register here</Link>
+        <p style={{ marginTop: '20px', marginBottom: '10px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body)' }}>
+          Don't have an account? <Link href="/register" style={{ color: '#C084FC', textDecoration: 'none' }}>Register here</Link>
         </p>
 
         {/* Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '40px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }}></div>
-          <span style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px' }}>System Status: Online</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 8px #22C55E' }}></div>
+          <span style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '12px' }}>System Status: Online</span>
         </div>
       </div>
 
       <div style={{ zIndex: 10, marginTop: '30px' }}>
-        <p style={{ color: '#9B99A8', fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '12px', textAlign: 'center' }}>Secure access required. All activities are monitored.</p>
+        <p style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '12px', textAlign: 'center' }}>Secure access required. All activities are monitored.</p>
       </div>
 
       <style>{`
         input:focus-visible, select:focus-visible {
-          outline: 2px solid #7C3AED !important;
+          outline: 2px solid #A855F7 !important;
           outline-offset: 2px !important;
-          box-shadow: 0 0 12px rgba(124, 58, 237, 0.3) !important;
+          box-shadow: 0 0 12px rgba(168, 85, 247, 0.3) !important;
         }
         button:focus-visible {
           outline: 2px solid #A855F7;

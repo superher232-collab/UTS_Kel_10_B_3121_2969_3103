@@ -107,10 +107,11 @@ export default function RegisterPage() {
 
       {/* Register Card */}
       <div style={{
-        background: 'var(--bg-card, rgba(20, 10, 36, 0.7))',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid var(--border-purple, rgba(168, 85, 247, 0.3))',
-        borderRadius: '8px',
+        background: 'rgba(18, 16, 26, 0.7)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(168, 85, 247, 0.2)',
+        borderRadius: '12px',
         padding: '30px 40px',
         width: '95%',
         maxWidth: '480px',
@@ -120,16 +121,18 @@ export default function RegisterPage() {
         boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
       }}>
         <h2 style={{
-          color: 'white',
-          fontFamily: 'var(--font-body, monospace)',
+          fontFamily: 'var(--font-heading)',
           fontSize: '16px',
           letterSpacing: '2px',
           margin: '0 0 8px 0',
-          fontWeight: '600'
+          fontWeight: '600',
+          background: 'linear-gradient(135deg, #F1F0F5 0%, #A855F7 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
         }}>ACCOUNT REGISTRATION</h2>
         <p style={{
-          color: 'var(--text-muted, #8B7BA8)',
-          fontFamily: 'var(--font-body, monospace)',
+          fontFamily: 'var(--font-body)',
+          color: '#8B7BA8',
           fontSize: '13px',
           margin: '0 0 24px 0'
         }}>Create a new account to access the platform</p>
@@ -170,10 +173,10 @@ export default function RegisterPage() {
           {/* Full Name */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label style={{
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
               fontSize: '11px',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px'
             }}>FULL NAME</label>
             <div style={{
               display: 'flex',
@@ -207,10 +210,10 @@ export default function RegisterPage() {
           {/* Email */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label style={{
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
               fontSize: '11px',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px'
             }}>EMAIL</label>
             <div style={{
               display: 'flex',
@@ -244,10 +247,10 @@ export default function RegisterPage() {
           {/* Password */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label style={{
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
               fontSize: '11px',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px'
             }}>PASSWORD</label>
             <div style={{
               display: 'flex',
@@ -281,10 +284,10 @@ export default function RegisterPage() {
           {/* Phone (Additional field) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label style={{
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
               fontSize: '11px',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px'
             }}>PHONE NUMBER (OPTIONAL)</label>
             <div style={{
               display: 'flex',
@@ -317,10 +320,10 @@ export default function RegisterPage() {
           {/* Address (Additional field) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label style={{
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
               fontSize: '11px',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px'
             }}>ADDRESS (OPTIONAL)</label>
             <div style={{
               display: 'flex',
@@ -353,10 +356,10 @@ export default function RegisterPage() {
           {/* Role */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label style={{
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
               fontSize: '11px',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px'
             }}>REGISTER AS</label>
             <div style={{
               display: 'flex',
@@ -391,44 +394,37 @@ export default function RegisterPage() {
           <button 
             type="submit" 
             disabled={loading} 
+            className="btn-inner"
             style={{
               width: '100%',
-              padding: '14px',
-              background: loading 
-                ? 'rgba(168, 85, 247, 0.5)' 
-                : 'linear-gradient(90deg, #A855F7 0%, #9249F2 50%, #7C3AED 100%)',
-              border: 'none',
-              borderRadius: '4px',
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
-              fontWeight: '500',
-              fontSize: '14px',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              textAlign: 'center',
-              letterSpacing: '1px',
+              justifyContent: 'center',
               marginTop: '12px',
-              boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)',
-              transition: 'all 0.3s ease',
+              cursor: loading ? 'not-allowed' : 'pointer',
               opacity: loading ? 0.7 : 1
             }}
           >
             {loading ? 'REGISTERING...' : 'REGISTER NOW'}
+            <span className="icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
           </button>
         </form>
 
-        <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body, monospace)' }}>
-          Already have an account? <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login here</a>
+        <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body)' }}>
+          Already have an account? <a href="/login" style={{ color: '#C084FC', textDecoration: 'none' }}>Login here</a>
         </p>
 
         {/* Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '30px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success, #22C55E)', boxShadow: '0 0 8px var(--success, #22C55E)' }}></div>
-          <span style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px' }}>System Status: Online</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 8px #22C55E' }}></div>
+          <span style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '12px' }}>System Status: Online</span>
         </div>
       </div>
 
       <div style={{ zIndex: 10, marginTop: '24px' }}>
-        <p style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px', textAlign: 'center' }}>Secure access required. All activities are monitored.</p>
+        <p style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '12px', textAlign: 'center' }}>Secure access required. All activities are monitored.</p>
       </div>
 
       <style>{`

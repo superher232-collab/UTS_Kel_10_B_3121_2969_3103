@@ -9,7 +9,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Hero() {
   const heroRef = useRef(null);
-  const bgRef = useRef(null);
   const headingRef = useRef(null);
   const subtitleRef = useRef(null);
 
@@ -17,12 +16,6 @@ export default function Hero() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Parallax background
-      gsap.fromTo(bgRef.current,
-        { y: 0 },
-        { y: -120, ease: "none", scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: true } }
-      );
-
       // Parallax heading
       gsap.fromTo(headingRef.current,
         { y: 0 },
@@ -78,7 +71,7 @@ export default function Hero() {
       }}
     >
       {/* Background */}
-      <div ref={bgRef} style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         <div style={{
           position: 'absolute', inset: 0,
           backgroundImage: `
@@ -155,12 +148,12 @@ export default function Hero() {
           {/* Heading */}
           <h1 ref={headingRef} style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(40px, 6vw, 64px)',
+            fontSize: 'clamp(48px, 7vw, 80px)',
             fontWeight: 700,
             color: '#F1F0F5',
-            letterSpacing: '-0.02em',
-            lineHeight: '1.05',
-            marginBottom: '20px'
+            letterSpacing: '-0.03em',
+            lineHeight: '1.02',
+            marginBottom: '24px'
           }}>
             Command Your<br />
             <span style={{

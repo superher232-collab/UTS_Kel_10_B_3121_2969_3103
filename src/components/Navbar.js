@@ -1,9 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const links = [
     { href: '#about', label: 'About' },
@@ -14,7 +21,13 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="island-nav">
+      <nav className="island-nav" style={{
+        background: scrolled ? 'rgba(12, 12, 20, 0.92)' : 'rgba(12, 12, 20, 0.75)',
+        boxShadow: scrolled
+          ? '0 8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)'
+          : '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+        transition: 'background 0.4s ease, box-shadow 0.4s ease'
+      }}>
         {/* Logo */}
         <a href="#home" style={{
           display: 'flex',

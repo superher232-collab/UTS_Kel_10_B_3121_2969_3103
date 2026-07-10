@@ -25,22 +25,16 @@ export default function Home() {
       background: '#07020E',
       position: 'relative'
     }}>
+      {/* Scroll Progress */}
+      <div className="scroll-progress" id="scroll-progress" aria-hidden="true" />
+
+      {/* Atmosphere */}
+      <div className="atmosphere" aria-hidden="true" />
+
       {/* Ambient Orbs */}
       <div className="ambient-orbs" aria-hidden="true">
         <div className="orb orb--1"></div>
         <div className="orb orb--2"></div>
-      </div>
-
-      {/* Hero Background Image */}
-      <div className="hero-bg" style={{
-        width: '100%',
-        height: '100vh',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        zIndex: 0
-      }}>
-        <img src="/hero-bg.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
 
       {/* Navbar */}
@@ -71,6 +65,21 @@ export default function Home() {
         </div>
         <Footer />
       </main>
+
+      {/* Scroll Progress Script */}
+      <script dangerouslySetInnerHTML={{ __html: `
+        (function() {
+          var bar = document.getElementById('scroll-progress');
+          if (!bar) return;
+          function update() {
+            var h = document.documentElement;
+            var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+            bar.style.transform = 'scaleX(' + pct + ')';
+          }
+          window.addEventListener('scroll', update, { passive: true });
+          update();
+        })();
+      `}} />
     </div>
   );
 }

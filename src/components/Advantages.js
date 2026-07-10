@@ -64,7 +64,7 @@ export default function Advantages() {
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
           color: '#F1F0F5',
-          letterSpacing: '-0.02em',
+          letterSpacing: '-0.03em',
           lineHeight: '1.1',
           margin: 0
         }}>
@@ -72,24 +72,27 @@ export default function Advantages() {
         </h2>
       </div>
 
-      {/* Advantages grid — 3x2 bento */}
+      {/* 3-col bento icon tiles */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '12px'
       }}>
         {items.map((item, i) => (
-          <div key={i} className="double-bezel advantage-card">
+          <div key={i} className="double-bezel advantage-card hover-lift">
             <div className="double-bezel-inner" style={{
-              padding: '20px',
+              padding: '24px',
               display: 'flex',
-              alignItems: 'center',
-              gap: '14px'
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '14px',
+              height: '100%',
+              boxSizing: 'border-box'
             }}>
               <div style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '10px',
+                width: '42px',
+                height: '42px',
+                borderRadius: '11px',
                 background: 'rgba(168,85,247,0.08)',
                 display: 'flex',
                 alignItems: 'center',
@@ -102,7 +105,7 @@ export default function Advantages() {
                 fontFamily: 'var(--font-body)',
                 fontSize: '13px',
                 color: 'rgba(241,240,245,0.65)',
-                lineHeight: '1.4'
+                lineHeight: '1.5'
               }}>
                 {item.text}
               </span>

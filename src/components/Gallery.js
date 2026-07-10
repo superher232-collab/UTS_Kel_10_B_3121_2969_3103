@@ -63,7 +63,7 @@ export default function Gallery() {
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
           color: '#F1F0F5',
-          letterSpacing: '-0.02em',
+          letterSpacing: '-0.03em',
           lineHeight: '1.1',
           margin: 0
         }}>
@@ -71,59 +71,58 @@ export default function Gallery() {
         </h2>
       </div>
 
-      {/* Gallery grid */}
+      {/* Edge-to-edge gallery strip */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(5, 1fr)',
-        gap: '12px'
+        gap: '8px'
       }}>
         {items.map((item, i) => (
-          <div key={i} className="double-bezel gallery-card" style={{ padding: '1.5px' }}>
-            <div className="double-bezel-inner" style={{
-              padding: 0,
-              overflow: 'hidden',
-              position: 'relative',
-              height: '200px'
+          <div key={i} className="gallery-card" style={{
+            position: 'relative',
+            overflow: 'hidden',
+            borderRadius: '8px',
+            height: '220px',
+            cursor: 'pointer'
+          }}>
+            <Image
+              src={item.src}
+              alt={item.label}
+              width={400}
+              height={250}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transition: 'transform 0.6s var(--cubic-premium)'
+              }}
+            />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(0deg, rgba(5,5,5,0.9) 0%, transparent 50%)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+              padding: '16px'
             }}>
-              <Image
-                src={item.src}
-                alt={item.label}
-                width={400}
-                height={250}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  transition: 'transform 0.6s var(--cubic-premium)'
-                }}
-              />
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(0deg, rgba(5,5,5,0.9) 0%, transparent 60%)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                padding: '20px'
+              <span style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '12px',
+                fontWeight: 600,
+                color: '#F1F0F5',
+                letterSpacing: '0.5px'
               }}>
-                <span style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  color: '#F1F0F5',
-                  letterSpacing: '0.5px'
-                }}>
-                  {item.label}
-                </span>
-                <span style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '11px',
-                  color: 'rgba(241,240,245,0.4)',
-                  marginTop: '2px'
-                }}>
-                  {item.desc}
-                </span>
-              </div>
+                {item.label}
+              </span>
+              <span style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '11px',
+                color: 'rgba(241,240,245,0.4)',
+                marginTop: '2px'
+              }}>
+                {item.desc}
+              </span>
             </div>
           </div>
         ))}
@@ -139,7 +138,7 @@ export default function Gallery() {
         @media (max-width: 480px) {
           #gallery > div:last-child { grid-template-columns: 1fr !important; }
         }
-        .gallery-card:hover img { transform: scale(1.05); }
+        .gallery-card:hover img { transform: scale(1.06); }
       `}</style>
     </section>
   );

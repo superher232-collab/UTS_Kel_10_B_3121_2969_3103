@@ -76,7 +76,7 @@ export default function Testimonials() {
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
           color: '#F1F0F5',
-          letterSpacing: '-0.02em',
+          letterSpacing: '-0.03em',
           lineHeight: '1.1',
           margin: 0
         }}>
@@ -84,24 +84,30 @@ export default function Testimonials() {
         </h2>
       </div>
 
-      {/* Cards grid */}
+      {/* Size-variant grid: 1 large + 2 small */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '16px'
+        gridTemplateColumns: '1.5fr 1fr',
+        gridTemplateRows: 'auto auto',
+        gap: '12px'
       }}>
         {testimonials.map((t, i) => (
-          <div key={i} className="double-bezel testimonial-card">
+          <div key={i} className="double-bezel testimonial-card" style={{
+            gridColumn: i === 0 ? 'span 1' : 'span 1',
+            gridRow: i === 0 ? 'span 2' : 'span 1'
+          }}>
             <div className="double-bezel-inner" style={{
-              padding: '28px',
+              padding: i === 0 ? '36px' : '24px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '16px'
+              gap: i === 0 ? '20px' : '12px',
+              height: '100%',
+              boxSizing: 'border-box'
             }}>
-              <Quotes size={24} weight="duotone" color="#A855F7" style={{ opacity: 0.4 }} />
+              <Quotes size={i === 0 ? 28 : 20} weight="duotone" color="#A855F7" style={{ opacity: 0.4 }} />
               <p style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '13px',
+                fontSize: i === 0 ? '14px' : '12px',
                 color: 'rgba(241,240,245,0.55)',
                 lineHeight: '1.7',
                 margin: 0,
@@ -135,7 +141,13 @@ export default function Testimonials() {
 
       <style>{`
         @media (max-width: 768px) {
-          #testimonials > div:last-child { grid-template-columns: 1fr !important; }
+          #testimonials > div:last-child {
+            grid-template-columns: 1fr !important;
+          }
+          #testimonials > div:last-child > div {
+            grid-column: span 1 !important;
+            grid-row: span 1 !important;
+          }
         }
         @media (min-width: 769px) and (max-width: 1024px) {
           #testimonials > div:last-child { grid-template-columns: repeat(2, 1fr) !important; }

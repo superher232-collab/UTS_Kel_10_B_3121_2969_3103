@@ -28,18 +28,18 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
-      className="double-bezel"
       style={{
-        maxWidth: '900px',
-        margin: 'clamp(64px, 8vw, 100px) auto',
-        padding: '1.5px'
+        padding: 'clamp(64px, 8vw, 100px) 24px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        width: '100%',
+        boxSizing: 'border-box'
       }}
     >
-      <div className="double-bezel-inner" style={{
-        padding: 'clamp(32px, 4vw, 56px)',
+      <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1.2fr',
-        gap: '40px',
+        gridTemplateColumns: '0.8fr 1.2fr',
+        gap: '64px',
         alignItems: 'center'
       }}>
         {/* Left — label + description */}
@@ -57,19 +57,19 @@ export default function About() {
           </span>
           <h2 style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(24px, 3vw, 32px)',
+            fontSize: 'clamp(28px, 3.5vw, 40px)',
             fontWeight: 700,
             color: '#F1F0F5',
-            letterSpacing: '-0.02em',
-            lineHeight: '1.15',
+            letterSpacing: '-0.03em',
+            lineHeight: '1.1',
             margin: '0 0 20px 0'
           }}>
             Next-Gen Fleet<br />Command Platform
           </h2>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '13px',
-            color: 'rgba(241,240,245,0.45)',
+            fontSize: '14px',
+            color: 'rgba(241,240,245,0.5)',
             lineHeight: '1.7',
             margin: 0
           }}>
@@ -78,22 +78,23 @@ export default function About() {
         </div>
 
         {/* Right — stats / highlights */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[
             { stat: 'Real-Time', desc: 'Live vessel tracking with 30s update intervals' },
             { stat: 'Predictive', desc: 'AI-driven maintenance and anomaly detection' },
             { stat: 'End-to-End', desc: 'From port to port cargo visibility' }
           ].map((item, i) => (
-            <div key={i} style={{
+            <div key={i} className="hover-lift" style={{
               display: 'flex',
               gap: '16px',
-              padding: '16px',
-              background: 'rgba(168,85,247,0.03)',
-              border: '1px solid rgba(168,85,247,0.08)',
-              borderRadius: '10px'
+              padding: '16px 20px',
+              background: 'rgba(168,85,247,0.04)',
+              border: '1px solid rgba(168,85,247,0.1)',
+              borderRadius: '12px',
+              transition: 'all 0.3s var(--cubic-premium)'
             }}>
               <div style={{
-                fontFamily: '"Roboto Mono", monospace',
+                fontFamily: 'var(--font-geist-mono), monospace',
                 fontSize: '11px',
                 fontWeight: 600,
                 color: '#A855F7',
@@ -105,9 +106,9 @@ export default function About() {
               </div>
               <div style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '12px',
-                color: 'rgba(241,240,245,0.45)',
-                lineHeight: '1.4'
+                fontSize: '13px',
+                color: 'rgba(241,240,245,0.5)',
+                lineHeight: '1.5'
               }}>
                 {item.desc}
               </div>
@@ -118,7 +119,7 @@ export default function About() {
 
       <style>{`
         @media (max-width: 768px) {
-          #about > div { grid-template-columns: 1fr !important; gap: 24px !important; }
+          #about > div { grid-template-columns: 1fr !important; gap: 32px !important; }
         }
       `}</style>
     </section>

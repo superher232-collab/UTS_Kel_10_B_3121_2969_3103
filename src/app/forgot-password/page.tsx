@@ -92,10 +92,11 @@ export default function ForgotPasswordPage() {
 
       {/* Card */}
       <div style={{
-        background: 'var(--bg-card, rgba(20, 10, 36, 0.7))',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid var(--border-purple, rgba(168, 85, 247, 0.3))',
-        borderRadius: '8px',
+        background: 'rgba(18, 16, 26, 0.7)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(168, 85, 247, 0.2)',
+        borderRadius: '12px',
         padding: '30px 40px',
         width: '95%',
         maxWidth: '440px',
@@ -105,21 +106,23 @@ export default function ForgotPasswordPage() {
         boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
       }}>
         <h2 style={{
-          color: 'white',
-          fontFamily: 'var(--font-body, monospace)',
+          fontFamily: 'var(--font-heading)',
           fontSize: '16px',
           letterSpacing: '2px',
           margin: '0 0 8px 0',
-          fontWeight: '600'
+          fontWeight: '600',
+          background: 'linear-gradient(135deg, #F1F0F5 0%, #A855F7 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
         }}>FORGOT PASSWORD</h2>
         <p style={{
-          color: 'var(--text-muted, #8B7BA8)',
-          fontFamily: 'var(--font-body, monospace)',
+          fontFamily: 'var(--font-body)',
+          color: '#8B7BA8',
           fontSize: '13px',
           margin: '0 0 24px 0',
           lineHeight: '1.4'
         }}>
-          Enter your account email address. We'll send a link to reset your password.
+          Enter your account email address. We&apos;ll send a link to reset your password.
         </p>
 
         {error && (
@@ -158,10 +161,10 @@ export default function ForgotPasswordPage() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label style={{
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
+              color: '#8B7BA8',
+              fontFamily: 'var(--font-body)',
               fontSize: '11px',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px'
             }}>ACCOUNT EMAIL</label>
             <div style={{
               display: 'flex',
@@ -194,44 +197,37 @@ export default function ForgotPasswordPage() {
           <button 
             type="submit" 
             disabled={loading} 
+            className="btn-inner"
             style={{
               width: '100%',
-              padding: '14px',
-              background: loading 
-                ? 'rgba(168, 85, 247, 0.5)' 
-                : 'linear-gradient(90deg, #A855F7 0%, #9249F2 50%, #7C3AED 100%)',
-              border: 'none',
-              borderRadius: '4px',
-              color: 'white',
-              fontFamily: 'var(--font-body, monospace)',
-              fontWeight: '500',
-              fontSize: '14px',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              textAlign: 'center',
-              letterSpacing: '1px',
+              justifyContent: 'center',
               marginTop: '12px',
-              boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)',
-              transition: 'all 0.3s ease',
+              cursor: loading ? 'not-allowed' : 'pointer',
               opacity: loading ? 0.7 : 1
             }}
           >
             {loading ? 'PROCESSING...' : 'SEND RESET LINK'}
+            <span className="icon-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
           </button>
         </form>
 
-        <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body, monospace)' }}>
-          Back to <a href="/login" style={{ color: 'var(--purple-logo, #C084FC)', textDecoration: 'none' }}>Login</a> page
+        <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: '#8B7BA8', fontFamily: 'var(--font-body)' }}>
+          Back to <a href="/login" style={{ color: '#C084FC', textDecoration: 'none' }}>Login</a> page
         </p>
 
         {/* System Online Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '30px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success, #22C55E)', boxShadow: '0 0 8px var(--success, #22C55E)' }}></div>
-          <span style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px' }}>Encrypted Access Active</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 8px #22C55E' }}></div>
+          <span style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '12px' }}>Encrypted Access Active</span>
         </div>
       </div>
 
       <div style={{ zIndex: 10, marginTop: '24px' }}>
-        <p style={{ color: 'var(--text-muted, #8B7BA8)', fontFamily: 'var(--font-body, monospace)', fontSize: '12px', textAlign: 'center' }}>
+        <p style={{ color: '#8B7BA8', fontFamily: 'var(--font-body)', fontSize: '12px', textAlign: 'center' }}>
           All system activities are monitored for security.
         </p>
       </div>

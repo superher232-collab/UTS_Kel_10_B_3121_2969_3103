@@ -78,7 +78,7 @@ export default function Features() {
           fontSize: 'clamp(28px, 4vw, 40px)',
           fontWeight: 700,
           color: '#F1F0F5',
-          letterSpacing: '-0.02em',
+          letterSpacing: '-0.03em',
           lineHeight: '1.1',
           margin: 0
         }}>
@@ -87,48 +87,61 @@ export default function Features() {
         </h2>
       </div>
 
-      {/* Feature cards — bento grid */}
+      {/* Bento grid: 1 wide + 3 small */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '16px'
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gridTemplateRows: 'auto auto',
+        gap: '12px'
       }}>
+        {/* First card spans 2 columns */}
         {features.map((f, i) => (
-          <div key={i} className="double-bezel feature-card" style={{
-            gridColumn: i < 2 ? 'span 1' : 'span 1'
+          <div key={i} className="double-bezel feature-card hover-lift" style={{
+            gridColumn: i === 0 ? 'span 2' : 'span 1',
+            gridRow: i === 0 ? 'span 2' : 'span 1'
           }}>
-            <div className="double-bezel-inner" style={{ padding: '28px' }}>
+            <div className="double-bezel-inner" style={{
+              padding: i === 0 ? '32px' : '24px',
+              display: 'flex',
+              flexDirection: i === 0 ? 'column' : 'row',
+              alignItems: i === 0 ? 'flex-start' : 'center',
+              gap: i === 0 ? '16px' : '14px',
+              height: '100%',
+              boxSizing: 'border-box'
+            }}>
               <div style={{
-                width: '44px',
-                height: '44px',
+                width: i === 0 ? '52px' : '40px',
+                height: i === 0 ? '52px' : '40px',
                 borderRadius: '12px',
                 background: 'rgba(168,85,247,0.08)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '16px'
+                flexShrink: 0
               }}>
                 {f.icon}
               </div>
-              <h3 style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '16px',
-                fontWeight: 600,
-                color: '#F1F0F5',
-                letterSpacing: '-0.01em',
-                margin: '0 0 8px 0'
-              }}>
-                {f.title}
-              </h3>
-              <p style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '13px',
-                color: 'rgba(241,240,245,0.45)',
-                lineHeight: '1.6',
-                margin: 0
-              }}>
-                {f.desc}
-              </p>
+              <div>
+                <h3 style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: i === 0 ? '18px' : '15px',
+                  fontWeight: 600,
+                  color: '#F1F0F5',
+                  letterSpacing: '-0.01em',
+                  margin: '0 0 6px 0'
+                }}>
+                  {f.title}
+                </h3>
+                <p style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '13px',
+                  color: 'rgba(241,240,245,0.45)',
+                  lineHeight: '1.6',
+                  margin: 0
+                }}>
+                  {f.desc}
+                </p>
+              </div>
             </div>
           </div>
         ))}
@@ -136,7 +149,13 @@ export default function Features() {
 
       <style>{`
         @media (max-width: 768px) {
-          #features > div:last-child { grid-template-columns: 1fr !important; }
+          #features > div:last-child {
+            grid-template-columns: 1fr !important;
+          }
+          #features > div:last-child > div {
+            grid-column: span 1 !important;
+            grid-row: span 1 !important;
+          }
         }
       `}</style>
     </section>
